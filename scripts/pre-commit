@@ -1,6 +1,33 @@
 #!/bin/sh
 # Stash unstaged changes to avoid formatting half-written code
-# echo "Running Spotless Format..."
+
+FRC_YEAR="2026"
+
+# 1. Detect OS and find the WPILib install folder (Logic mirrors settings.gradle)
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    # Windows: Standard FRC install is at C:\Users\Public\wpilib\YYYY
+    # We hardcode the Git Bash path format for C:\Users\Public
+    FRC_HOME="/c/Users/Public/wpilib/$FRC_YEAR"
+else
+    # Mac/Linux: Standard FRC install is at ~/wpilib/YYYY
+    FRC_HOME="$HOME/wpilib/$FRC_YEAR"
+fi
+
+# 2. Define the path to the WPILib-provided JDK
+WPILIB_JDK="$FRC_HOME/jdk"
+
+# 3. If the WPILib JDK exists, force the session to use it
+if [ -d "$WPILIB_JDK" ]; then
+    export JAVA_HOME="$WPILIB_JDK"
+    # Prepend to PATH to ensure 'java' command uses this version
+    export PATH="$JAVA_HOME/bin:$PATH"
+    
+    # Optional debug line (uncomment if you want to see this running)
+    # echo "✅ Pre-commit hook found WPILib JDK: $JAVA_HOME"
+else
+    echo "⚠️  WARNING: Could not find WPILib JDK at $WPILIB_JDK"
+    echo "   Falling back to system Java: $(java -version 2>&1 | head -n 1)"
+fi
 
 # --quiet: reduces output
 # -x test: EXPLICITLY skips the test task creation which is failing

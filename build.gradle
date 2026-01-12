@@ -183,8 +183,7 @@ createVersionFile.dependsOn(eventDeploy)
 
 spotless {
     java {
-        // 1.22.0 is highly recommended for compatibility across various JDK 17 builds
-        googleJavaFormat('1.22.0') 
+        googleJavaFormat('1.25.0') 
         
         targetExclude('build/**', 'src/main/java/frc/robot/BuildConstants.java')
         
