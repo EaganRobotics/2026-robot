@@ -1,6 +1,12 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.1.1"
+
+    // Add gversion plugin for AdvantageKit
+    id "com.peterabeles.gversion" version "1.10"
+
+    // Spotless for format checking
+    id "com.diffplug.spotless" version "6.25.0"
 }
 
 java {
@@ -27,13 +33,20 @@ deploy {
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                  // Enable VisualVM connection
+                  jvmArgs.add("-Dcom.sun.management.jmxremote=true")
+                  jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
+                  jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
+                  jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
+                  jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
+                  jvmArgs.add("-Djava.rmi.server.hostname=172.22.11.2") // Replace TE.AM with team number
                 }
 
                 // Static files artifact
                 frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
-                    deleteOldFiles = false // Change to true to delete files on roboRIO that no
+                    deleteOldFiles = true // Change to true to delete files on roboRIO that no
                                            // longer exist in deploy directory of this project
                 }
             }
@@ -43,8 +56,7 @@ deploy {
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
-// Set to true to use debug for all targets including JNI, which will drastically impact
-// performance.
+// Set to true to use debug for JNI.
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
@@ -73,16 +85,28 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Install AdvantageKit into existing project
+    def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+    annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 }
 
-test {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
 // Simulation configuration (e.g. environment variables).
-wpi.sim.addGui().defaultEnabled = true
+wpi.sim.addGui().defaultEnabled = providers.environmentVariable('AKIT_SIM_MODE').map(env -> env.equals("SIM")).orElse(true)
 wpi.sim.addDriverstation()
+
+// --- OLD JAR ---
+// jar {
+//     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+//     from sourceSets.main.allSource
+//     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+//     duplicatesStrategy = DuplicatesStrategy.INCLUDE
+// }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib
@@ -96,6 +120,7 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
+
 // Configure jar and deploy tasks
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
@@ -105,3 +130,76 @@ wpi.java.configureTestTasks(test)
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
+
+// Install AdvantageKit into existing project
+task(replayWatch, type: JavaExec) {
+    mainClass = "org.littletonrobotics.junction.ReplayWatch"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+// Setup Version Control for AdvantageKit
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+  srcDir       = "src/main/java/"
+  classPackage = "frc.robot"
+  className    = "BuildConstants"
+  dateFormat   = "yyyy-MM-dd HH:mm:ss z"
+  timeZone     = "America/Central" // Use preferred time zone
+  indent       = "  "
+}
+
+// Create commit with working changes upon deploy on branches prefixed with 'event'
+task(eventDeploy) {
+    doLast {
+        if (project.gradle.startParameter.taskNames.any({ it.toLowerCase().contains("deploy") })) {
+            def branchPrefix = "event"
+            def branch = 'git branch --show-current'.execute().text.trim()
+            def commitMessage = "Update at '${new Date().toString()}'"
+
+            if (branch.startsWith(branchPrefix)) {
+                exec {
+                    workingDir(projectDir)
+                    executable 'git'
+                    args 'add', '-A'
+                }
+                exec {
+                    workingDir(projectDir)
+                    executable 'git'
+                    args 'commit', '-m', commitMessage
+                    ignoreExitValue = true
+                }
+
+                println "Committed to branch: '$branch'"
+                println "Commit message: '$commitMessage'"
+            } else {
+                println "Not on an event branch, skipping commit"
+            }
+        } else {
+            println "Not running deploy task, skipping commit"
+        }
+    }
+}
+createVersionFile.dependsOn(eventDeploy)
+
+spotless {
+    java {
+        // 1.22.0 is highly recommended for compatibility across various JDK 17 builds
+        googleJavaFormat('1.22.0') 
+        
+        targetExclude('build/**', 'src/main/java/frc/robot/BuildConstants.java')
+        
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    enforceCheck = false
+}
+
+task installGitHooks(type: Copy) {
+    from new File(rootProject.rootDir, 'scripts/pre-commit')
+    into { new File(rootProject.rootDir, '.git/hooks') }
+    fileMode 0755 // Makes the script executable
+}
+
+// Ensure the hook is installed every time the project is compiled
+compileJava.dependsOn installGitHooks

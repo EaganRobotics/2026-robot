@@ -1,19 +1,43 @@
 {
+  "java.compile.nullAnalysis.mode": "automatic",
   "java.configuration.updateBuildConfiguration": "automatic",
-  "java.server.launchMode": "Standard",
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "bin/": true,
-    "**/.classpath": true,
-    "**/.project": true,
-    "**/.settings": true,
-    "**/.factorypath": true,
-    "**/*~": true
+  // FORCE Red Hat Java to use the remote Google Style Guide
+  "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+  "java.format.settings.profile": "GoogleStyle",
+  "editor.defaultFormatter": "redhat.java",
+
+  // Format on Save: YES. This minimizes pre-commit hook failures.
+  "editor.formatOnSave": true,
+
+  // DISABLE generic editor trimming (Spotless handles this; dual handling causes conflicts)
+  "files.trimTrailingWhitespace": false,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+
+  // Match Gradle build encoding
+  "files.encoding": "utf8",
+
+  // Reduce visual clutter
+  "search.exclude": {
+      "**/build": true,
+      "**/.gradle": true
   },
+  "files.exclude": {
+      "**/.git": true,
+      "**/build": true,
+      "**/.gradle": true,
+      "**/bin": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/.classpath": true,
+      "**/.project": true,
+      "**/.settings": true,
+      "**/.factorypath": true,
+      "**/*~": true
+  },
+  "java.server.launchMode": "Standard",
   "java.test.config": [
     {
       "name": "WPIlibUnitTests",

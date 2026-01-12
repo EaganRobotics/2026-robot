@@ -1,0 +1,17 @@
+#!/bin/sh
+# Stash unstaged changes to avoid formatting half-written code
+# echo "Running Spotless Format..."
+
+# --quiet: reduces output
+# -x test: EXPLICITLY skips the test task creation which is failing
+# --no-daemon: ensures a clean environment for the hook
+./gradlew spotlessApply --quiet --no-daemon -x test
+
+# Check if Gradle failed
+if [ $? -ne 0 ]; then
+    echo "❌ Spotless failed! Check your build.gradle for errors."
+    exit 1
+fi
+
+# Re-add files that Spotless modified
+git add .
