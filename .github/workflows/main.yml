@@ -1,0 +1,129 @@
+# This is a basic workflow to build robot code.
+name: CI
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  format_check:
+    name: Format Check
+    runs-on: ubuntu-22.04
+    container: gradle:jdk17
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v4
+
+      # Declares the repository safe and not under dubious ownership.
+      - name: Add repository to git safe directories
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Filter changes for relevant files
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            java:
+              - 'src/main/java/**'
+              - 'build.gradle'
+
+      # Grant execute permission for gradlew
+      - name: Grant execute permission for gradlew
+        if: steps.filter.outputs.java == 'true'
+        run: chmod +x gradlew
+
+      # Setup Gradle and restore cache
+      - name: Setup Gradle
+        if: steps.filter.outputs.java == 'true'
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      # Formatting check
+      - name: Check code formatting
+        if: steps.filter.outputs.java == 'true'
+        run: ./gradlew spotlessCheck
+
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    container: wpilib/roborio-cross-ubuntu:2025-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add repository to git safe directories
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Filter changes for relevant files
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            java:
+              - 'src/main/java/**'
+              - 'build.gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.filter.outputs.java == 'true'
+        run: chmod +x gradlew
+
+      - name: Setup Gradle
+        if: steps.filter.outputs.java == 'true'
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Compile robot code
+        if: steps.filter.outputs.java == 'true'
+        run: ./gradlew build --no-daemon
+
+      - name: Upload build artifacts
+        if: steps.filter.outputs.java == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+
+  test:
+    needs: build
+    name: Test
+    runs-on: ubuntu-22.04
+    container: wpilib/roborio-cross-ubuntu:2025-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add repository to git safe directories
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Filter changes for relevant files
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            java:
+              - 'src/main/java/**'
+              - 'build.gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.filter.outputs.java == 'true'
+        run: chmod +x gradlew
+
+      - name: Download build artifacts
+        if: steps.filter.outputs.java == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+
+      - name: Setup Gradle
+        if: steps.filter.outputs.java == 'true'
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Run tests on robot code
+        if: steps.filter.outputs.java == 'true'
+        run: ./gradlew test --no-daemon
