@@ -12,6 +12,8 @@ jobs:
   format_check:
     name: Format Check & Auto-Fix
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write  # Allows the action to push commits back to the repo
     # We remove 'container' here so we have native git access for pushing commits
     steps:
       - uses: actions/checkout@v4
