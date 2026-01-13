@@ -5,43 +5,53 @@ cd "$REPO_ROOT"
 
 FRC_YEAR="2026"
 
-# --- DETECT JAVA ---
-# Instead of asking the OS, we check if the Windows WPILib folder exists.
-# Git Bash maps C:\ to /c/, so we look there.
+# --- 1. DEFINE THE KNOWN WINDOWS PATH ---
+# Git Bash usually accesses C:\ via /c/
+RAW_WIN_PATH="/c/Users/Public/wpilib/$FRC_YEAR/jdk"
 
-WINDOWS_WPILIB="/c/Users/Public/wpilib/$FRC_YEAR"
-
-if [ -d "$WINDOWS_WPILIB" ]; then
-    # We are on Windows
-    FRC_HOME="$WINDOWS_WPILIB"
+# --- 2. CHECK IF WE ARE ON WINDOWS ---
+# We check if that folder exists. 
+if [ -d "$RAW_WIN_PATH" ]; then
+    echo "✅ Detected Windows WPILib install at $RAW_WIN_PATH"
+    
+    # CRITICAL FIX: Convert the path to Windows format (C:\Users\...)
+    # Gradle (Windows CMD) cannot read "/c/Users/...", it needs "C:\Users\..."
+    if command -v cygpath &> /dev/null; then
+        export JAVA_HOME=$(cygpath -w "$RAW_WIN_PATH")
+    else
+        # Fallback if cygpath is missing (rare in Git Bash)
+        export JAVA_HOME="C:\\Users\\Public\\wpilib\\$FRC_YEAR\\jdk"
+    fi
+    
+    export PATH="$JAVA_HOME/bin:$PATH"
     GRADLE_EXEC="./gradlew.bat"
+
 else
-    # We are on Mac / Linux
+    # --- 3. FALLBACK FOR MAC/LINUX ---
+    # If the Windows path doesn't exist, we assume standard Unix paths
+    echo "🔎 Windows WPILib not found, checking standard Unix paths..."
+    
     FRC_HOME="$HOME/wpilib/$FRC_YEAR"
+    if [ -d "$FRC_HOME/jdk" ]; then
+        export JAVA_HOME="$FRC_HOME/jdk"
+        export PATH="$JAVA_HOME/bin:$PATH"
+    fi
     GRADLE_EXEC="./gradlew"
 fi
 
-# Setup JAVA_HOME if the WPILib JDK is found
-WPILIB_JDK="$FRC_HOME/jdk"
+# Debug Output to verify
+echo "Using JAVA_HOME: $JAVA_HOME"
+echo "Using Gradle Wrapper: $GRADLE_EXEC"
 
-if [ -d "$WPILIB_JDK" ]; then
-    export JAVA_HOME="$WPILIB_JDK"
-    export PATH="$JAVA_HOME/bin:$PATH"
-else
-    echo "⚠️  WARNING: WPILib JDK not found at $WPILIB_JDK"
-    echo "   Using system Java: $(java -version 2>&1 | head -n 1)"
-fi
-
-# --- RUN SPOTLESS ---
+# --- 4. RUN SPOTLESS ---
 echo "🚀 Running Spotless..."
 
-# We use the detected gradle executable
 if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
     echo "⚠️  Spotless hit a cache conflict. Attempting self-repair..."
     rm -rf .gradle/spotless
     
     if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
-        echo "❌ Spotless failed! Check your build.gradle for errors."
+        echo "❌ Spotless failed! Check build.gradle or JAVA_HOME."
         exit 1
     fi
 fi
