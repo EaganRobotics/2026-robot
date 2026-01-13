@@ -1,44 +1,58 @@
-#!/bin/sh
-# Stash unstaged changes to avoid formatting half-written code
+#!/bin/bash
+# Use /bin/bash to ensure reliable path handling on Windows Git Bash
+
+# 1. Navigate to the repo root so we find gradlew correctly
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT"
 
 FRC_YEAR="2026"
+unameOut="$(uname -s 2>/dev/null || echo Unknown)"
 
-# 1. Detect OS and find the WPILib install folder (Logic mirrors settings.gradle)
-if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-    # Windows: Standard FRC install is at C:\Users\Public\wpilib\YYYY
-    # We hardcode the Git Bash path format for C:\Users\Public
-    FRC_HOME="/c/Users/Public/wpilib/$FRC_YEAR"
-else
-    # Mac/Linux: Standard FRC install is at ~/wpilib/YYYY
-    FRC_HOME="$HOME/wpilib/$FRC_YEAR"
-fi
+# 2. Detect OS to set:
+#    a) The WPILib install location
+#    b) The correct Gradle executable (to fix 'cygpath' errors)
+case "${unameOut}" in
+    CYGWIN*|MINGW*|MSYS*)
+        # Windows: Use the Public user folder and the Batch file
+        FRC_HOME="/c/Users/Public/wpilib/$FRC_YEAR"
+        GRADLE_EXEC="./gradlew.bat"
+        ;;
+    *)
+        # Mac/Linux: Use the home folder and the Shell script
+        FRC_HOME="$HOME/wpilib/$FRC_YEAR"
+        GRADLE_EXEC="./gradlew"
+        ;;
+esac
 
-# 2. Define the path to the WPILib-provided JDK
+# 3. Force the session to use the WPILib-provided JDK if found
 WPILIB_JDK="$FRC_HOME/jdk"
 
-# 3. If the WPILib JDK exists, force the session to use it
 if [ -d "$WPILIB_JDK" ]; then
     export JAVA_HOME="$WPILIB_JDK"
-    # Prepend to PATH to ensure 'java' command uses this version
+    # Prepend to PATH so the build uses this java explicitly
     export PATH="$JAVA_HOME/bin:$PATH"
-    
-    # Optional debug line (uncomment if you want to see this running)
-    # echo "✅ Pre-commit hook found WPILib JDK: $JAVA_HOME"
+    # Optional: echo "✅ Using WPILib JDK at $JAVA_HOME"
 else
     echo "⚠️  WARNING: Could not find WPILib JDK at $WPILIB_JDK"
     echo "   Falling back to system Java: $(java -version 2>&1 | head -n 1)"
 fi
 
-# --quiet: reduces output
-# -x test: EXPLICITLY skips the test task creation which is failing
-# --no-daemon: ensures a clean environment for the hook
-./gradlew spotlessApply --quiet --no-daemon -x test
+# 4. Run Spotless
+# We use $GRADLE_EXEC to ensure Windows uses the .bat file
+echo "🚀 Running Spotless..."
 
-# Check if Gradle failed
-if [ $? -ne 0 ]; then
-    echo "❌ Spotless failed! Check your build.gradle for errors."
-    exit 1
+if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
+    echo "⚠️  Spotless hit a cache conflict. Attempting self-repair..."
+    
+    # Nuke the spotless cache only
+    rm -rf .gradle/spotless
+    
+    # Retry once
+    if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
+        echo "❌ Spotless failed! Check your build.gradle for errors."
+        exit 1
+    fi
 fi
 
-# Re-add files that Spotless modified
+# 5. Re-stage any files that Spotless modified
 git add .
