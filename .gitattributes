@@ -7,3 +7,9 @@
 *.xml text eol=lf
 *.json text eol=lf
 *.md text eol=lf
+
+# Force gradlew to be LF (Unix) so it works on Linux/Mac
+gradlew text eol=lf
+
+# Force the Windows wrapper to be CRLF
+gradlew.bat text eol=crlf
