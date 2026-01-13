@@ -24,7 +24,7 @@ import frc.lib.replay.WPILogReadMACAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
-// import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -263,7 +263,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-    // SimulatedArena.getInstance().simulationPeriodic();
+    SimulatedArena.getInstance().simulationPeriodic();
     robotContainer.displaySimFieldToAdvantageScope();
     robotContainer.simulationPeriodic();
   }

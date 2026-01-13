@@ -1,5 +1,7 @@
 package frc.lib.infrastructure;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.SimConstants;
@@ -73,6 +75,8 @@ public abstract class RobotContainer {
 
         driveSimulation.setSimulationWorldPose(SimConstants.SIM_INITIAL_FIELD_POSE);
         SimulatedArena.getInstance().resetFieldForAuto();
+        SimulatedArena.getInstance().clearGamePieces();
+        SimulatedArena.getInstance().placeGamePiecesOnField();
     }
 
     public void displaySimFieldToAdvantageScope() {
@@ -81,9 +85,17 @@ public abstract class RobotContainer {
 
         Logger.recordOutput("FieldSimulation/RobotPosition",
                 driveSimulation.getSimulatedDriveTrainPose());
-        Logger.recordOutput("FieldSimulation/Coral",
-                SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-        Logger.recordOutput("FieldSimulation/Algae",
-                SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        Logger.recordOutput("FieldSimulation/FuelPositions",
+                SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
+
+        Logger.recordOutput("FieldSimulation/Borders", new Pose2d(0, 1.270, new Rotation2d()),
+                new Pose2d(0, 6.782, new Rotation2d()), new Pose2d(17.548, 1.270, new Rotation2d()),
+                new Pose2d(17.548, 6.782, new Rotation2d()),
+                new Pose2d(1.672, 8.052, new Rotation2d()), new Pose2d(11, 8.052, new Rotation2d()),
+                new Pose2d(12, 8.052, new Rotation2d()),
+                new Pose2d(17.548 - 1.672, 8.052, new Rotation2d()),
+                new Pose2d(1.672, 0, new Rotation2d()), new Pose2d(5.8, 0, new Rotation2d()),
+                new Pose2d(6.3, 0, new Rotation2d()),
+                new Pose2d(17.548 - 1.672, 0, new Rotation2d()));
     }
 }
