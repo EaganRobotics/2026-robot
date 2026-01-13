@@ -75,8 +75,6 @@ public abstract class RobotContainer {
 
         driveSimulation.setSimulationWorldPose(SimConstants.SIM_INITIAL_FIELD_POSE);
         SimulatedArena.getInstance().resetFieldForAuto();
-        SimulatedArena.getInstance().clearGamePieces();
-        SimulatedArena.getInstance().placeGamePiecesOnField();
     }
 
     public void displaySimFieldToAdvantageScope() {

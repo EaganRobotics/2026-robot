@@ -67,12 +67,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     @Override
     public Command getAutonomousCommand() {
         return autoChooser.get();
-
     }
 
     @Override
     public Command getTestCommand() {
         return Commands.print("Test command!");
-
     }
 }
