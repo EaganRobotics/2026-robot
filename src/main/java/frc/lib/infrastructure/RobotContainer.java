@@ -11,89 +11,93 @@ import org.littletonrobotics.junction.Logger;
 
 public abstract class RobotContainer {
 
-    private SwerveDriveSimulation driveSimulation = null;
+  private SwerveDriveSimulation driveSimulation = null;
 
-    protected RobotContainer(SwerveDriveSimulation driveSimulation) {
-        this.driveSimulation = driveSimulation;
+  protected RobotContainer(SwerveDriveSimulation driveSimulation) {
+    this.driveSimulation = driveSimulation;
 
-        if (SimConstants.CURRENT_MODE == SimConstants.Mode.SIM) {
-            SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-        }
+    if (SimConstants.CURRENT_MODE == SimConstants.Mode.SIM) {
+      SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
     }
+  }
 
-    public abstract Command getTestCommand();
+  public abstract Command getTestCommand();
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public abstract Command getAutonomousCommand();
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public abstract Command getAutonomousCommand();
 
-    /**
-     * This function is called once when the robot is first started up. All robot-wide
-     * initialization goes here.
-     */
-    public void robotInit() {}
+  /**
+   * This function is called once when the robot is first started up. All robot-wide initialization
+   * goes here.
+   */
+  public void robotInit() {}
 
-    /** This function is called periodically during all modes. */
-    public void robotPeriodic() {}
+  /** This function is called periodically during all modes. */
+  public void robotPeriodic() {}
 
-    /** This function is called once when the robot is disabled. */
-    public void disabledInit() {}
+  /** This function is called once when the robot is disabled. */
+  public void disabledInit() {}
 
-    /** This function is called periodically when disabled. */
-    public void disabledPeriodic() {}
+  /** This function is called periodically when disabled. */
+  public void disabledPeriodic() {}
 
-    /** This function is called once when autonomous is enabled. */
-    public void autonomousInit() {}
+  /** This function is called once when autonomous is enabled. */
+  public void autonomousInit() {}
 
-    /** This function is called periodically during autonomous. */
-    public void autonomousPeriodic() {}
+  /** This function is called periodically during autonomous. */
+  public void autonomousPeriodic() {}
 
-    /** This function is called once when teleop is enabled. */
-    public void teleopInit() {}
+  /** This function is called once when teleop is enabled. */
+  public void teleopInit() {}
 
-    /** This function is called periodically during operator control. */
-    public void teleopPeriodic() {}
+  /** This function is called periodically during operator control. */
+  public void teleopPeriodic() {}
 
-    /** This function is called once when test mode is enabled. */
-    public void testInit() {}
+  /** This function is called once when test mode is enabled. */
+  public void testInit() {}
 
-    /** This function is called periodically during test mode. */
-    public void testPeriodic() {}
+  /** This function is called periodically during test mode. */
+  public void testPeriodic() {}
 
-    /** This function is called once when the robot is first started up. */
-    public void simulationInit() {}
+  /** This function is called once when the robot is first started up. */
+  public void simulationInit() {}
 
-    /** This function is called periodically whilst in simulation. */
-    public void simulationPeriodic() {}
+  /** This function is called periodically whilst in simulation. */
+  public void simulationPeriodic() {}
 
-    public void resetSimulation() {
-        if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM)
-            return;
+  public void resetSimulation() {
+    if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM) return;
 
-        driveSimulation.setSimulationWorldPose(SimConstants.SIM_INITIAL_FIELD_POSE);
-        SimulatedArena.getInstance().resetFieldForAuto();
-    }
+    driveSimulation.setSimulationWorldPose(SimConstants.SIM_INITIAL_FIELD_POSE);
+    SimulatedArena.getInstance().resetFieldForAuto();
+  }
 
-    public void displaySimFieldToAdvantageScope() {
-        if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM)
-            return;
+  public void displaySimFieldToAdvantageScope() {
+    if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM) return;
 
-        Logger.recordOutput("FieldSimulation/RobotPosition",
-                driveSimulation.getSimulatedDriveTrainPose());
-        Logger.recordOutput("FieldSimulation/FuelPositions",
-                SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
+    Logger.recordOutput(
+        "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
+    Logger.recordOutput(
+        "FieldSimulation/FuelPositions",
+        SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
 
-        Logger.recordOutput("FieldSimulation/Borders", new Pose2d(0, 1.270, new Rotation2d()),
-                new Pose2d(0, 6.782, new Rotation2d()), new Pose2d(17.548, 1.270, new Rotation2d()),
-                new Pose2d(17.548, 6.782, new Rotation2d()),
-                new Pose2d(1.672, 8.052, new Rotation2d()), new Pose2d(11, 8.052, new Rotation2d()),
-                new Pose2d(12, 8.052, new Rotation2d()),
-                new Pose2d(17.548 - 1.672, 8.052, new Rotation2d()),
-                new Pose2d(1.672, 0, new Rotation2d()), new Pose2d(5.8, 0, new Rotation2d()),
-                new Pose2d(6.3, 0, new Rotation2d()),
-                new Pose2d(17.548 - 1.672, 0, new Rotation2d()));
-    }
+    Logger.recordOutput(
+        "FieldSimulation/Borders",
+        new Pose2d(0, 1.270, new Rotation2d()),
+        new Pose2d(0, 6.782, new Rotation2d()),
+        new Pose2d(17.548, 1.270, new Rotation2d()),
+        new Pose2d(17.548, 6.782, new Rotation2d()),
+        new Pose2d(1.672, 8.052, new Rotation2d()),
+        new Pose2d(11, 8.052, new Rotation2d()),
+        new Pose2d(12, 8.052, new Rotation2d()),
+        new Pose2d(17.548 - 1.672, 8.052, new Rotation2d()),
+        new Pose2d(1.672, 0, new Rotation2d()),
+        new Pose2d(5.8, 0, new Rotation2d()),
+        new Pose2d(6.3, 0, new Rotation2d()),
+        new Pose2d(17.548 - 1.672, 0, new Rotation2d()));
+  }
 }
