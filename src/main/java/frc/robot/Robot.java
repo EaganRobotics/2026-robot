@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.infrastructure.RobotContainer;
 import frc.lib.infrastructure.RobotInstance;
-import frc.lib.replay.WPILogReadMACAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -67,14 +66,15 @@ public class Robot extends LoggedRobot {
     // from
     // https://github.com/Mechanical-Advantage/RobotCode2025Public/blob/aa2a88501601c3bac295cf80e46352c6b257088e/src/main/java/org/littletonrobotics/frc2025/Robot.java#L155-L171
     Map<String, Integer> commandCounts = new HashMap<>();
-    BiConsumer<Command, Boolean> logCommandFunction = (Command command, Boolean active) -> {
-      String name = command.getName();
-      int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
-      commandCounts.put(name, count);
-      Logger.recordOutput("CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()),
-          active);
-      Logger.recordOutput("CommandsAll/" + name, count > 0);
-    };
+    BiConsumer<Command, Boolean> logCommandFunction =
+        (Command command, Boolean active) -> {
+          String name = command.getName();
+          int count = commandCounts.getOrDefault(name, 0) + (active ? 1 : -1);
+          commandCounts.put(name, count);
+          Logger.recordOutput(
+              "CommandsUnique/" + name + "_" + Integer.toHexString(command.hashCode()), active);
+          Logger.recordOutput("CommandsAll/" + name, count > 0);
+        };
     CommandScheduler.getInstance()
         .onCommandInitialize((Command command) -> logCommandFunction.accept(command, true));
     CommandScheduler.getInstance()
@@ -191,9 +191,7 @@ public class Robot extends LoggedRobot {
     robotContainer.disabledPeriodic();
   }
 
-  /**
-   * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
-   */
+  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     testCommand = robotContainer.getAutonomousCommand();
