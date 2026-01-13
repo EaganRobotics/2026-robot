@@ -1,46 +1,46 @@
 #!/bin/bash
 # Navigate to repo root
-REPO_ROOT=\$(git rev-parse --show-toplevel)
-cd "\$REPO_ROOT"
+REPO_ROOT=$(git rev-parse --show-toplevel)
+cd "$REPO_ROOT"
 
 FRC_YEAR="2026"
 
 # --- DETECT JAVA ---
 # Instead of asking the OS, we check if the Windows WPILib folder exists.
-# Git Bash maps C:\\ to /c/, so we look there.
+# Git Bash maps C:\ to /c/, so we look there.
 
-WINDOWS_WPILIB="/c/Users/Public/wpilib/\$FRC_YEAR"
+WINDOWS_WPILIB="/c/Users/Public/wpilib/$FRC_YEAR"
 
-if [ -d "\$WINDOWS_WPILIB" ]; then
+if [ -d "$WINDOWS_WPILIB" ]; then
     # We are on Windows
-    FRC_HOME="\$WINDOWS_WPILIB"
+    FRC_HOME="$WINDOWS_WPILIB"
     GRADLE_EXEC="./gradlew.bat"
 else
     # We are on Mac / Linux
-    FRC_HOME="\$HOME/wpilib/\$FRC_YEAR"
+    FRC_HOME="$HOME/wpilib/$FRC_YEAR"
     GRADLE_EXEC="./gradlew"
 fi
 
 # Setup JAVA_HOME if the WPILib JDK is found
-WPILIB_JDK="\$FRC_HOME/jdk"
+WPILIB_JDK="$FRC_HOME/jdk"
 
-if [ -d "\$WPILIB_JDK" ]; then
-    export JAVA_HOME="\$WPILIB_JDK"
-    export PATH="\$JAVA_HOME/bin:\$PATH"
+if [ -d "$WPILIB_JDK" ]; then
+    export JAVA_HOME="$WPILIB_JDK"
+    export PATH="$JAVA_HOME/bin:$PATH"
 else
-    echo "⚠️  WARNING: WPILib JDK not found at \$WPILIB_JDK"
-    echo "   Using system Java: \$(java -version 2>&1 | head -n 1)"
+    echo "⚠️  WARNING: WPILib JDK not found at $WPILIB_JDK"
+    echo "   Using system Java: $(java -version 2>&1 | head -n 1)"
 fi
 
 # --- RUN SPOTLESS ---
 echo "🚀 Running Spotless..."
 
 # We use the detected gradle executable
-if ! \$GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
+if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
     echo "⚠️  Spotless hit a cache conflict. Attempting self-repair..."
     rm -rf .gradle/spotless
     
-    if ! \$GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
+    if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
         echo "❌ Spotless failed! Check your build.gradle for errors."
         exit 1
     fi
