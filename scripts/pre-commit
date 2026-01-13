@@ -1,58 +1,50 @@
 #!/bin/bash
-# Use /bin/bash to ensure reliable path handling on Windows Git Bash
-
-# 1. Navigate to the repo root so we find gradlew correctly
-REPO_ROOT=$(git rev-parse --show-toplevel)
-cd "$REPO_ROOT"
+# Navigate to repo root
+REPO_ROOT=\$(git rev-parse --show-toplevel)
+cd "\$REPO_ROOT"
 
 FRC_YEAR="2026"
-unameOut="$(uname -s 2>/dev/null || echo Unknown)"
 
-# 2. Detect OS to set:
-#    a) The WPILib install location
-#    b) The correct Gradle executable (to fix 'cygpath' errors)
-case "${unameOut}" in
-    CYGWIN*|MINGW*|MSYS*)
-        # Windows: Use the Public user folder and the Batch file
-        FRC_HOME="/c/Users/Public/wpilib/$FRC_YEAR"
-        GRADLE_EXEC="./gradlew.bat"
-        ;;
-    *)
-        # Mac/Linux: Use the home folder and the Shell script
-        FRC_HOME="$HOME/wpilib/$FRC_YEAR"
-        GRADLE_EXEC="./gradlew"
-        ;;
-esac
+# --- DETECT JAVA ---
+# Instead of asking the OS, we check if the Windows WPILib folder exists.
+# Git Bash maps C:\\ to /c/, so we look there.
 
-# 3. Force the session to use the WPILib-provided JDK if found
-WPILIB_JDK="$FRC_HOME/jdk"
+WINDOWS_WPILIB="/c/Users/Public/wpilib/\$FRC_YEAR"
 
-if [ -d "$WPILIB_JDK" ]; then
-    export JAVA_HOME="$WPILIB_JDK"
-    # Prepend to PATH so the build uses this java explicitly
-    export PATH="$JAVA_HOME/bin:$PATH"
-    # Optional: echo "✅ Using WPILib JDK at $JAVA_HOME"
+if [ -d "\$WINDOWS_WPILIB" ]; then
+    # We are on Windows
+    FRC_HOME="\$WINDOWS_WPILIB"
+    GRADLE_EXEC="./gradlew.bat"
 else
-    echo "⚠️  WARNING: Could not find WPILib JDK at $WPILIB_JDK"
-    echo "   Falling back to system Java: $(java -version 2>&1 | head -n 1)"
+    # We are on Mac / Linux
+    FRC_HOME="\$HOME/wpilib/\$FRC_YEAR"
+    GRADLE_EXEC="./gradlew"
 fi
 
-# 4. Run Spotless
-# We use $GRADLE_EXEC to ensure Windows uses the .bat file
+# Setup JAVA_HOME if the WPILib JDK is found
+WPILIB_JDK="\$FRC_HOME/jdk"
+
+if [ -d "\$WPILIB_JDK" ]; then
+    export JAVA_HOME="\$WPILIB_JDK"
+    export PATH="\$JAVA_HOME/bin:\$PATH"
+else
+    echo "⚠️  WARNING: WPILib JDK not found at \$WPILIB_JDK"
+    echo "   Using system Java: \$(java -version 2>&1 | head -n 1)"
+fi
+
+# --- RUN SPOTLESS ---
 echo "🚀 Running Spotless..."
 
-if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
+# We use the detected gradle executable
+if ! \$GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
     echo "⚠️  Spotless hit a cache conflict. Attempting self-repair..."
-    
-    # Nuke the spotless cache only
     rm -rf .gradle/spotless
     
-    # Retry once
-    if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
+    if ! \$GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
         echo "❌ Spotless failed! Check your build.gradle for errors."
         exit 1
     fi
 fi
 
-# 5. Re-stage any files that Spotless modified
+# Re-stage modified files
 git add .
