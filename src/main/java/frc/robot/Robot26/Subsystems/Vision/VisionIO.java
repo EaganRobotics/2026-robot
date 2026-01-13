@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package frc.robot.Robot26.Subsystems.Vision;
+package frc.robot.robot26.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,21 +22,16 @@ public interface VisionIO {
   }
 
   /** Represents the angle to a simple target, not used for pose estimation. */
-  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {}
+  public static record TargetObservation(Rotation2d tx, Rotation2d ty) {
+  }
 
   /** Represents a robot pose sample used for pose estimation. */
-  public static record PoseObservation(
-      double timestamp,
-      Pose3d pose,
-      double ambiguity,
-      int tagCount,
-      double averageTagDistance,
-      PoseObservationType type) {}
+  public static record PoseObservation(double timestamp, Pose3d pose, double ambiguity,
+      int tagCount, double averageTagDistance, PoseObservationType type) {
+  }
 
   public static enum PoseObservationType {
-    MEGATAG_1,
-    MEGATAG_2,
-    PHOTONVISION
+    MEGATAG_1, MEGATAG_2, PHOTONVISION
   }
 
   public default void updateInputs(VisionIOInputs inputs) {}

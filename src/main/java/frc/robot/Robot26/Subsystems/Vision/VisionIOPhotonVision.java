@@ -5,9 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package frc.robot.Robot26.Subsystems.Vision;
+package frc.robot.robot26.subsystems.vision;
 
-import static frc.robot.Robot26.Subsystems.Vision.VisionConstants.*;
+import static frc.robot.robot26.subsystems.vision.VisionConstants.*;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,8 +45,7 @@ public class VisionIOPhotonVision implements VisionIO {
       // Update latest target observation
       if (result.hasTargets()) {
         inputs.latestTargetObservation =
-            new TargetObservation(
-                Rotation2d.fromDegrees(result.getBestTarget().getYaw()),
+            new TargetObservation(Rotation2d.fromDegrees(result.getBestTarget().getYaw()),
                 Rotation2d.fromDegrees(result.getBestTarget().getPitch()));
       } else {
         inputs.latestTargetObservation = new TargetObservation(Rotation2d.kZero, Rotation2d.kZero);
@@ -71,14 +70,12 @@ public class VisionIOPhotonVision implements VisionIO {
         tagIds.addAll(multitagResult.fiducialIDsUsed);
 
         // Add observation
-        poseObservations.add(
-            new PoseObservation(
-                result.getTimestampSeconds(), // Timestamp
-                robotPose, // 3D pose estimate
-                multitagResult.estimatedPose.ambiguity, // Ambiguity
-                multitagResult.fiducialIDsUsed.size(), // Tag count
-                totalTagDistance / result.targets.size(), // Average tag distance
-                PoseObservationType.PHOTONVISION)); // Observation type
+        poseObservations.add(new PoseObservation(result.getTimestampSeconds(), // Timestamp
+            robotPose, // 3D pose estimate
+            multitagResult.estimatedPose.ambiguity, // Ambiguity
+            multitagResult.fiducialIDsUsed.size(), // Tag count
+            totalTagDistance / result.targets.size(), // Average tag distance
+            PoseObservationType.PHOTONVISION)); // Observation type
 
       } else if (!result.targets.isEmpty()) { // Single tag result
         var target = result.targets.get(0);
@@ -97,14 +94,12 @@ public class VisionIOPhotonVision implements VisionIO {
           tagIds.add((short) target.fiducialId);
 
           // Add observation
-          poseObservations.add(
-              new PoseObservation(
-                  result.getTimestampSeconds(), // Timestamp
-                  robotPose, // 3D pose estimate
-                  target.poseAmbiguity, // Ambiguity
-                  1, // Tag count
-                  cameraToTarget.getTranslation().getNorm(), // Average tag distance
-                  PoseObservationType.PHOTONVISION)); // Observation type
+          poseObservations.add(new PoseObservation(result.getTimestampSeconds(), // Timestamp
+              robotPose, // 3D pose estimate
+              target.poseAmbiguity, // Ambiguity
+              1, // Tag count
+              cameraToTarget.getTranslation().getNorm(), // Average tag distance
+              PoseObservationType.PHOTONVISION)); // Observation type
         }
       }
     }

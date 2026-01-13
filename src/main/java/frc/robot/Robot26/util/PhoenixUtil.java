@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-package frc.robot.Robot26.util;
+package frc.robot.robot26.util;
 
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -36,7 +36,8 @@ public final class PhoenixUtil {
   public static void tryUntilOk(int maxAttempts, Supplier<StatusCode> command) {
     for (int i = 0; i < maxAttempts; i++) {
       var error = command.get();
-      if (error.isOK()) break;
+      if (error.isOK())
+        break;
     }
   }
 
@@ -50,18 +51,13 @@ public final class PhoenixUtil {
       this.id = instances++;
 
       this.talonFXSimState = talonFX.getSimState();
-      talonFXSimState.Orientation =
-          motorInverted
-              ? ChassisReference.Clockwise_Positive
-              : ChassisReference.CounterClockwise_Positive;
+      talonFXSimState.Orientation = motorInverted ? ChassisReference.Clockwise_Positive
+          : ChassisReference.CounterClockwise_Positive;
     }
 
     @Override
-    public Voltage updateControlSignal(
-        Angle mechanismAngle,
-        AngularVelocity mechanismVelocity,
-        Angle encoderAngle,
-        AngularVelocity encoderVelocity) {
+    public Voltage updateControlSignal(Angle mechanismAngle, AngularVelocity mechanismVelocity,
+        Angle encoderAngle, AngularVelocity encoderVelocity) {
       talonFXSimState.setRawRotorPosition(encoderAngle);
       talonFXSimState.setRotorVelocity(encoderVelocity);
       talonFXSimState.setSupplyVoltage(SimulatedBattery.getBatteryVoltage());
@@ -74,42 +70,32 @@ public final class PhoenixUtil {
     private final CANcoderSimState remoteCancoderSimState;
     private final Angle encoderOffset;
 
-    public TalonFXMotorControllerWithRemoteCancoderSim(
-        TalonFX talonFX,
-        boolean motorInverted,
-        CANcoder cancoder,
-        boolean encoderInverted,
-        Angle encoderOffset) {
+    public TalonFXMotorControllerWithRemoteCancoderSim(TalonFX talonFX, boolean motorInverted,
+        CANcoder cancoder, boolean encoderInverted, Angle encoderOffset) {
       super(talonFX, motorInverted);
       this.remoteCancoderSimState = cancoder.getSimState();
       this.remoteCancoderSimState.Orientation =
-          encoderInverted
-              ? ChassisReference.Clockwise_Positive
+          encoderInverted ? ChassisReference.Clockwise_Positive
               : ChassisReference.CounterClockwise_Positive;
       this.encoderOffset = encoderOffset;
     }
 
     @Override
-    public Voltage updateControlSignal(
-        Angle mechanismAngle,
-        AngularVelocity mechanismVelocity,
-        Angle encoderAngle,
-        AngularVelocity encoderVelocity) {
+    public Voltage updateControlSignal(Angle mechanismAngle, AngularVelocity mechanismVelocity,
+        Angle encoderAngle, AngularVelocity encoderVelocity) {
       remoteCancoderSimState.setRawPosition(mechanismAngle.minus(encoderOffset));
       remoteCancoderSimState.setVelocity(mechanismVelocity);
 
-      return super.updateControlSignal(
-          mechanismAngle, mechanismVelocity, encoderAngle, encoderVelocity);
+      return super.updateControlSignal(mechanismAngle, mechanismVelocity, encoderAngle,
+          encoderVelocity);
     }
   }
 
   public static double[] getSimulationOdometryTimeStamps() {
     final double[] odometryTimeStamps = new double[SimulatedArena.getSimulationSubTicksIn1Period()];
     for (int i = 0; i < odometryTimeStamps.length; i++) {
-      odometryTimeStamps[i] =
-          Timer.getFPGATimestamp()
-              - TimedRobot.kDefaultPeriod
-              + i * SimulatedArena.getSimulationDt().in(Seconds);
+      odometryTimeStamps[i] = Timer.getFPGATimestamp() - TimedRobot.kDefaultPeriod
+          + i * SimulatedArena.getSimulationDt().in(Seconds);
     }
 
     return odometryTimeStamps;
