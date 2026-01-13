@@ -197,22 +197,22 @@ spotless {
 task installGitHooks(type: Copy) {
     from new File(rootProject.rootDir, 'scripts/pre-commit')
     into { new File(rootProject.rootDir, '.git/hooks') }
-    fileMode 0755 // Attempt the standard way first
-    
+    fileMode 0755
+    filter { line -> line.replaceAll('\r', '') }
+
     doLast {
-        // Force Git to track these bits so Windows doesn't strip them later
+        // 2. Force Git to interpret file permissions correctly
         exec {
             workingDir rootProject.rootDir
             executable 'git'
             args 'config', 'core.filemode', 'true'
         }
 
-        // The "Real" fix for Mac/Linux users
+        // 3. Mark executable on Unix systems (Mac/Linux)
         if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
             exec {
                 commandLine 'chmod', '+x', "${rootProject.rootDir}/.git/hooks/pre-commit"
             }
-            println "✅ Pre-commit hook marked as executable for Unix-like OS."
         }
     }
 }
