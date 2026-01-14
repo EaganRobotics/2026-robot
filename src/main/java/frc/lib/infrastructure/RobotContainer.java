@@ -18,6 +18,13 @@ public abstract class RobotContainer {
 
   public abstract void initialize();
 
+  public void configureDriveSimulation(AbstractDriveTrainSimulation driveSimulation) {
+    this.driveSimulation = driveSimulation;
+    SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+
+    System.out.println("Drive simulation configured");
+  }
+
   public abstract Command getTestCommand();
 
   /**

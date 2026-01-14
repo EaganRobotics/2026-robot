@@ -119,7 +119,9 @@ public class Robot extends LoggedRobot {
   /** Use ServiceLoader to find the RobotContainer that matches the current robot. */
   private RobotContainer findRobotContainer(String macAddress) {
     if (SimConstants.CURRENT_MODE == SimConstants.Mode.SIM) {
-      return SimConstants.SIM_ROBOT_SUPPLIER.get();
+      RobotContainer container = SimConstants.SIM_ROBOT_SUPPLIER.get();
+      container.initialize();
+      return container;
     }
 
     // In replay mode, macAddress might be null if not in log
@@ -247,8 +249,8 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
-    robotContainer.resetSimulation();
     robotContainer.simulationInit();
+    robotContainer.resetSimulation();
   }
 
   /** This function is called periodically whilst in simulation. */

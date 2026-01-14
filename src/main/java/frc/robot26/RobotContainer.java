@@ -44,15 +44,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void initialize() {
+
     // Create IO implementations
     switch (SimConstants.CURRENT_MODE) {
       case REAL:
         drive = null;
         break;
       case SIM:
-        // driveSimulation is static, so we can use it here consistently
-        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-
+        super.configureDriveSimulation(driveSimulation);
         drive =
             new Drive(
                 new GyroIOSim(driveSimulation.getGyroSimulation()),
