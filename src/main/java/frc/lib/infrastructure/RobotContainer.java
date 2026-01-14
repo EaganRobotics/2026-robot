@@ -1,25 +1,22 @@
 package frc.lib.infrastructure;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
-import frc.robot.SimConstants;
+import frc.lib.simulation.SimConstants;
 import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.littletonrobotics.junction.Logger;
 
 public abstract class RobotContainer {
 
-  private SwerveDriveSimulation driveSimulation = null;
+  private AbstractDriveTrainSimulation driveSimulation = null;
 
-  protected RobotContainer(SwerveDriveSimulation driveSimulation) {
-    this.driveSimulation = driveSimulation;
+  protected RobotContainer() {}
 
-    if (SimConstants.CURRENT_MODE == SimConstants.Mode.SIM) {
-      SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-    }
-  }
+  public abstract String getRobotName();
+
+  public abstract boolean matchesMacAddress(String macAddress);
+
+  public abstract void initialize();
 
   public abstract Command getTestCommand();
 
@@ -72,32 +69,16 @@ public abstract class RobotContainer {
   public void resetSimulation() {
     if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM) return;
 
-    driveSimulation.setSimulationWorldPose(SimConstants.SIM_INITIAL_FIELD_POSE);
+    if (driveSimulation != null)
+      driveSimulation.setSimulationWorldPose(SimConstants.SIM_INITIAL_FIELD_POSE);
     SimulatedArena.getInstance().resetFieldForAuto();
   }
 
-  public void displaySimFieldToAdvantageScope() {
+  public final void displaySimFieldToAdvantageScope() {
     if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM) return;
 
-    Logger.recordOutput(
-        "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
-    Logger.recordOutput(
-        "FieldSimulation/FuelPositions",
-        SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
-
-    Logger.recordOutput(
-        "FieldSimulation/Borders",
-        new Pose2d(0, 1.270, new Rotation2d()),
-        new Pose2d(0, 6.782, new Rotation2d()),
-        new Pose2d(17.548, 1.270, new Rotation2d()),
-        new Pose2d(17.548, 6.782, new Rotation2d()),
-        new Pose2d(1.672, 8.052, new Rotation2d()),
-        new Pose2d(11, 8.052, new Rotation2d()),
-        new Pose2d(12, 8.052, new Rotation2d()),
-        new Pose2d(17.548 - 1.672, 8.052, new Rotation2d()),
-        new Pose2d(1.672, 0, new Rotation2d()),
-        new Pose2d(5.8, 0, new Rotation2d()),
-        new Pose2d(6.3, 0, new Rotation2d()),
-        new Pose2d(17.548 - 1.672, 0, new Rotation2d()));
+    if (driveSimulation != null)
+      Logger.recordOutput(
+          "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
   }
 }
