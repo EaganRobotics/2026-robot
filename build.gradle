@@ -199,44 +199,56 @@ spotless {
     enforceCheck = false
 }
 
-// task installGitHooks {
-//     def sourceFile = file('scripts/pre-commit')
-//     def destFile = file('.git/hooks/pre-commit')
+task installGitHooks {
+    def sourceFile = file('scripts/pre-commit')
+    def destFile = file('.git/hooks/pre-commit')
+    def gitDir = file('.git')
 
-//     inputs.file(sourceFile)
-//     outputs.file(destFile)
+    inputs.file(sourceFile)
+    
+    // Only declare output if .git is a directory to avoid Gradle validation error
+    // when .git is a file (worktree).
+    if (gitDir.exists() && gitDir.isDirectory()) {
+        outputs.file(destFile)
+    }
 
-//     doLast {
-//         // 1. Ensure the source exists
-//         if (!sourceFile.exists()) {
-//             println "⚠️ Warning: 'scripts/pre-commit' not found. Skipping hook installation."
-//             return
-//         }
+    doLast {
+        // 1. Ensure the source exists
+        if (!sourceFile.exists()) {
+            println "⚠️ Warning: 'scripts/pre-commit' not found. Skipping hook installation."
+            return
+        }
 
-//         // 2. Read content and FORCE Unix line endings (LF), removing Windows (CRLF)
-//         // This fixes the "cannot spawn" / "no such file" error regarding the shebang.
-//         def content = sourceFile.text.replaceAll('\r\n', '\n').replaceAll('\r', '\n')
+        // 2. Check if .git is a real directory (not a worktree file or link)
+        if (!gitDir.exists() || !gitDir.isDirectory()) {
+            println "⚠️ Warning: .git is not a directory (likely a worktree). Skipping hook installation."
+            return
+        }
 
-//         // 3. Write to the .git/hooks directory
-//         if (!destFile.parentFile.exists()) {
-//             destFile.parentFile.mkdirs()
-//         }
-//         destFile.write(content)
+        // 3. Read content and FORCE Unix line endings (LF), removing Windows (CRLF)
+        // This fixes the "cannot spawn" / "no such file" error regarding the shebang.
+        def content = sourceFile.text.replaceAll('\r\n', '\n').replaceAll('\r', '\n')
 
-//         // 4. Set executable permissions
-//         // On Windows, this is handled by the file write, but explicitly ignored.
-//         // On Mac/Linux, this sets the +x bit.
-//         if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
-//             try {
-//                 exec { commandLine 'chmod', '+x', destFile.absolutePath }
-//             } catch (Exception e) {
-//                 println "⚠️ Could not set executable permission: " + e.message
-//             }
-//         }
+        // 4. Write to the .git/hooks directory
+        if (!destFile.parentFile.exists()) {
+            destFile.parentFile.mkdirs()
+        }
+        destFile.write(content)
+
+        // 5. Set executable permissions
+        // On Windows, this is handled by the file write, but explicitly ignored.
+        // On Mac/Linux, this sets the +x bit.
+        if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
+            try {
+                exec { commandLine 'chmod', '+x', destFile.absolutePath }
+            } catch (Exception e) {
+                println "⚠️ Could not set executable permission: " + e.message
+            }
+        }
         
-//         println "✅ Git pre-commit hook installed successfully with LF line endings."
-//     }
-// }
+        println "✅ Git pre-commit hook installed successfully with LF line endings."
+    }
+}
 
 // Ensure the hook is installed every time the project is compiled
-// compileJava.dependsOn installGitHooks
+compileJava.dependsOn installGitHooks

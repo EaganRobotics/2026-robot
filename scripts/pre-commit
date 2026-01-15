@@ -1,60 +1,39 @@
-#!/bin/bash
-# Navigate to repo root
-REPO_ROOT=$(git rev-parse --show-toplevel)
-cd "$REPO_ROOT"
+#!/bin/sh
 
-FRC_YEAR="2026"
-
-# --- 1. DEFINE THE KNOWN WINDOWS PATH ---
-# Git Bash usually accesses C:\ via /c/
-RAW_WIN_PATH="/c/Users/Public/wpilib/$FRC_YEAR/jdk"
-
-# --- 2. CHECK IF WE ARE ON WINDOWS ---
-# We check if that folder exists. 
-if [ -d "$RAW_WIN_PATH" ]; then
-    echo "✅ Detected Windows WPILib install at $RAW_WIN_PATH"
-    
-    # CRITICAL FIX: Convert the path to Windows format (C:\Users\...)
-    # Gradle (Windows CMD) cannot read "/c/Users/...", it needs "C:\Users\..."
-    if command -v cygpath &> /dev/null; then
-        export JAVA_HOME=$(cygpath -w "$RAW_WIN_PATH")
-    else
-        # Fallback if cygpath is missing (rare in Git Bash)
-        export JAVA_HOME="C:\\Users\\Public\\wpilib\\$FRC_YEAR\\jdk"
-    fi
-    
-    export PATH="$JAVA_HOME/bin:$PATH"
-    GRADLE_EXEC="./gradlew.bat"
-
+# 1. Determine OS and set WPILib 2026 JDK path
+# We determine the OS first to set the correct JAVA_HOME before calling Gradle.
+if [ "$(expr substr $(uname -s) 1 5)" = "MINGW" ] || [ "$(expr substr $(uname -s) 1 6)" = "CYGWIN" ]; then
+    GRADLE_CMD="./gradlew.bat"
+    export JAVA_HOME="/c/Users/Public/wpilib/2026/jdk" 
 else
-    # --- 3. FALLBACK FOR MAC/LINUX ---
-    # If the Windows path doesn't exist, we assume standard Unix paths
-    echo "🔎 Windows WPILib not found, checking standard Unix paths..."
-    
-    FRC_HOME="$HOME/wpilib/$FRC_YEAR"
-    if [ -d "$FRC_HOME/jdk" ]; then
-        export JAVA_HOME="$FRC_HOME/jdk"
-        export PATH="$JAVA_HOME/bin:$PATH"
-    fi
-    GRADLE_EXEC="./gradlew"
+    GRADLE_CMD="./gradlew"
+    export JAVA_HOME="$HOME/wpilib/2026/jdk"
 fi
 
-# Debug Output to verify
-echo "Using JAVA_HOME: $JAVA_HOME"
-echo "Using Gradle Wrapper: $GRADLE_EXEC"
-
-# --- 4. RUN SPOTLESS ---
-echo "🚀 Running Spotless..."
-
-if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
-    echo "⚠️  Spotless hit a cache conflict. Attempting self-repair..."
-    rm -rf .gradle/spotless
-    
-    if ! $GRADLE_EXEC spotlessApply --quiet --no-daemon -x test; then
-        echo "❌ Spotless failed! Check build.gradle or JAVA_HOME."
-        exit 1
-    fi
+# Sanity check: Ensure the detected JAVA_HOME actually exists
+if [ ! -d "$JAVA_HOME" ]; then
+    echo "Warning: WPILib 2026 JDK not found at $JAVA_HOME"
+    echo "Falling back to system Java..."
+    # We do not exit here, we just let it try the system java as a fallback
 fi
 
-# Re-stage modified files
-git add .
+# 2. Run Spotless Apply
+$GRADLE_CMD spotlessApply
+
+# Check if Spotless failed
+RETVAL=$?
+if [ $RETVAL -ne 0 ]; then
+    echo "Spotless check failed. Please fix the issues."
+    exit 1
+fi
+
+# 3. Re-add files that were changed by Spotless
+# We only want to re-add files that are *already staged* to avoid 
+# accidentally committing changes you intended to leave unstaged.
+git diff --name-only --cached | while read file; do
+    if [ -f "$file" ]; then
+        git add "$file"
+    fi
+done
+
+exit 0
