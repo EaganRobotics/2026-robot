@@ -35,13 +35,10 @@ import edu.wpi.first.units.measure.Voltage;
 import java.util.Queue;
 
 /**
- * Module IO implementation for Talon FXS drive motor controller, Talon FXS turn
- * motor controller,
+ * Module IO implementation for Talon FXS drive motor controller, Talon FXS turn motor controller,
  * and CANdi (PWM 1). Configured using a set of module constants from Phoenix.
  *
- * <p>
- * Device configuration and other behaviors not exposed by TunerConstants can be
- * customized here.
+ * <p>Device configuration and other behaviors not exposed by TunerConstants can be customized here.
  */
 public class ModuleIOTalonFXS implements ModuleIO {
   // Hardware objects
@@ -73,70 +70,81 @@ public class ModuleIOTalonFXS implements ModuleIO {
   private final StatusSignal<Current> turnCurrent;
 
   // Connection debouncers
-  private final Debouncer driveConnectedDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-  private final Debouncer turnConnectedDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
-  private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+  private final Debouncer driveConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+  private final Debouncer turnConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+  private final Debouncer turnEncoderConnectedDebounce =
+      new Debouncer(0.5, Debouncer.DebounceType.kFalling);
 
   public ModuleIOTalonFXS(
-      SwerveModuleConstants<TalonFXSConfiguration, TalonFXSConfiguration, CANdiConfiguration> constants) {
+      SwerveModuleConstants<TalonFXSConfiguration, TalonFXSConfiguration, CANdiConfiguration>
+          constants) {
     driveTalon = new TalonFXS(constants.DriveMotorId, DriveConstants.kCANBus);
     turnTalon = new TalonFXS(constants.SteerMotorId, DriveConstants.kCANBus);
     candi = new CANdi(constants.EncoderId, DriveConstants.kCANBus);
 
     // Configure drive motor
     var driveConfig = constants.DriveMotorInitialConfigs;
-    driveConfig.Commutation.MotorArrangement = switch (constants.DriveMotorType) {
-      case TalonFXS_NEO_JST -> MotorArrangementValue.NEO_JST;
-      case TalonFXS_VORTEX_JST -> MotorArrangementValue.VORTEX_JST;
-      default -> MotorArrangementValue.Disabled;
-    };
+    driveConfig.Commutation.MotorArrangement =
+        switch (constants.DriveMotorType) {
+          case TalonFXS_NEO_JST -> MotorArrangementValue.NEO_JST;
+          case TalonFXS_VORTEX_JST -> MotorArrangementValue.VORTEX_JST;
+          default -> MotorArrangementValue.Disabled;
+        };
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.Slot0 = constants.DriveMotorGains;
     driveConfig.ExternalFeedback.SensorToMechanismRatio = constants.DriveMotorGearRatio;
     driveConfig.CurrentLimits.StatorCurrentLimit = constants.SlipCurrent;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    driveConfig.MotorOutput.Inverted = constants.DriveMotorInverted
-        ? InvertedValue.Clockwise_Positive
-        : InvertedValue.CounterClockwise_Positive;
+    driveConfig.MotorOutput.Inverted =
+        constants.DriveMotorInverted
+            ? InvertedValue.Clockwise_Positive
+            : InvertedValue.CounterClockwise_Positive;
     tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
     tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
 
     // Configure turn motor
     var turnConfig = new TalonFXSConfiguration();
-    turnConfig.Commutation.MotorArrangement = switch (constants.SteerMotorType) {
-      case TalonFXS_Minion_JST -> MotorArrangementValue.Minion_JST;
-      case TalonFXS_NEO_JST -> MotorArrangementValue.NEO_JST;
-      case TalonFXS_VORTEX_JST -> MotorArrangementValue.VORTEX_JST;
-      case TalonFXS_NEO550_JST -> MotorArrangementValue.NEO550_JST;
-      case TalonFXS_Brushed_AB, TalonFXS_Brushed_AC, TalonFXS_Brushed_BC ->
-        MotorArrangementValue.Brushed_DC;
-      default -> MotorArrangementValue.Disabled;
-    };
-    turnConfig.Commutation.BrushedMotorWiring = switch (constants.SteerMotorType) {
-      case TalonFXS_Brushed_AC -> BrushedMotorWiringValue.Leads_A_and_C;
-      case TalonFXS_Brushed_BC -> BrushedMotorWiringValue.Leads_B_and_C;
-      default -> BrushedMotorWiringValue.Leads_A_and_B;
-    };
+    turnConfig.Commutation.MotorArrangement =
+        switch (constants.SteerMotorType) {
+          case TalonFXS_Minion_JST -> MotorArrangementValue.Minion_JST;
+          case TalonFXS_NEO_JST -> MotorArrangementValue.NEO_JST;
+          case TalonFXS_VORTEX_JST -> MotorArrangementValue.VORTEX_JST;
+          case TalonFXS_NEO550_JST -> MotorArrangementValue.NEO550_JST;
+          case TalonFXS_Brushed_AB, TalonFXS_Brushed_AC, TalonFXS_Brushed_BC ->
+              MotorArrangementValue.Brushed_DC;
+          default -> MotorArrangementValue.Disabled;
+        };
+    turnConfig.Commutation.BrushedMotorWiring =
+        switch (constants.SteerMotorType) {
+          case TalonFXS_Brushed_AC -> BrushedMotorWiringValue.Leads_A_and_C;
+          case TalonFXS_Brushed_BC -> BrushedMotorWiringValue.Leads_B_and_C;
+          default -> BrushedMotorWiringValue.Leads_A_and_B;
+        };
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.Slot0 = constants.SteerMotorGains;
     turnConfig.ExternalFeedback.FeedbackRemoteSensorID = constants.EncoderId;
-    turnConfig.ExternalFeedback.ExternalFeedbackSensorSource = switch (constants.FeedbackSource) {
-      case RemoteCANdiPWM1 -> ExternalFeedbackSensorSourceValue.RemoteCANdiPWM1;
-      case FusedCANdiPWM1 -> ExternalFeedbackSensorSourceValue.FusedCANdiPWM1;
-      case SyncCANdiPWM1 -> ExternalFeedbackSensorSourceValue.SyncCANdiPWM1;
-      default ->
-        throw new RuntimeException(
-            "You have selected a turn feedback source that is not supported by the default implementation of ModuleIOTalonFXS (CANdi PWM 1). Please check the AdvantageKit documentation for more information on alternative configurations: https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations");
-    };
+    turnConfig.ExternalFeedback.ExternalFeedbackSensorSource =
+        switch (constants.FeedbackSource) {
+          case RemoteCANdiPWM1 -> ExternalFeedbackSensorSourceValue.RemoteCANdiPWM1;
+          case FusedCANdiPWM1 -> ExternalFeedbackSensorSourceValue.FusedCANdiPWM1;
+          case SyncCANdiPWM1 -> ExternalFeedbackSensorSourceValue.SyncCANdiPWM1;
+          default ->
+              throw new RuntimeException(
+                  "You have selected a turn feedback source that is not supported by the default implementation of ModuleIOTalonFXS (CANdi PWM 1). Please check the AdvantageKit documentation for more information on alternative configurations: https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template#custom-module-implementations");
+        };
     turnConfig.ExternalFeedback.RotorToSensorRatio = constants.SteerMotorGearRatio;
     turnConfig.MotionMagic.MotionMagicCruiseVelocity = 100.0 / constants.SteerMotorGearRatio;
-    turnConfig.MotionMagic.MotionMagicAcceleration = turnConfig.MotionMagic.MotionMagicCruiseVelocity / 0.100;
+    turnConfig.MotionMagic.MotionMagicAcceleration =
+        turnConfig.MotionMagic.MotionMagicCruiseVelocity / 0.100;
     turnConfig.MotionMagic.MotionMagicExpo_kV = 0.12 * constants.SteerMotorGearRatio;
     turnConfig.MotionMagic.MotionMagicExpo_kA = 0.1;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    turnConfig.MotorOutput.Inverted = constants.SteerMotorInverted
-        ? InvertedValue.Clockwise_Positive
-        : InvertedValue.CounterClockwise_Positive;
+    turnConfig.MotorOutput.Inverted =
+        constants.SteerMotorInverted
+            ? InvertedValue.Clockwise_Positive
+            : InvertedValue.CounterClockwise_Positive;
     tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
 
     // Configure CANdi
@@ -181,8 +189,10 @@ public class ModuleIOTalonFXS implements ModuleIO {
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
     // Refresh all signals
-    var driveStatus = BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
-    var turnStatus = BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
+    var driveStatus =
+        BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+    var turnStatus =
+        BaseStatusSignal.refreshAll(turnPosition, turnVelocity, turnAppliedVolts, turnCurrent);
     var turnEncoderStatus = BaseStatusSignal.refreshAll(turnAbsolutePosition);
 
     // Update drive inputs
@@ -202,13 +212,16 @@ public class ModuleIOTalonFXS implements ModuleIO {
     inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
 
     // Update odometry inputs
-    inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryDrivePositionsRad = drivePositionQueue.stream()
-        .mapToDouble((Double value) -> Units.rotationsToRadians(value))
-        .toArray();
-    inputs.odometryTurnPositions = turnPositionQueue.stream()
-        .map((Double value) -> Rotation2d.fromRotations(value))
-        .toArray(Rotation2d[]::new);
+    inputs.odometryTimestamps =
+        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryDrivePositionsRad =
+        drivePositionQueue.stream()
+            .mapToDouble((Double value) -> Units.rotationsToRadians(value))
+            .toArray();
+    inputs.odometryTurnPositions =
+        turnPositionQueue.stream()
+            .map((Double value) -> Rotation2d.fromRotations(value))
+            .toArray(Rotation2d[]::new);
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();

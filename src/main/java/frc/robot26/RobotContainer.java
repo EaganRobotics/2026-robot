@@ -24,8 +24,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(0);
 
   // Drive simulation
-  private static final SwerveDriveSimulation driveSimulation = new SwerveDriveSimulation(Drive.MAPLE_SIM_CONFIG,
-      SimConstants.SIM_INITIAL_FIELD_POSE);
+  private static final SwerveDriveSimulation driveSimulation =
+      new SwerveDriveSimulation(Drive.MAPLE_SIM_CONFIG, SimConstants.SIM_INITIAL_FIELD_POSE);
 
   private LoggedDashboardChooser<Command> autoChooser;
 
@@ -50,13 +50,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         break;
       case SIM:
         super.configureDriveSimulation(driveSimulation);
-        drive = new Drive(
-            new GyroIOSim(driveSimulation.getGyroSimulation()),
-            new ModuleIOSim(driveSimulation.getModules()[0]),
-            new ModuleIOSim(driveSimulation.getModules()[1]),
-            new ModuleIOSim(driveSimulation.getModules()[2]),
-            new ModuleIOSim(driveSimulation.getModules()[3]),
-            driveSimulation::setSimulationWorldPose);
+        drive =
+            new Drive(
+                new GyroIOSim(driveSimulation.getGyroSimulation()),
+                new ModuleIOSim(driveSimulation.getModules()[0]),
+                new ModuleIOSim(driveSimulation.getModules()[1]),
+                new ModuleIOSim(driveSimulation.getModules()[2]),
+                new ModuleIOSim(driveSimulation.getModules()[3]),
+                driveSimulation::setSimulationWorldPose);
         drive.setPose(SimConstants.SIM_INITIAL_FIELD_POSE);
         break;
       case REPLAY:
@@ -69,7 +70,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         break;
     }
 
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser("AL.0C.1M"));
+    autoChooser =
+        new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser("AL.0C.1M"));
 
     configureButtonBindings();
   }
@@ -91,8 +93,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void simulationInit() {
-    if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena))
-      return;
+    if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     arena.getBlueHub().setOnScoredCallback((gp) -> System.out.println("Blue Hub Scored!"));
     arena.getRedHub().setOnScoredCallback((gp) -> System.out.println("Red Hub Scored!"));
@@ -101,8 +102,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void simulationPeriodic() {
-    if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena))
-      return;
+    if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     Logger.recordOutput(
         "FieldSimulation/FuelPositions", arena.getGamePieceManager().getPosesArrayByType("Fuel"));
