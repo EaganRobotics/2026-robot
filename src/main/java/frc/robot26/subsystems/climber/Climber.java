@@ -1,5 +1,3 @@
 package frc.robot26.subsystems.climber;
 
-public class Climber {
-
-}
+public class Climber {}

@@ -1,5 +1,3 @@
 package frc.robot26.subsystems.conveyor;
 
-public class ConveyorIOSim {
-
-}
+public class ConveyorIOSim {}

@@ -1,5 +1,3 @@
 package frc.robot26.subsystems.intake;
 
-public class IntakeIO {
-
-}
+public class IntakeIO {}
