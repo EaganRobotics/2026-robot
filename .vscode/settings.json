@@ -16,6 +16,7 @@
 
   // Match Gradle build encoding
   "files.encoding": "utf8",
+  "files.eol": "\n",
 
   // Reduce visual clutter
   "search.exclude": {
