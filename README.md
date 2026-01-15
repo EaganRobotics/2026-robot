@@ -2,8 +2,10 @@
 
 [![CI](https://github.com/EaganRobotics/2026-robot/actions/workflows/main.yml/badge.svg)](https://github.com/EaganRobotics/2026-robot/actions/workflows/main.yml)
 
-## Common commands
+## Common stuff
 
-Run formatter:
+Run formatter: `./gradlew spotlessApply`
 
-`./gradlew spotlessApply`
+## Fix issues
+
+gradlew constantly stuck in changes: `git config core.filemode false`
