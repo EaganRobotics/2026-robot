@@ -10,7 +10,8 @@ public abstract class RobotContainer {
 
   private AbstractDriveTrainSimulation driveSimulation = null;
 
-  protected RobotContainer() {}
+  protected RobotContainer() {
+  }
 
   public abstract String getRobotName();
 
@@ -35,46 +36,60 @@ public abstract class RobotContainer {
   public abstract Command getAutonomousCommand();
 
   /**
-   * This function is called once when the robot is first started up. All robot-wide initialization
+   * This function is called once when the robot is first started up. All
+   * robot-wide initialization
    * goes here.
    */
-  public void robotInit() {}
+  public void robotInit() {
+  }
 
   /** This function is called periodically during all modes. */
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+  }
 
   /** This function is called once when the robot is disabled. */
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   /** This function is called periodically when disabled. */
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   /** This function is called once when autonomous is enabled. */
-  public void autonomousInit() {}
+  public void autonomousInit() {
+  }
 
   /** This function is called periodically during autonomous. */
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   /** This function is called once when teleop is enabled. */
-  public void teleopInit() {}
+  public void teleopInit() {
+  }
 
   /** This function is called periodically during operator control. */
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   /** This function is called once when test mode is enabled. */
-  public void testInit() {}
+  public void testInit() {
+  }
 
   /** This function is called periodically during test mode. */
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   /** This function is called once when the robot is first started up. */
-  public void simulationInit() {}
+  public void simulationInit() {
+  }
 
   /** This function is called periodically whilst in simulation. */
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 
   public void resetSimulation() {
-    if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM) return;
+    if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM)
+      return;
 
     if (driveSimulation != null)
       driveSimulation.setSimulationWorldPose(SimConstants.SIM_INITIAL_FIELD_POSE);
@@ -82,7 +97,8 @@ public abstract class RobotContainer {
   }
 
   public final void displaySimFieldToAdvantageScope() {
-    if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM) return;
+    if (SimConstants.CURRENT_MODE != SimConstants.Mode.SIM)
+      return;
 
     if (driveSimulation != null)
       Logger.recordOutput(
