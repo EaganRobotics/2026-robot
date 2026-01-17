@@ -9,6 +9,9 @@ import frc.robot26.commands.DriveCommands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.GyroIOSim;
 import frc.robot26.subsystems.drive.ModuleIOSim;
+import frc.robot26.subsystems.vision.Vision;
+import frc.robot26.subsystems.vision.VisionConstants;
+import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
@@ -19,6 +22,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   // Subsystems
   private Drive drive;
+  private Vision vision;
 
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -47,6 +51,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     switch (SimConstants.CURRENT_MODE) {
       case REAL:
         drive = null;
+        vision = null;
         break;
       case SIM:
         super.configureDriveSimulation(driveSimulation);
@@ -59,12 +64,25 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIOSim(driveSimulation.getModules()[3]),
                 driveSimulation::setSimulationWorldPose);
         drive.setPose(SimConstants.SIM_INITIAL_FIELD_POSE);
+        vision =
+            new Vision(
+                drive,
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.limelightShooter,
+                    VisionConstants.robotToCameraShooter,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.limelightBack,
+                    VisionConstants.robotToCameraBack,
+                    driveSimulation::getSimulatedDriveTrainPose));
         break;
       case REPLAY:
         drive = null;
+        vision = null;
         break;
       default:
         drive = null;
+        vision = null;
         System.err.println("SimConstants.CURRENT_MODE was invalid");
         System.exit(1);
         break;

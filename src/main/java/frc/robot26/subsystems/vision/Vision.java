@@ -40,6 +40,9 @@ public class Vision extends SubsystemBase {
       inputs[i] = new VisionIOInputsAutoLogged();
     }
 
+    // This does nothing except stop a crash/freeze its scary dont remove plz
+    aprilTagLayout.getTagPose(0);
+
     // Initialize disconnected alerts
     this.disconnectedAlerts = new Alert[io.length];
     for (int i = 0; i < inputs.length; i++) {
