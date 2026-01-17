@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot26.subsystems.vision.Vision.VisionConsumer;
 import frc.robot26.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -47,7 +48,7 @@ import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends SubsystemBase {
+public class Drive extends SubsystemBase implements VisionConsumer {
   // TunerConstants doesn't include these constants, so they are declared locally
   static final double ODOMETRY_FREQUENCY = DriveConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
   public static final double DRIVE_BASE_RADIUS =
@@ -170,6 +171,11 @@ public class Drive extends SubsystemBase {
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+  }
+
+  public ChassisSpeeds getFieldRelativeSpeeds() {
+    var robotRelativeSpeeds = kinematics.toChassisSpeeds(getModuleStates());
+    return ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getPose().getRotation());
   }
 
   @Override
@@ -381,5 +387,15 @@ public class Drive extends SubsystemBase {
       new Translation2d(DriveConstants.BackLeft.LocationX, DriveConstants.BackLeft.LocationY),
       new Translation2d(DriveConstants.BackRight.LocationX, DriveConstants.BackRight.LocationY)
     };
+  }
+
+  /** Adds a new timestamped vision measurement. */
+  @Override
+  public void accept(
+      Pose2d visionRobotPoseMeters,
+      double timestampSeconds,
+      Matrix<N3, N1> visionMeasurementStdDevs) {
+    poseEstimator.addVisionMeasurement(
+        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 }
