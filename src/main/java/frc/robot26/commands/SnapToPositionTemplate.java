@@ -1,0 +1,221 @@
+// Copyright 2021-2025 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// version 3 as published by the Free Software Foundation or
+// available in the root directory of this project.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+
+package frc.robot26.commands;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.tunables.LoggedTunableNumber;
+import frc.robot26.subsystems.drive.Drive;
+import java.util.Optional;
+import java.util.Set;
+import org.littletonrobotics.junction.Logger;
+
+public class SnapToPositionTemplate {
+  private static final double ANGLE_MAX_VELOCITY = 8.0;
+  private static final double ANGLE_MAX_ACCELERATION = 20.0;
+  private static final double ANGLE_TOLERANCE = Degrees.of(1).in(Radians);
+  private static final double POSITION_MAX_VELOCITY = 4.5;
+  private static final double POSITION_MAX_ACCELERATION = 6;
+  private static final double POSITION_TOLERANCE = Inches.of(1).in(Meters);
+
+  // PID
+  private static final LoggedTunableNumber ANGLE_KP =
+      new LoggedTunableNumber("Tuning/SnapToPosition/Angle_kP", 7.0);
+  private static final LoggedTunableNumber ANGLE_KI =
+      new LoggedTunableNumber("Tuning/SnapToPosition/Angle_kI", 0.0);
+  private static final LoggedTunableNumber ANGLE_KD =
+      new LoggedTunableNumber("Tuning/SnapToPosition/Angle_kD", 0.4);
+
+  private static final LoggedTunableNumber POSITION_KP =
+      new LoggedTunableNumber("Tuning/SnapToPosition/Position_kP", 4);
+  private static final LoggedTunableNumber POSITION_KI =
+      new LoggedTunableNumber("Tuning/SnapToPosition/Position_kI", 0);
+  private static final LoggedTunableNumber POSITION_KD =
+      new LoggedTunableNumber("Tuning/SnapToPosition/Position_kD", 0);
+
+  // PID controllers
+  private static final ProfiledPIDController xController =
+      new ProfiledPIDController(
+          0,
+          0,
+          0,
+          new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+
+  private static final ProfiledPIDController yController =
+      new ProfiledPIDController(
+          0,
+          0,
+          0,
+          new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+
+  private static final ProfiledPIDController angleController =
+      new ProfiledPIDController(
+          0, 0, 0, new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+
+  static {
+    // Setup PID controllers
+    xController.setTolerance(POSITION_TOLERANCE);
+    yController.setTolerance(POSITION_TOLERANCE);
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+    angleController.setTolerance(ANGLE_TOLERANCE);
+
+    // This also sets the PID gains immediately
+    POSITION_KP.addListener(xController::setP);
+    POSITION_KI.addListener(xController::setI);
+    POSITION_KD.addListener(xController::setD);
+    POSITION_KP.addListener(yController::setP);
+    POSITION_KI.addListener(yController::setI);
+    POSITION_KD.addListener(yController::setD);
+    ANGLE_KP.addListener(angleController::setP);
+    ANGLE_KI.addListener(angleController::setI);
+    ANGLE_KD.addListener(angleController::setD);
+  }
+
+  // EXAMPLE OF HOW TO MAKE POSITION ARRAYS FOR SNAP TO POSITION:
+
+  // public static Pose2d[] makeReefPositions(Distance reefOffset) {
+  // Transform2d REEF_BRANCH_TO_ROBOT = new Transform2d(
+  // Inches.of(-INCHES_FROM_REEF).minus(reefOffset), Inches.zero(), Rotation2d.kZero);
+  // return new Pose2d[] {
+  // new Pose2d(
+  // BLUE_REEF_CENTER.plus(
+  // new Translation2d(Inches.of(-20.738000), Inches.of(6.482000))),
+  // Rotation2d.kZero).transformBy(REEF_BRANCH_TO_ROBOT),
+  // new Pose2d(
+  // BLUE_REEF_CENTER.plus(
+  // new Translation2d(Inches.of(-20.738000), Inches.of(-6.482000))),
+  // Rotation2d.kZero).transformBy(REEF_BRANCH_TO_ROBOT)};
+  // }
+
+  // private static final Pose2d[] REEF_POSITIONS = makeReefPositions(Inches.of(12));
+
+  private SnapToPositionTemplate() {}
+
+  public static final class Pose2dSequence {
+    public final Pose2d inner;
+    public final Pose2d outer;
+
+    public Pose2dSequence(Pose2d inner, Pose2d outer) {
+      this.inner = inner;
+      this.outer = outer;
+    }
+
+    public static final Pose2dSequence kZero = new Pose2dSequence(Pose2d.kZero, Pose2d.kZero);
+  }
+
+  private static Optional<Integer> getClosestPositionIndex(
+      Drive drive, Pose2d[] positions, Distance maxRadius) {
+    Optional<Integer> closestIndex = Optional.empty();
+    Distance minDistance = Meters.of(Double.MAX_VALUE);
+
+    for (int i = 0; i < positions.length; i++) {
+      Pose2d pose = positions[i];
+      double distance = drive.getPose().getTranslation().getDistance(pose.getTranslation());
+      Distance distanceMeasure = Meters.of(distance);
+
+      if (distanceMeasure.lte(maxRadius) && distanceMeasure.lt(minDistance)) {
+        minDistance = distanceMeasure;
+        closestIndex = Optional.of(i);
+      }
+    }
+
+    return closestIndex;
+  }
+
+  private static Optional<Pose2dSequence> getClosestPositionSequence(
+      Drive drive, Pose2d[] outerPositions, Pose2d[] innerPositions, Distance maxRadius) {
+
+    if (outerPositions.length != innerPositions.length) {
+      throw new IllegalArgumentException(
+          "Outer and inner position arrays must have the same length");
+    }
+
+    Optional<Integer> closestIndex = getClosestPositionIndex(drive, outerPositions, maxRadius);
+
+    return closestIndex.map(
+        index -> new Pose2dSequence(innerPositions[index], outerPositions[index]));
+  }
+
+  public static Command snapToClosestPosition(
+      Drive drive, Pose2d[] outerPositions, Pose2d[] innerPositions, Distance maxRadius) {
+    return Commands.defer(
+            () -> {
+              Pose2dSequence poses =
+                  getClosestPositionSequence(drive, outerPositions, innerPositions, maxRadius)
+                      .orElse(Pose2dSequence.kZero);
+
+              Logger.recordOutput("FlySnap/OuterPose", poses.outer);
+              Logger.recordOutput("FlySnap/InnerPose", poses.inner);
+
+              double interpolateTime =
+                  drive.getPose().getTranslation().getDistance(poses.outer.getTranslation()) > 1.5
+                      ? 1.5
+                      : 0.75;
+              return snapToPosition(drive, poses.outer, poses.inner, interpolateTime);
+            },
+            Set.of(drive))
+        .withName("snapToPositionTemplate.snapToClosestPosition");
+  }
+
+  public static Command snapToPosition(
+      Drive drive, Pose2d outerPose, Pose2d innerPose, double interpolateTime) {
+    return Commands.defer(
+        () -> {
+          double startTime = Timer.getFPGATimestamp();
+
+          return Commands.run(
+                  () -> {
+                    double elapsedTime = (Timer.getFPGATimestamp() - startTime);
+                    double t = Math.min(1.0, elapsedTime / interpolateTime);
+
+                    Pose2d desiredPose = outerPose.interpolate(innerPose, t);
+
+                    var x = xController.calculate(drive.getPose().getX(), desiredPose.getX());
+                    var y = yController.calculate(drive.getPose().getY(), desiredPose.getY());
+                    var omega =
+                        angleController.calculate(
+                            drive.getRotation().getRadians(),
+                            desiredPose.getRotation().getRadians());
+
+                    Logger.recordOutput("FlySnap/DesiredPose", desiredPose);
+                    Logger.recordOutput("FlySnap/InterpolateT", t);
+
+                    ChassisSpeeds speeds = new ChassisSpeeds(x, y, omega);
+                    drive.runVelocity(
+                        ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getRotation()));
+                  },
+                  drive)
+              .beforeStarting(
+                  () -> {
+                    angleController.reset(drive.getRotation().getRadians());
+                    xController.reset(drive.getPose().getX());
+                    yController.reset(drive.getPose().getY());
+                  })
+              .until(() -> angleController.atGoal() && xController.atGoal() && yController.atGoal())
+              .withName("snapToPositionTemplate.snapToPosition");
+        },
+        Set.of(drive));
+  }
+}
