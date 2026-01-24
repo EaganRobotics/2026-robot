@@ -8,7 +8,6 @@ import static frc.robot26.subsystems.intake.IntakeConstants.GEARING;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
 import static frc.robot26.subsystems.intake.IntakeConstants.Sim;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -26,9 +25,9 @@ public class IntakeIOSim implements IntakeIO {
   private final SimulatedMotorController.GenericMotorController intakeMotorController;
   private final MapleMotorSim intakeMotor;
   private Voltage intakeAppliedVoltage = Volts.of(0);
-  private final SimpleMotorFeedforward feedForwardController =
-      new SimpleMotorFeedforward(Sim.kS, Sim.kV, Sim.kA);
 
+  // one is the actual simulator and one is like the which model is used and its gearbox
+  // configuration, using both flywheelsim and maple motor sim is good
   private final FlywheelSim intakeSim =
       new FlywheelSim(
           LinearSystemId.createFlywheelSystem(intakeGearbox, 0.1, GEARING),
