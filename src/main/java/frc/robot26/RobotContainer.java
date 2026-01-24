@@ -12,6 +12,7 @@ import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.GyroIOSim;
 import frc.robot26.subsystems.drive.ModuleIOSim;
 import frc.robot26.subsystems.intake.Intake;
+import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.vision.Vision;
@@ -87,10 +88,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
       case REPLAY:
         drive = null;
         vision = null;
+        intake = new Intake(new IntakeIO() {});
         break;
       default:
         drive = null;
         vision = null;
+        intake = new Intake(new IntakeIO() {});
         System.err.println("SimConstants.CURRENT_MODE was invalid");
         System.exit(1);
         break;

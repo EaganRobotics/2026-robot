@@ -71,7 +71,6 @@ public class IntakeIOTalonFX implements IntakeIO {
     var connectedStatus =
         BaseStatusSignal.refreshAll(leadCurrent, leadVoltage, leadPosition, leadVelocity);
 
-    inputs.intakePosition = leadPosition.getValue();
     inputs.intakeConnected = connectedStatus.isOK();
     inputs.intakeVelocity = leadVelocity.getValue();
     inputs.intakeCurrent = leadCurrent.getValue();

@@ -1,5 +1,5 @@
-// Copyright 2021-2025 FRC 6328
-// http://github.com/Mechanical-Advantage
+// Copyright 2021-2026 FRC 2220
+// http://github.com/EaganRobotics
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License

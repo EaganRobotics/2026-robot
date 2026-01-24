@@ -1,3 +1,5 @@
 package frc.robot26.subsystems.conveyor;
 
-public class Conveyor {}
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Conveyor extends SubsystemBase {}
