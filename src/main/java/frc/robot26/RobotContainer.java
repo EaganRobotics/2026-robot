@@ -1,5 +1,7 @@
 package frc.robot26;
 
+import static edu.wpi.first.units.Units.Volts;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -9,6 +11,9 @@ import frc.robot26.commands.DriveCommands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.GyroIOSim;
 import frc.robot26.subsystems.drive.ModuleIOSim;
+import frc.robot26.subsystems.intake.Intake;
+import frc.robot26.subsystems.intake.IntakeIOSim;
+import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.vision.Vision;
 import frc.robot26.subsystems.vision.VisionConstants;
 import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
@@ -23,6 +28,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   // Subsystems
   private Drive drive;
   private Vision vision;
+  private Intake intake;
 
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -52,6 +58,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
       case REAL:
         drive = null;
         vision = null;
+        intake = new Intake(new IntakeIOTalonFX());
         break;
       case SIM:
         super.configureDriveSimulation(driveSimulation);
@@ -75,6 +82,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     VisionConstants.limelightBack,
                     VisionConstants.robotToCameraBack,
                     driveSimulation::getSimulatedDriveTrainPose));
+        intake = new Intake(new IntakeIOSim());
         break;
       case REPLAY:
         drive = null;
@@ -106,6 +114,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               driverController::getLeftX,
               () -> -driverController.getRightX() * .85));
     }
+
+    driverController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
   }
 
   @Override
