@@ -7,6 +7,13 @@ plugins {
 
     // Spotless for format checking
     id "com.diffplug.spotless" version "6.25.0"
+
+    // SpotBugs for static bytecode analysis
+    id "com.github.spotbugs" version "6.4.8"
+}
+
+spotbugs {
+    excludeFilter = file("spotbugs-exclude.xml")
 }
 
 java {
@@ -94,6 +101,9 @@ dependencies {
     // Install AdvantageKit into existing project
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
+
+    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.9.8'
+    testCompileOnly 'com.github.spotbugs:spotbugs-annotations:4.9.8'
 }
 
 tasks.withType(Test).configureEach {

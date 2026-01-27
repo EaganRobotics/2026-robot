@@ -9,6 +9,7 @@ package frc.robot26.subsystems.drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotController;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class PhoenixOdometryThread extends Thread {
   private static boolean isCANFD = DriveConstants.kCANBus.isNetworkFD();
   private static PhoenixOdometryThread instance = null;
 
+  @SuppressFBWarnings("LI_LAZY_INIT_STATIC")
   public static PhoenixOdometryThread getInstance() {
     if (instance == null) {
       instance = new PhoenixOdometryThread();

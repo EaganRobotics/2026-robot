@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 public class PWMEncoder {
   private AnalogInput encoder;
   private Angle offset;
-  private final int oversampling = 4; // Set to 1 to disable oversampling
+  private static final int oversampling = 4; // Set to 1 to disable oversampling
 
   public PWMEncoder(int analogPort, Angle offset) {
     this.offset = offset;

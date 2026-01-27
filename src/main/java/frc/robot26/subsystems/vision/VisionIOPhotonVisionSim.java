@@ -9,6 +9,7 @@ package frc.robot26.subsystems.vision;
 
 import static frc.robot26.subsystems.vision.VisionConstants.aprilTagLayout;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.util.function.Supplier;
@@ -29,6 +30,7 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
    * @param name The name of the camera.
    * @param poseSupplier Supplier for the robot pose to use in simulation.
    */
+  @SuppressFBWarnings("LI_LAZY_INIT_UPDATE_STATIC")
   public VisionIOPhotonVisionSim(
       String name, Transform3d robotToCamera, Supplier<Pose2d> poseSupplier) {
     super(name, robotToCamera);
