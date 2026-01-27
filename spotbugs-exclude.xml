@@ -1,0 +1,15 @@
+<!--
+    Bug descriptions: https://spotbugs.readthedocs.io/en/stable/bugDescriptions.html
+    Filter options: https://spotbugs.readthedocs.io/en/latest/filter.html
+-->
+<FindBugsFilter>
+    <Match>
+        <!-- *AutoLogged.clone() does not call super.clone() -->
+        <Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
+    </Match>
+    <Match><Bug pattern="CT_CONSTRUCTOR_THROW" /></Match>
+    <Match><Bug pattern="EI_EXPOSE_REP" /></Match>
+    <Match><Bug pattern="EI_EXPOSE_REP2" /></Match>
+    <Match><Bug pattern="MS_EXPOSE_REP" /></Match>
+    <Match><Class name="~frc\.lib\.limelight\.LimelightHelpers.*"/></Match>
+</FindBugsFilter>

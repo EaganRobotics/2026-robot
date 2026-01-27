@@ -3,6 +3,7 @@ package frc.robot26;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -24,11 +25,15 @@ import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
 public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   // Subsystems
   private Drive drive;
+
+  @SuppressFBWarnings("URF_UNREAD_FIELD")
   private Vision vision;
+
   private Intake intake;
 
   // Controllers
@@ -94,9 +99,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         drive = null;
         vision = null;
         intake = new Intake(new IntakeIO() {});
-        System.err.println("SimConstants.CURRENT_MODE was invalid");
-        System.exit(1);
-        break;
+        throw new IllegalStateException(
+            "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
