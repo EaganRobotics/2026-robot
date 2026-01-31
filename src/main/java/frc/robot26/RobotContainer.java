@@ -12,8 +12,13 @@ import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCharacterization;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.subsystems.drive.Drive;
+import frc.robot26.subsystems.drive.DriveConstants;
+import frc.robot26.subsystems.drive.GyroIO;
+import frc.robot26.subsystems.drive.GyroIONavX;
 import frc.robot26.subsystems.drive.GyroIOSim;
+import frc.robot26.subsystems.drive.ModuleIO;
 import frc.robot26.subsystems.drive.ModuleIOSim;
+import frc.robot26.subsystems.drive.ModuleIOTalonFX;
 import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
@@ -64,7 +69,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // Create IO implementations
     switch (SimConstants.CURRENT_MODE) {
       case REAL:
-        drive = null;
+        drive =
+            new Drive(
+                new GyroIONavX(),
+                new ModuleIOTalonFX(DriveConstants.FrontLeft),
+                new ModuleIOTalonFX(DriveConstants.FrontRight),
+                new ModuleIOTalonFX(DriveConstants.BackLeft),
+                new ModuleIOTalonFX(DriveConstants.BackRight),
+                driveSimulation::setSimulationWorldPose);
         vision = null;
         intake = new Intake(new IntakeIOTalonFX());
         break;
@@ -93,12 +105,26 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         intake = new Intake(new IntakeIOSim());
         break;
       case REPLAY:
-        drive = null;
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                driveSimulation::setSimulationWorldPose);
         vision = null;
         intake = new Intake(new IntakeIO() {});
         break;
       default:
-        drive = null;
+        drive =
+            new Drive(
+                new GyroIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                new ModuleIO() {},
+                driveSimulation::setSimulationWorldPose);
         vision = null;
         intake = new Intake(new IntakeIO() {});
         throw new IllegalStateException(
