@@ -533,23 +533,26 @@ public class DriveCommands {
   // Create X Position PID controller
   private static final ProfiledPIDController xController =
       new ProfiledPIDController(
-          0,
-          0,
-          0,
+          0.1,
+          0.1,
+          0.1,
           new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
 
   // Create Y Position PID controller
   private static final ProfiledPIDController yController =
       new ProfiledPIDController(
-          0,
-          0,
-          0,
+          0.1,
+          0.1,
+          0.1,
           new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
 
   // Create Angle PID controller
   private static final ProfiledPIDController angleController =
       new ProfiledPIDController(
-          0, 0, 0, new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+          0.1,
+          0.1,
+          0.1,
+          new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
 
   static {
     // Setup PID controllers
