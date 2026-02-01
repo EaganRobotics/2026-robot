@@ -42,11 +42,11 @@ public class DriveConstants {
     // the output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
     public static final Slot0Configs STEER_GAINS =
         new Slot0Configs()
-            .withKP(80)
-            .withKI(10)
-            .withKD(0.5)
-            .withKS(0.1)
-            .withKV(1.91)
+            .withKP(0.2)
+            .withKI(0)
+            .withKD(0)
+            .withKS(0)
+            .withKV(0)
             .withKA(0)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     private static final double METERS_TO_ROTATIONS = 0.3912;
