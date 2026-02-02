@@ -63,10 +63,10 @@ public class DriveConstants {
 
     // Motor PIDS
 
-    public static final double POSITION_MAX_VELOCITY = 1.0;
-    public static final double POSITION_MAX_ACCELERATION = 1.0;
-    public static final double ANGLE_MAX_VELOCITY = 1.0;
-    public static final double ANGLE_MAX_ACCELERATION = 1.0;
+    public static final double POSITION_MAX_VELOCITY = 4.5;
+    public static final double POSITION_MAX_ACCELERATION = 6;
+    public static final double ANGLE_MAX_VELOCITY = 8.0;
+    public static final double ANGLE_MAX_ACCELERATION = 20.0;
 
     public static final double X_KP = 0.1;
     public static final double X_KI = 0.1;
