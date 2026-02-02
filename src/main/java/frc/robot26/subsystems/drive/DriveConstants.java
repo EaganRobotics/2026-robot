@@ -60,6 +60,25 @@ public class DriveConstants {
             .withKS(0.19598)
             .withKV(0.77537)
             .withKA(0.058183 * METERS_TO_ROTATIONS);
+
+    // Motor PIDS
+
+    public static final double POSITION_MAX_VELOCITY = 1.0;
+    public static final double POSITION_MAX_ACCELERATION = 1.0;
+    public static final double ANGLE_MAX_VELOCITY = 1.0;
+    public static final double ANGLE_MAX_ACCELERATION = 1.0;
+
+    public static final double X_KP = 0.1;
+    public static final double X_KI = 0.1;
+    public static final double X_KD = 0.1;
+
+    public static final double Y_KP = 0.1;
+    public static final double Y_KI = 0.1;
+    public static final double Y_KD = 0.1;
+
+    public static final double ANGLE_KP = 0.1;
+    public static final double ANGLE_KI = 0.1;
+    public static final double ANGLE_KD = 0.1;
   }
 
   /* These Gains constants only affect simulation */
