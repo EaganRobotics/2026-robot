@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
+import static frc.robot26.subsystems.drive.DriveConstants.Real.*;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -531,25 +532,33 @@ public class DriveCommands {
       new LoggedTunableNumber("Tuning/SnapToPosition/Position_kD", 0); // 1
 
   // Create X Position PID controller
-  private static final ProfiledPIDController xController =
-      new ProfiledPIDController(
-          0,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+  public static ProfiledPIDController createXController() {
+    return new ProfiledPIDController(
+        X_KP,
+        X_KI,
+        X_KD,
+        new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+  }
 
-  // Create Y Position PID controller
-  private static final ProfiledPIDController yController =
-      new ProfiledPIDController(
-          0,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+  public static ProfiledPIDController createYController() {
+    return new ProfiledPIDController(
+        Y_KP,
+        Y_KI,
+        Y_KD,
+        new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+  }
 
-  // Create Angle PID controller
-  private static final ProfiledPIDController angleController =
-      new ProfiledPIDController(
-          0, 0, 0, new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+  public static ProfiledPIDController createAngleController() {
+    return new ProfiledPIDController(
+        ANGLE_KP.get(),
+        ANGLE_KI.get(),
+        ANGLE_KD.get(),
+        new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+  }
+
+  private static final ProfiledPIDController xController = createXController();
+  private static final ProfiledPIDController yController = createYController();
+  private static final ProfiledPIDController angleController = createAngleController();
 
   static {
     // Setup PID controllers
