@@ -29,6 +29,7 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final StatusSignal<Current> leadCurrent;
 
   public IntakeIOTalonFX() {
+    // TODO: ADD THIRD MOTOR
 
     lead = new TalonFX(Real.leadMotorID);
     follower = new TalonFX(Real.followerMotorID);

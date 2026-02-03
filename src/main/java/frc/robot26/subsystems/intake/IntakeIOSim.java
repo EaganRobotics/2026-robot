@@ -21,12 +21,13 @@ import org.ironmaple.simulation.motorsims.SimulatedMotorController;
 
 public class IntakeIOSim implements IntakeIO {
   // TODO: change to correct motor
-  private static final DCMotor intakeGearbox = DCMotor.getKrakenX60(2);
+  private static final DCMotor intakeGearbox = DCMotor.getKrakenX44(3);
   private final SimulatedMotorController.GenericMotorController intakeMotorController;
   private final MapleMotorSim intakeMotor;
   private Voltage intakeAppliedVoltage = Volts.of(0);
 
-  // one is the actual simulator and one is like the which model is used and its gearbox
+  // one is the actual simulator and one is like the which model is used and its
+  // gearbox
   // configuration, using both flywheelsim and maple motor sim is good
   private final FlywheelSim intakeSim =
       new FlywheelSim(

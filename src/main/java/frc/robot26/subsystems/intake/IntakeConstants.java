@@ -16,6 +16,7 @@ public class IntakeConstants {
   public static final class Real {
     public static final int followerMotorID = 20; // TODO: change to correct ID
     public static final int leadMotorID = 21; // TODO: change to correct ID
+    public static final int thirdMotorID = 22; // TODO: change to correct ID and rename
   }
 
   public static final class Sim {
