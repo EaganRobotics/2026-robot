@@ -20,19 +20,28 @@ import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
 
 public class IntakeIOSim implements IntakeIO {
-  // TODO: change to correct motor
-  private static final DCMotor intakeGearbox = DCMotor.getKrakenX44(3);
+  private static final DCMotor intakeGearbox = DCMotor.getKrakenX44(2);
   private final SimulatedMotorController.GenericMotorController intakeMotorController;
   private final MapleMotorSim intakeMotor;
   private Voltage intakeAppliedVoltage = Volts.of(0);
 
+  private static final DCMotor deployGearbox = DCMotor.getKrakenX44(1);
+  private final SimulatedMotorController.GenericMotorController deployMotorController;
+  private final MapleMotorSim deployMotor;
+  private Voltage deployAppliedVoltage = Volts.of(0);
+
   // one is the actual simulator and one is like the which model is used and its
-  // gearbox
-  // configuration, using both flywheelsim and maple motor sim is good
+  // gearbox configuration, using both flywheelsim and maple motor sim is good
   private final FlywheelSim intakeSim =
       new FlywheelSim(
           LinearSystemId.createFlywheelSystem(intakeGearbox, 0.1, GEARING),
           intakeGearbox,
+          0.000015);
+
+  private final FlywheelSim deploySim =
+      new FlywheelSim(
+          LinearSystemId.createFlywheelSystem(deployGearbox, 0.1, GEARING),
+          deployGearbox,
           0.000015);
 
   public IntakeIOSim() {
@@ -41,26 +50,48 @@ public class IntakeIOSim implements IntakeIO {
             new SimMotorConfigs(intakeGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
     intakeMotorController =
         intakeMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
+
+    deployMotor =
+        new MapleMotorSim(
+            new SimMotorConfigs(deployGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
+    deployMotorController =
+        deployMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
   }
 
   @Override
-  public void setOpenLoop(Voltage output) {
+  public void setIntakeOpenLoop(Voltage output) {
     intakeAppliedVoltage = output;
   }
 
   @Override
+  public void setDeployOpenLoop(Voltage output) {
+    deployAppliedVoltage = output;
+  }
+
+  @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    var angularVelocity = intakeSim.getAngularVelocityRadPerSec();
+    var intakeAngularVelocity = intakeSim.getAngularVelocityRadPerSec();
+    var deployAngularVelocity = deploySim.getAngularVelocityRadPerSec();
 
     intakeMotorController.requestVoltage(intakeAppliedVoltage);
     intakeSim.setInputVoltage(intakeMotor.getAppliedVoltage().in(Volts));
     intakeMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
     intakeSim.update(TimedRobot.kDefaultPeriod);
 
+    deployMotorController.requestVoltage(deployAppliedVoltage);
+    deploySim.setInputVoltage(deployMotor.getAppliedVoltage().in(Volts));
+    deployMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
+    deploySim.update(TimedRobot.kDefaultPeriod);
+
     // Update motor inputs
     inputs.intakeConnected = true;
     inputs.intakeAppliedVolts = intakeAppliedVoltage;
     inputs.intakeCurrent = Amps.of(intakeSim.getCurrentDrawAmps());
-    inputs.intakeVelocity = AngularVelocity.ofBaseUnits(angularVelocity, RadiansPerSecond);
+    inputs.intakeVelocity = AngularVelocity.ofBaseUnits(intakeAngularVelocity, RadiansPerSecond);
+
+    inputs.deployConnected = true;
+    inputs.deployAppliedVolts = deployAppliedVoltage;
+    inputs.deployCurrent = Amps.of(deploySim.getCurrentDrawAmps());
+    inputs.deployVelocity = AngularVelocity.ofBaseUnits(deployAngularVelocity, RadiansPerSecond);
   }
 }

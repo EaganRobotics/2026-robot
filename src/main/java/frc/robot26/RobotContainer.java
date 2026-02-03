@@ -169,6 +169,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     }
 
     driverController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
+    driverController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
+    driverController.x().onTrue(intake.setIntakeExtended(true));
+    driverController.y().onTrue(intake.setIntakeExtended(false));
   }
 
   @Override

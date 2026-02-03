@@ -16,10 +16,17 @@ public interface IntakeIO {
     public AngularVelocity intakeVelocity = RadiansPerSecond.of(0.0);
     public Voltage intakeAppliedVolts = Volts.of(0.0);
     public Current intakeCurrent = Amps.of(0.0);
+
+    public boolean deployConnected = false;
+    public AngularVelocity deployVelocity = RadiansPerSecond.of(0.0);
+    public Voltage deployAppliedVolts = Volts.of(0.0);
+    public Current deployCurrent = Amps.of(0.0);
   }
 
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeIOInputs inputs) {}
 
-  public default void setOpenLoop(Voltage output) {}
+  public default void setIntakeOpenLoop(Voltage output) {}
+
+  public default void setDeployOpenLoop(Voltage output) {}
 }

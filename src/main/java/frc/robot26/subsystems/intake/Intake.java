@@ -25,22 +25,34 @@ public class Intake extends SubsystemBase {
   public Command setOpenLoop(Voltage output) {
     return this.startEnd(
             () -> {
-              io.setOpenLoop(output);
+              io.setIntakeOpenLoop(output);
             },
             () -> {
-              io.setOpenLoop(Volts.of(0));
+              io.setIntakeOpenLoop(Volts.of(0));
             })
         .withName("Intake.setOpenLoop");
+  }
+
+  public Command setIntakeExtended(boolean extended) {
+    return this.runOnce(
+            () -> {
+              if (extended == false) {
+                // TODO: retract intake
+              } else {
+                // TODO: extend intake
+              }
+            })
+        .withName("Intake.setIntakeExtended");
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {
     return this.runEnd(
             () -> {
-              io.setOpenLoop(
+              io.setIntakeOpenLoop(
                   Volts.of(speed.getAsDouble() * 12.0 * IntakeConstants.joystickSpeedMultiplier));
             },
             () -> {
-              io.setOpenLoop(Volts.of(0));
+              io.setIntakeOpenLoop(Volts.of(0));
             })
         .withName("Intake.setJoystickOpenLoop");
   }
