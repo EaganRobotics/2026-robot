@@ -8,6 +8,7 @@ import static frc.robot26.subsystems.intake.IntakeConstants.GEARING;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
 import static frc.robot26.subsystems.intake.IntakeConstants.Sim;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -70,6 +71,7 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
+  @SuppressFBWarnings
   public void setDeployPosition(DeployState state) {
     switch (state) {
       case EXTENDED:
