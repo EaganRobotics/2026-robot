@@ -36,10 +36,10 @@ public class Intake extends SubsystemBase {
   public Command setIntakeExtended(boolean extended) {
     return this.runOnce(
             () -> {
-              if (extended == false) {
-                // TODO: retract intake
-              } else {
+              if (extended) {
                 // TODO: extend intake
+              } else {
+                // TODO: retract intake
               }
             })
         .withName("Intake.setIntakeExtended");
