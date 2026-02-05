@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -33,16 +34,12 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setOpenLoop");
   }
 
-  public Command setIntakeExtended(boolean extended) {
+  public Command setIntakePosition(DeployState state) {
     return this.runOnce(
             () -> {
-              if (extended) {
-                // TODO: extend intake
-              } else {
-                // TODO: retract intake
-              }
+              io.setDeployPosition(state);
             })
-        .withName("Intake.setIntakeExtended");
+        .withName("Intake.setIntakePosition");
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {

@@ -1,10 +1,13 @@
 package frc.robot26.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING;
 import static frc.robot26.subsystems.intake.IntakeConstants.Real;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
+import static frc.robot26.subsystems.intake.IntakeConstants.deployRotationLimit;
+import static frc.robot26.subsystems.intake.IntakeConstants.retractRotationLimit;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
@@ -20,6 +23,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
 
 public class IntakeIOTalonFX implements IntakeIO {
   private final TalonFX lead, follower, deploy;
@@ -110,5 +114,18 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.deployVelocity = deployVelocity.getValue();
     inputs.deployCurrent = deployCurrent.getValue();
     inputs.deployAppliedVolts = deployVoltage.getValue();
+    inputs.deployPosition = deployPosition.getValue();
+  }
+
+  @Override
+  public void setDeployPosition(DeployState state) {
+    switch (state) {
+      case EXTENDED:
+        deploy.setPosition(deployRotationLimit.in(Rotations));
+        break;
+      case RETRACTED:
+        deploy.setPosition(retractRotationLimit.in(Rotations));
+        break;
+    }
   }
 }
