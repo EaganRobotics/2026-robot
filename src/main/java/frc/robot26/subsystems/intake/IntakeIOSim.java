@@ -14,6 +14,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
+import frc.robot26.subsystems.intake.IntakeConstants.Sim;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -65,6 +67,18 @@ public class IntakeIOSim implements IntakeIO {
   @Override
   public void setDeployOpenLoop(Voltage output) {
     deployAppliedVoltage = output;
+  }
+
+  @Override
+  public void setDeployPosition(DeployState state) {
+    switch (state) {
+      case EXTENDED:
+        // deployMotor.setPosition(deployRotationLimit.in(Rotations));
+        break;
+      case RETRACTED:
+        // deployMotor.setPosition(retractRotationLimit.in(Rotations));
+        break;
+    }
   }
 
   @Override
