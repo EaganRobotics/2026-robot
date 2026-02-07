@@ -3,7 +3,8 @@ package frc.robot26.subsystems.intake;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot26.subsystems.intake.IntakeConstants.GEARING;
+import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_DEPLOY;
+import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_INTAKE;
 import static frc.robot26.subsystems.intake.IntakeConstants.Real;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
 import static frc.robot26.subsystems.intake.IntakeConstants.deployRotationLimit;
@@ -54,7 +55,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     leadConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leadConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     leadConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    leadConfig.Feedback.SensorToMechanismRatio = GEARING;
+    leadConfig.Feedback.SensorToMechanismRatio = GEARING_INTAKE;
     leadConfig.Voltage.PeakForwardVoltage = 10;
     leadConfig.Voltage.PeakReverseVoltage = -10;
     leadConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -63,7 +64,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     deployConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     deployConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     deployConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    deployConfig.Feedback.SensorToMechanismRatio = GEARING;
+    deployConfig.Feedback.SensorToMechanismRatio = GEARING_DEPLOY;
     deployConfig.Voltage.PeakForwardVoltage = 10;
     deployConfig.Voltage.PeakReverseVoltage = -10;
     deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;

@@ -4,7 +4,8 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot26.subsystems.intake.IntakeConstants.GEARING;
+import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_DEPLOY;
+import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_INTAKE;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
 import static frc.robot26.subsystems.intake.IntakeConstants.Sim;
 
@@ -16,7 +17,6 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
-import frc.robot26.subsystems.intake.IntakeConstants.Sim;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -36,26 +36,28 @@ public class IntakeIOSim implements IntakeIO {
   // gearbox configuration, using both flywheelsim and maple motor sim is good
   private final FlywheelSim intakeSim =
       new FlywheelSim(
-          LinearSystemId.createFlywheelSystem(intakeGearbox, 0.1, GEARING),
+          LinearSystemId.createFlywheelSystem(intakeGearbox, 0.1, GEARING_INTAKE),
           intakeGearbox,
           0.000015);
 
   private final FlywheelSim deploySim =
       new FlywheelSim(
-          LinearSystemId.createFlywheelSystem(deployGearbox, 0.1, GEARING),
+          LinearSystemId.createFlywheelSystem(deployGearbox, 0.1, GEARING_DEPLOY),
           deployGearbox,
           0.000015);
 
   public IntakeIOSim() {
     intakeMotor =
         new MapleMotorSim(
-            new SimMotorConfigs(intakeGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
+            new SimMotorConfigs(
+                intakeGearbox, GEARING_INTAKE, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
     intakeMotorController =
         intakeMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
 
     deployMotor =
         new MapleMotorSim(
-            new SimMotorConfigs(deployGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
+            new SimMotorConfigs(
+                deployGearbox, GEARING_DEPLOY, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
     deployMotorController =
         deployMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
   }
