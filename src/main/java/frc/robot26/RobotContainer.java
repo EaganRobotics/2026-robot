@@ -28,6 +28,7 @@ import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.vision.Vision;
 import frc.robot26.subsystems.vision.VisionConstants;
+import frc.robot26.subsystems.vision.VisionIOLimelight;
 import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -80,7 +81,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIOTalonFX(DriveConstants.BackLeft),
                 new ModuleIOTalonFX(DriveConstants.BackRight),
                 driveSimulation::setSimulationWorldPose);
-        vision = null;
+        vision =
+            new Vision(
+                drive,
+                new VisionIOLimelight(
+                    VisionConstants.limelightShooter, () -> drive.getPose().getRotation())
+                // , new VisionIOLimelight(VisionConstants.limelightBack,
+                // () -> drive.getPose().getRotation())
+                );
         intake = new Intake(new IntakeIOTalonFX());
         break;
       case SIM:
@@ -190,7 +198,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void simulationInit() {
-
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     arena.getBlueHub().setOnScoredCallback((gp) -> System.out.println("Blue Hub Scored!"));
@@ -200,7 +207,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void simulationPeriodic() {
-
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     Logger.recordOutput(
