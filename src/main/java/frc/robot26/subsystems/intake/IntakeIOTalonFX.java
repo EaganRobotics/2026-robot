@@ -14,6 +14,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -25,9 +26,11 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
+import frc.robot26.subsystems.intake.IntakeConstants.Real;
 
 public class IntakeIOTalonFX implements IntakeIO {
   private final TalonFX lead, follower, deploy;
+  private final MotionMagicVoltage deployPositionRequest = new MotionMagicVoltage(0);
   private final StatusSignal<Angle> leadPosition, deployPosition;
   private final StatusSignal<AngularVelocity> leadVelocity, deployVelocity;
   private final StatusSignal<Voltage> leadVoltage, deployVoltage;
@@ -122,10 +125,10 @@ public class IntakeIOTalonFX implements IntakeIO {
   public void setDeployPosition(DeployState state) {
     switch (state) {
       case EXTENDED:
-        deploy.setPosition(deployRotationLimit.in(Rotations));
+        deploy.setControl(deployPositionRequest.withPosition(deployRotationLimit.in(Rotations)));
         break;
       case RETRACTED:
-        deploy.setPosition(retractRotationLimit.in(Rotations));
+        deploy.setControl(deployPositionRequest.withPosition(retractRotationLimit.in(Rotations)));
         break;
     }
   }

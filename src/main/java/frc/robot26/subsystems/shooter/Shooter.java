@@ -34,12 +34,12 @@ public class Shooter extends SubsystemBase {
         .withName("Shooter.setOpenLoop");
   }
 
-  public Command setShooterPosition(Angle angle) {
+  public Command setHoodPosition(Angle angle) {
     return this.runOnce(
             () -> {
               io.setHoodPosition(angle);
             })
-        .withName("Shooter.setShooterPosition");
+        .withName("Shooter.setHoodPosition");
   }
 
   public Command setShooterJoystickOpenLoop(DoubleSupplier speed) {

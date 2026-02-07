@@ -45,12 +45,12 @@ public class FloorIOSim implements FloorIO {
 
   @Override
   public void updateInputs(FloorIOInputs inputs) {
-    var floorAngularVelocity = floorSim.getAngularVelocityRadPerSec();
-
     floorMotorController.requestVoltage(floorAppliedVoltage);
     floorSim.setInputVoltage(floorMotor.getAppliedVoltage().in(Volts));
     floorMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
     floorSim.update(TimedRobot.kDefaultPeriod);
+
+    var floorAngularVelocity = floorSim.getAngularVelocityRadPerSec();
 
     // Update motor inputs
     inputs.floorConnected = true;

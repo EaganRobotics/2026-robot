@@ -34,12 +34,12 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setOpenLoop");
   }
 
-  public Command setIntakePosition(DeployState state) {
+  public Command setDeployPosition(DeployState state) {
     return this.runOnce(
             () -> {
               io.setDeployPosition(state);
             })
-        .withName("Intake.setIntakePosition");
+        .withName("Intake.setDeployPosition");
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {

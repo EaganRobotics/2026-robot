@@ -14,6 +14,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -27,6 +28,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFX leadLeft, followerLeft, leadRight, followerRight, hood;
+  private final MotionMagicVoltage hoodPositionRequest = new MotionMagicVoltage(0);
   private final StatusSignal<Angle> leadPositionLeft, leadPositionRight, hoodPosition;
   private final StatusSignal<AngularVelocity> leadVelocityLeft, leadVelocityRight, hoodVelocity;
   private final StatusSignal<Voltage> leadVoltageLeft, leadVoltageRight, hoodVoltage;
@@ -85,9 +87,9 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodConfig.Voltage.PeakReverseVoltage = -10;
     hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
+    hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = hoodRotationEndLimit.in(Rotations);
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationEndLimit.in(Rotations);
+    hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
 
     leadLeft.getConfigurator().apply(leadConfigLeft, 0.25);
     leadLeft.setPosition(0);
@@ -158,6 +160,6 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void setHoodPosition(Angle angle) {
-    hood.setPosition(angle);
+    hood.setControl(hoodPositionRequest.withPosition(angle));
   }
 }

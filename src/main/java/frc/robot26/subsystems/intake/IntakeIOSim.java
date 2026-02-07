@@ -17,6 +17,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
+import frc.robot26.subsystems.intake.IntakeConstants.Sim;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -87,9 +88,6 @@ public class IntakeIOSim implements IntakeIO {
 
   @Override
   public void updateInputs(IntakeIOInputs inputs) {
-    var intakeAngularVelocity = intakeSim.getAngularVelocityRadPerSec();
-    var deployAngularVelocity = deploySim.getAngularVelocityRadPerSec();
-
     intakeMotorController.requestVoltage(intakeAppliedVoltage);
     intakeSim.setInputVoltage(intakeMotor.getAppliedVoltage().in(Volts));
     intakeMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
@@ -99,6 +97,9 @@ public class IntakeIOSim implements IntakeIO {
     deploySim.setInputVoltage(deployMotor.getAppliedVoltage().in(Volts));
     deployMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
     deploySim.update(TimedRobot.kDefaultPeriod);
+
+    var intakeAngularVelocity = intakeSim.getAngularVelocityRadPerSec();
+    var deployAngularVelocity = deploySim.getAngularVelocityRadPerSec();
 
     // Update motor inputs
     inputs.intakeConnected = true;
@@ -110,5 +111,6 @@ public class IntakeIOSim implements IntakeIO {
     inputs.deployAppliedVolts = deployAppliedVoltage;
     inputs.deployCurrent = Amps.of(deploySim.getCurrentDrawAmps());
     inputs.deployVelocity = AngularVelocity.ofBaseUnits(deployAngularVelocity, RadiansPerSecond);
+    // TODO: set deploy position
   }
 }

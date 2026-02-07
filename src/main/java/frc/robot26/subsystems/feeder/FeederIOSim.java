@@ -47,12 +47,12 @@ public class FeederIOSim implements FeederIO {
 
   @Override
   public void updateInputs(FeederIOInputs inputs) {
-    var feederAngularVelocity = feederSim.getAngularVelocityRadPerSec();
-
     feederMotorController.requestVoltage(feederAppliedVoltage);
     feederSim.setInputVoltage(feederMotor.getAppliedVoltage().in(Volts));
     feederMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
     feederSim.update(TimedRobot.kDefaultPeriod);
+
+    var feederAngularVelocity = feederSim.getAngularVelocityRadPerSec();
 
     // Update motor inputs
     inputs.feederConnected = true;

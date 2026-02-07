@@ -16,6 +16,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot26.subsystems.shooter.ShooterConstants.Sim;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -78,9 +79,6 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public void updateInputs(ShooterIOInputs inputs) {
-    var shooterAngularVelocity = shooterSim.getAngularVelocityRadPerSec();
-    var hoodAngularVelocity = hoodSim.getAngularVelocityRadPerSec();
-
     shooterMotorController.requestVoltage(shooterAppliedVoltage);
     shooterSim.setInputVoltage(shooterMotor.getAppliedVoltage().in(Volts));
     shooterMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
@@ -90,6 +88,9 @@ public class ShooterIOSim implements ShooterIO {
     hoodSim.setInputVoltage(hoodMotor.getAppliedVoltage().in(Volts));
     hoodMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
     hoodSim.update(TimedRobot.kDefaultPeriod);
+
+    var shooterAngularVelocity = shooterSim.getAngularVelocityRadPerSec();
+    var hoodAngularVelocity = hoodSim.getAngularVelocityRadPerSec();
 
     // Update motor inputs
     inputs.shooterConnected = true;
@@ -101,5 +102,6 @@ public class ShooterIOSim implements ShooterIO {
     inputs.hoodAppliedVolts = hoodAppliedVoltage;
     inputs.hoodCurrent = Amps.of(hoodSim.getCurrentDrawAmps());
     inputs.hoodVelocity = AngularVelocity.ofBaseUnits(hoodAngularVelocity, RadiansPerSecond);
+    // inputs.hoodPosition = TODO: set hood position
   }
 }

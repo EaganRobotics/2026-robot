@@ -171,8 +171,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     driverController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
     driverController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
-    driverController.x().onTrue(intake.setIntakePosition(DeployState.EXTENDED));
-    driverController.y().onTrue(intake.setIntakePosition(DeployState.RETRACTED));
+    driverController.x().onTrue(intake.setDeployPosition(DeployState.EXTENDED));
+    driverController.y().onTrue(intake.setDeployPosition(DeployState.RETRACTED));
   }
 
   @Override
