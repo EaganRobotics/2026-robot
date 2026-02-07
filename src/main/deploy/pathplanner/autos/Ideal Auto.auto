@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1M Foreward"
+            "pathName": "Depot Test"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Neutral Zone Fuel Test"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Practice Autos",
   "choreoAuto": false
 }
