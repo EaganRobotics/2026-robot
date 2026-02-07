@@ -171,8 +171,8 @@ public class DriveConstants {
   // This may need to be tuned to your individual robot
   private static final double kCoupleRatio = 2;
 
-  private static final boolean kInvertLeftSide = false;
-  private static final boolean kInvertRightSide = true;
+  private static final boolean kInvertLeftSide = true;
+  private static final boolean kInvertRightSide = false;
 
   // Aign with gears facing inside
 
@@ -183,7 +183,7 @@ public class DriveConstants {
   private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.880);
   private static final boolean kFrontLeftSteerMotorInverted = true;
   private static final boolean kFrontLeftEncoderInverted = false;
-  private static final Distance kFrontLeftXPos = Inches.of(10.375);
+  private static final Distance kFrontLeftXPos = Inches.of(-10.375);
   private static final Distance kFrontLeftYPos = Inches.of(10.375);
 
   // Front Right
@@ -193,7 +193,7 @@ public class DriveConstants {
   private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.341);
   private static final boolean kFrontRightSteerMotorInverted = true;
   private static final boolean kFrontRightEncoderInverted = false;
-  private static final Distance kFrontRightXPos = Inches.of(10.375);
+  private static final Distance kFrontRightXPos = Inches.of(-10.375);
   private static final Distance kFrontRightYPos = Inches.of(-10.375);
 
   // Back Left
@@ -203,7 +203,7 @@ public class DriveConstants {
   private static final Angle kBackLeftEncoderOffset = Rotations.of(-0.188);
   private static final boolean kBackLeftSteerMotorInverted = true;
   private static final boolean kBackLeftEncoderInverted = false;
-  private static final Distance kBackLeftXPos = Inches.of(-10.375);
+  private static final Distance kBackLeftXPos = Inches.of(10.375);
   private static final Distance kBackLeftYPos = Inches.of(10.375);
 
   // Back Right
@@ -213,7 +213,7 @@ public class DriveConstants {
   private static final Angle kBackRightEncoderOffset = Rotations.of(-0.820);
   private static final boolean kBackRightSteerMotorInverted = true;
   private static final boolean kBackRightEncoderInverted = false;
-  private static final Distance kBackRightXPos = Inches.of(-10.375);
+  private static final Distance kBackRightXPos = Inches.of(10.375);
   private static final Distance kBackRightYPos = Inches.of(-10.375);
 
   public static final SwerveDrivetrainConstants DrivetrainConstants =
