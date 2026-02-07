@@ -72,6 +72,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     deployConfig.Voltage.PeakReverseVoltage = -10;
     deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    Real.deployPIDs.applyToTalonFXConfig(deploy, deployConfig);
+
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
     follower.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
