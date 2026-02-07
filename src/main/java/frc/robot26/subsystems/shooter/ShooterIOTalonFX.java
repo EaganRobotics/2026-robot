@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_SHOOTER;
-import static frc.robot26.subsystems.shooter.ShooterConstants.Real;
 import static frc.robot26.subsystems.shooter.ShooterConstants.SUPPLY_CURRENT_LIMIT;
 import static frc.robot26.subsystems.shooter.ShooterConstants.hoodRotationEndLimit;
 import static frc.robot26.subsystems.shooter.ShooterConstants.hoodRotationStartLimit;
@@ -25,6 +24,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot26.subsystems.shooter.ShooterConstants.Real;
 
 public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFX leadLeft, followerLeft, leadRight, followerRight, hood;
@@ -90,6 +90,10 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = hoodRotationEndLimit.in(Rotations);
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
+
+    Real.shooterPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
+    Real.shooterPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
+    Real.hoodPIDs.applyToTalonFXConfig(hood, hoodConfig);
 
     leadLeft.getConfigurator().apply(leadConfigLeft, 0.25);
     leadLeft.setPosition(0);
