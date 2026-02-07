@@ -33,7 +33,10 @@ public class DriveConstants {
   private static final double kSteerGearRatio = 26.0; // Source: MK5i swerve module
   // page
   public static final double kMaxDriveMotorRPM = 6000.0;
-  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.22);
+  public static final LinearVelocity kSpeedR1 = FeetPerSecond.of(14.9);
+  public static final LinearVelocity kSpeedR2 = FeetPerSecond.of(17.4);
+  public static final LinearVelocity kSpeedR3 = FeetPerSecond.of(19.9);
+  public static final LinearVelocity kSpeedAt12Volts = kSpeedR2;
 
   // PID Gains for PathPlanner
   public static final PIDConstants PP_TRANSLATION_GAINS = new PIDConstants(1.3, 0.0, 0.01);
