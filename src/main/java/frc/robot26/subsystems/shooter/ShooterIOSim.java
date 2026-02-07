@@ -9,7 +9,6 @@ import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_SHOOTER;
 import static frc.robot26.subsystems.shooter.ShooterConstants.SUPPLY_CURRENT_LIMIT;
 import static frc.robot26.subsystems.shooter.ShooterConstants.Sim;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
@@ -73,7 +72,6 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  @SuppressFBWarnings
   public void setHoodPosition(Angle angle) {
     // TODO: angle
   }
