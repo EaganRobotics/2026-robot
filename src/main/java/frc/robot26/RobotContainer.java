@@ -4,7 +4,10 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -169,10 +172,23 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     }
 
     driverController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
+
+    driverController
+        .start()
+        .onTrue(
+            Commands.runOnce(
+                    () -> {
+                      drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero));
+                      CommandScheduler.getInstance().cancelAll();
+                    },
+                    drive)
+                .ignoringDisable(true)
+                .withName("RobotContainer.driverZeroCommand"));
   }
 
   @Override
   public void simulationInit() {
+
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     arena.getBlueHub().setOnScoredCallback((gp) -> System.out.println("Blue Hub Scored!"));
@@ -182,6 +198,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void simulationPeriodic() {
+
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     Logger.recordOutput(
