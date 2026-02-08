@@ -15,6 +15,18 @@
           "data": {
             "pathName": "1M Left"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1M Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1M Back"
+          }
         }
       ]
     }
