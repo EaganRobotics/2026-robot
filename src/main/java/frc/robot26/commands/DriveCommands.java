@@ -608,8 +608,7 @@ public class DriveCommands {
             () -> {
               // Get linear velocity
               Translation2d linearVelocity =
-                  getLinearVelocityFromJoysticks(
-                      -xSupplier.getAsDouble(), -ySupplier.getAsDouble());
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), -ySupplier.getAsDouble());
 
               // Apply rotation deadband
               double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
@@ -643,7 +642,9 @@ public class DriveCommands {
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(
-                      linearVelocity.getX() * maxSpeed, linearVelocity.getY() * maxSpeed, omega);
+                      linearVelocity.getX() * maxSpeed * -1,
+                      linearVelocity.getY() * maxSpeed * -1,
+                      omega);
               drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getRotation()));
             },
             drive)
