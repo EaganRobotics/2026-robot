@@ -161,7 +161,7 @@ public class DriveConstants {
   // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
   private static final Pigeon2Configuration pigeonConfigs = new Pigeon2Configuration();
 
-  private static final int kPigeonId = 1;
+  private static final int kPigeonId = 21;
 
   // CAN bus that the devices are located on;
   // All swerve devices must share the same CAN bus

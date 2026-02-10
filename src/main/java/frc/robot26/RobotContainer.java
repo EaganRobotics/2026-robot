@@ -16,7 +16,7 @@ import frc.robot26.commands.DriveCommands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.DriveConstants;
 import frc.robot26.subsystems.drive.GyroIO;
-import frc.robot26.subsystems.drive.GyroIONavX;
+import frc.robot26.subsystems.drive.GyroIOPigeon2;
 import frc.robot26.subsystems.drive.GyroIOSim;
 import frc.robot26.subsystems.drive.ModuleIO;
 import frc.robot26.subsystems.drive.ModuleIOSim;
@@ -74,7 +74,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
       case REAL:
         drive =
             new Drive(
-                new GyroIONavX(),
+                new GyroIOPigeon2(),
                 new ModuleIOTalonFX(DriveConstants.FrontLeft),
                 new ModuleIOTalonFX(DriveConstants.FrontRight),
                 new ModuleIOTalonFX(DriveConstants.BackLeft),
