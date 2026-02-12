@@ -27,8 +27,6 @@ public class Intake extends SubsystemBase {
     limitHit.onTrue(
         Commands.runOnce(
                 () -> {
-                  System.out.println(
-                      "[Intake] Limit hit, setting state to RETRACTED and setting motor volts to 0");
                   currentState = DeployState.RETRACTED;
                   io.setDeployOpenLoop(Volts.of(0));
                   // io.zeroEncoder();
