@@ -14,12 +14,7 @@ public class Intake extends SubsystemBase {
   private final IntakeIO io;
   private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
   public final Trigger limitHit = new Trigger(() -> inputs.limit);
-  private DeployState currentState = DeployState.RETRACTED;
-
-  public static enum DeployState {
-    EXTENDED,
-    RETRACTED
-  }
+  private IntakeIO.DeployState currentState = IntakeIO.DeployState.RETRACTED;
 
   public Intake(IntakeIO io) {
     this.io = io;
@@ -27,11 +22,12 @@ public class Intake extends SubsystemBase {
     limitHit.onTrue(
         Commands.runOnce(
                 () -> {
-                  currentState = DeployState.RETRACTED;
+                  currentState = IntakeIO.DeployState.RETRACTED;
                   io.setDeployOpenLoop(Volts.of(0));
                   // io.zeroEncoder();
 
-                })
+                },
+                this)
             .withName("Intake.limitHit"));
   }
 
@@ -66,13 +62,16 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setDeployOpenLoop");
   }
 
-  public Command setDeployPosition(DeployState state) {
+  public Command setDeployPosition(IntakeIO.DeployState state) {
     return this.runOnce(
             () -> {
               currentState = state;
               io.setDeployPosition(state);
             })
-        .andThen(state == DeployState.RETRACTED ? Commands.waitUntil(limitHit) : Commands.none())
+        .andThen(
+            state == IntakeIO.DeployState.RETRACTED
+                ? Commands.waitUntil(limitHit)
+                : Commands.none())
         .andThen(
             Commands.runOnce(
                 () -> {

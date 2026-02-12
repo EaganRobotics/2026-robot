@@ -26,7 +26,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.lib.devices.DigitalInputWrapper;
-import frc.robot26.subsystems.intake.Intake.DeployState;
 
 public class IntakeIOTalonFX implements IntakeIO {
   private final DigitalInputWrapper limitSwitch =
