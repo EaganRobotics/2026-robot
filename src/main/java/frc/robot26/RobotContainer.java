@@ -22,7 +22,6 @@ import frc.robot26.subsystems.drive.ModuleIO;
 import frc.robot26.subsystems.drive.ModuleIOSim;
 import frc.robot26.subsystems.drive.ModuleIOTalonFX;
 import frc.robot26.subsystems.intake.Intake;
-import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
@@ -184,8 +183,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
     driverController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
-    driverController.x().onTrue(intake.setDeployPosition(DeployState.EXTENDED));
-    driverController.y().onTrue(intake.setDeployPosition(DeployState.RETRACTED));
+    driverController.x().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    driverController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
   }
 
   @Override
