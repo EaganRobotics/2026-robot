@@ -233,7 +233,8 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
       }
 
       // Apply update
-      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      poseEstimator.updateWithTime(
+          sampleTimestamps[i], rawGyroRotation.unaryMinus(), modulePositions);
     }
 
     // Update gyro alert
@@ -360,7 +361,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     this.setSimulatedPoseCallback.accept(pose);
-    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
+    poseEstimator.resetPosition(rawGyroRotation.unaryMinus(), getModulePositions(), pose);
   }
 
   /** Adds a new timestamped vision measurement. */
