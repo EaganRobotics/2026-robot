@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import org.ironmaple.simulation.SimulatedArena;
+import org.littletonrobotics.junction.AutoLogOutputManager;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -41,6 +42,9 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
   public Robot() {
+    // Look for @AutoLogOutput everywhere
+    AutoLogOutputManager.addPackage("frc");
+
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("RobotMACAddress", RobotInstance.getMacAddressStr());

@@ -4,7 +4,7 @@
   // FORCE Red Hat Java to use the remote Google Style Guide
   "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
   "java.format.settings.profile": "GoogleStyle",
-  "editor.defaultFormatter": "redhat.java",
+  "editor.defaultFormatter": null,
 
   // Format on Save: YES. This minimizes pre-commit hook failures.
   "editor.formatOnSave": true,
