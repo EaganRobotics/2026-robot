@@ -233,7 +233,8 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
       }
 
       // Apply update
-      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+      poseEstimator.updateWithTime(
+          sampleTimestamps[i], rawGyroRotation.unaryMinus(), modulePositions);
     }
 
     // Update gyro alert
