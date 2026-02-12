@@ -25,10 +25,12 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
-import frc.robot26.subsystems.intake.IntakeConstants.Real;
+import frc.lib.devices.DigitalInputWrapper;
+import frc.robot26.subsystems.intake.Intake.DeployState;
 
 public class IntakeIOTalonFX implements IntakeIO {
+  private final DigitalInputWrapper limitSwitch =
+      new DigitalInputWrapper(3, "limitSwitch", true); // TODO: adjust
   private final TalonFX lead, follower, deploy;
   private final MotionMagicVoltage deployPositionRequest = new MotionMagicVoltage(0);
   private final StatusSignal<Angle> leadPosition, deployPosition;
@@ -121,6 +123,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.deployCurrent = deployCurrent.getValue();
     inputs.deployAppliedVolts = deployVoltage.getValue();
     inputs.deployPosition = deployPosition.getValue();
+
+    inputs.limit = limitSwitch.get();
   }
 
   @Override

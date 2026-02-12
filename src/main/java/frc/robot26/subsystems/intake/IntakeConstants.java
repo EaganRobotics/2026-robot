@@ -14,21 +14,17 @@ import frc.lib.tunables.LoggedTunablePIDs;
 public class IntakeConstants {
   public static final double joystickSpeedMultiplier = 0.314;
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
-  public static final double GEARING_INTAKE = 5.0;
-  public static final double GEARING_DEPLOY = 5.0;
+  public static final double GEARING_INTAKE = 5.0; // TODO: adjust
+  public static final double GEARING_DEPLOY = 5.0; // TODO: adjust
 
   public static final Angle deployRotationLimit = Rotations.of(5.67); // TODO: adjust
   public static final Angle retractRotationLimit = Rotations.of(0); // TODO: adjust
-
-  public static enum DeployState {
-    EXTENDED,
-    RETRACTED
-  }
 
   public static final class Real {
     public static final int followerMotorID = 20; // TODO: change to correct ID
     public static final int leadMotorID = 21; // TODO: change to correct ID
     public static final int deployMotorID = 22; // TODO: change to correct ID
+
     public static final LoggedTunablePIDs deployPIDs =
         new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1);
   }
