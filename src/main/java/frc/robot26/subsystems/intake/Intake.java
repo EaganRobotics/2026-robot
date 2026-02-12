@@ -34,7 +34,6 @@ public class Intake extends SubsystemBase {
                   // io.zeroEncoder();
 
                 })
-            .ignoringDisable(true)
             .withName("Intake.limitHit"));
   }
 
@@ -43,8 +42,8 @@ public class Intake extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
 
-    Logger.recordOutput("Intake/CurrentState", currentState);
-    Logger.recordOutput("Intake/LimitHit", limitHit);
+    Logger.recordOutput("Intake/CurrentState", currentState.toString());
+    Logger.recordOutput("Intake/LimitHit", inputs.limit);
   }
 
   public Command setOpenLoop(Voltage output) {
@@ -72,13 +71,13 @@ public class Intake extends SubsystemBase {
   public Command setDeployPosition(DeployState state) {
     return this.runOnce(
             () -> {
+              currentState = state;
               io.setDeployPosition(state);
             })
-        .andThen(Commands.waitUntil(limitHit))
+        .andThen(state == DeployState.RETRACTED ? Commands.waitUntil(limitHit) : Commands.none())
         .andThen(
             Commands.runOnce(
                 () -> {
-                  // io.zeroEncoder();
                   io.setDeployOpenLoop(Volts.of(0));
                 }))
         .withName("Intake.setDeployPosition");

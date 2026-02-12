@@ -24,6 +24,7 @@ public class IntakeConstants {
     public static final int followerMotorID = 20; // TODO: change to correct ID
     public static final int leadMotorID = 21; // TODO: change to correct ID
     public static final int deployMotorID = 22; // TODO: change to correct ID
+    public static final int limitSwitchChannel = 3; // TODO: change to correct ID
 
     public static final LoggedTunablePIDs deployPIDs =
         new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1);
