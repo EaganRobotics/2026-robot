@@ -86,7 +86,7 @@ jobs:
 
       - name: Compile robot code
         if: steps.filter.outputs.java == 'true'
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build -PrunSpotBugs --no-daemon
 
       - name: Upload build artifacts
         if: steps.filter.outputs.java == 'true'
