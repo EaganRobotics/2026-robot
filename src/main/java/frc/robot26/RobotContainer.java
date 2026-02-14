@@ -34,7 +34,6 @@ import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.shooter.Shooter;
-import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
@@ -52,17 +51,17 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   // Subsystems
   private Drive drive;
-
-  @SuppressFBWarnings("URF_UNREAD_FIELD")
-  private Vision vision;
-
   private Intake intake;
   private Feeder feeder;
   private Floor floor;
   private Shooter shooter;
 
+  @SuppressFBWarnings("URF_UNREAD_FIELD")
+  private Vision vision;
+
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // Drive simulation
   private static final SwerveDriveSimulation driveSimulation =
@@ -196,6 +195,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               driverController::getLeftY,
               driverController::getLeftX,
               () -> -driverController.getRightX() * .85));
+      shooter.setDefaultCommand(
+          shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
+      intake.setDefaultCommand(
+          intake.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
+      feeder.setDefaultCommand(
+          feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+      floor.setDefaultCommand(
+          floor.setJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
     }
 
     driverController
@@ -209,25 +216,19 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
 
-    driverController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
-    driverController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
-    driverController.x().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
-    driverController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
+    operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
+    operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
+    operatorController.x().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    operatorController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
 
-    driverController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));
-    driverController.rightTrigger().whileTrue(feeder.setOpenLoop(Volts.of(-3)));
+    operatorController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));
+    operatorController.rightTrigger().whileTrue(feeder.setOpenLoop(Volts.of(-3)));
 
-    driverController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
-    driverController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));
+    operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
+    operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));
 
-    driverController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
-    driverController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
-    driverController
-        .povRight()
-        .onTrue(shooter.setHoodPosition(ShooterConstants.hoodRotationStartLimit));
-    driverController
-        .povLeft()
-        .onTrue(shooter.setHoodPosition(ShooterConstants.hoodRotationEndLimit));
+    operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
+    operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
   }
 
   @Override

@@ -26,6 +26,7 @@ public class ShooterConstants {
     public static final int followerRightMotorID = 28; // TODO: change to correct ID
     public static final int leadRightMotorID = 29; // TODO: change to correct ID
     public static final int hoodMotorID = 30; // TODO: change to correct ID
+
     public static final LoggedTunablePIDs shooterPIDs =
         new LoggedTunablePIDs("Shooter", 1.0, 0.1, 0.1);
     public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 1.0, 0.1, 0.1);
