@@ -15,8 +15,8 @@ public class FeederConstants {
   public static final double GEARING = 1.5;
 
   public static final class Real {
-    public static final int followerMotorID = 10; // TODO: make sure these are correct
-    public static final int leadMotorID = 9; // TODO: make sure these are correct
+    public static final int followerMotorID = 10;
+    public static final int leadMotorID = 9;
 
     public static final LoggedTunablePIDs feederPIDs =
         new LoggedTunablePIDs("Feeder", 1.0, 0.1, 0.1);
