@@ -9,7 +9,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot26.subsystems.intake.IntakeConstants.DeployState;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeIO {
@@ -25,6 +24,13 @@ public interface IntakeIO {
     public Voltage deployAppliedVolts = Volts.of(0.0);
     public Current deployCurrent = Amps.of(0.0);
     public Angle deployPosition = Rotations.of(0.0);
+
+    public boolean limit = false;
+  }
+
+  public static enum DeployState {
+    EXTENDED,
+    RETRACTED
   }
 
   /** Updates the set of loggable inputs. */
