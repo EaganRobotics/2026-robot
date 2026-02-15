@@ -19,13 +19,13 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static final String limelightShooter = "limelightShooter";
+  public static final String limelightShooter = "limelight-shooter";
   public static final String limelightBack = "limelightBack";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   public static final Transform3d robotToCameraShooter =
-      new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
+      new Transform3d(0.2514, 0.2924, 0.2153, new Rotation3d(0.0, 23.2, 0.0));
   public static final Transform3d robotToCameraBack =
       new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
 

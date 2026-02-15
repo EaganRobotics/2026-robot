@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_SHOOTER;
 import static frc.robot26.subsystems.shooter.ShooterConstants.SUPPLY_CURRENT_LIMIT;
-import static frc.robot26.subsystems.shooter.ShooterConstants.Sim;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
