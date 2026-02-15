@@ -254,6 +254,13 @@ public class ModuleIOTalonFX implements ModuleIO {
         });
   }
 
+  @Override
+  public void setCoast() {
+    driveTalon.setNeutralMode(NeutralModeValue.Coast);
+    turnTalon.setNeutralMode(NeutralModeValue.Coast);
+    Logger.recordOutput("Drive/Coast", true);
+  }
+
   public void setBrake() {
     driveTalon.setNeutralMode(NeutralModeValue.Brake);
     turnTalon.setNeutralMode(NeutralModeValue.Brake);
