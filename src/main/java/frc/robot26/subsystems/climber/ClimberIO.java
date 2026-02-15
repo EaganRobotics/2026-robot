@@ -12,16 +12,14 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ClimberIO {
   @AutoLog
   public static class ClimberIOInputs {
-    public boolean ClimberConnected = false;
-    public AngularVelocity ClimberVelocity = RadiansPerSecond.of(0.0);
-    public Voltage ClimberAppliedVolts = Volts.of(0.0);
-    public Current ClimberCurrent = Amps.of(0.0);
+    public boolean climberConnected = false;
+    public AngularVelocity climberVelocity = RadiansPerSecond.of(0.0);
+    public Voltage climberAppliedVolts = Volts.of(0.0);
+    public Current climberCurrent = Amps.of(0.0);
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(ClimberIOInputs inputs) {}
-  ;
+  public default void updateInputs(ClimberIOInputs inputs) {};
 
-  public default void setClimberOpenLoop(Voltage output) {}
-  ;
+  public default void setClimberOpenLoop(Voltage output) {};
 }

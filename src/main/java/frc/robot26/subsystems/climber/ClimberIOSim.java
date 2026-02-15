@@ -19,45 +19,41 @@ import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
 
 public class ClimberIOSim implements ClimberIO {
-  private static final DCMotor ClimberGearbox = DCMotor.getKrakenX44(2);
-  private final SimulatedMotorController.GenericMotorController ClimberMotorController;
-  private final MapleMotorSim ClimberMotor;
-  private Voltage ClimberAppliedVoltage = Volts.of(0);
+  private static final DCMotor climberGearbox = DCMotor.getKrakenX44(2);
+  private final SimulatedMotorController.GenericMotorController climberMotorController;
+  private final MapleMotorSim climberMotor;
+  private Voltage climberAppliedVoltage = Volts.of(0);
 
   // one is the actual simulator and one is like the which model is used and its
   // gearbox configuration, using both flywheelsim and maple motor sim is good
-  private final FlywheelSim ClimberSim =
-      new FlywheelSim(
-          LinearSystemId.createFlywheelSystem(ClimberGearbox, 0.1, GEARING),
-          ClimberGearbox,
-          0.000015);
+  private final FlywheelSim ClimberSim = new FlywheelSim(
+      LinearSystemId.createFlywheelSystem(climberGearbox, 0.1, GEARING), climberGearbox, 0.000015);
 
   public ClimberIOSim() {
-    ClimberMotor =
-        new MapleMotorSim(
-            new SimMotorConfigs(ClimberGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
-    ClimberMotorController =
-        ClimberMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
+    climberMotor = new MapleMotorSim(
+        new SimMotorConfigs(climberGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
+    climberMotorController =
+        climberMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
   }
 
   @Override
   public void setClimberOpenLoop(Voltage output) {
-    ClimberAppliedVoltage = output;
+    climberAppliedVoltage = output;
   }
 
   @Override
   public void updateInputs(ClimberIOInputs inputs) {
     var ClimberAngularVelocity = ClimberSim.getAngularVelocityRadPerSec();
 
-    ClimberMotorController.requestVoltage(ClimberAppliedVoltage);
-    ClimberSim.setInputVoltage(ClimberMotor.getAppliedVoltage().in(Volts));
-    ClimberMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
+    climberMotorController.requestVoltage(climberAppliedVoltage);
+    ClimberSim.setInputVoltage(climberMotor.getAppliedVoltage().in(Volts));
+    climberMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
     ClimberSim.update(TimedRobot.kDefaultPeriod);
 
     // Update motor inputs
-    inputs.ClimberConnected = true;
-    inputs.ClimberAppliedVolts = ClimberAppliedVoltage;
-    inputs.ClimberCurrent = Amps.of(ClimberSim.getCurrentDrawAmps());
-    inputs.ClimberVelocity = AngularVelocity.ofBaseUnits(ClimberAngularVelocity, RadiansPerSecond);
+    inputs.climberConnected = true;
+    inputs.climberAppliedVolts = climberAppliedVoltage;
+    inputs.climberCurrent = Amps.of(ClimberSim.getCurrentDrawAmps());
+    inputs.climberVelocity = AngularVelocity.ofBaseUnits(ClimberAngularVelocity, RadiansPerSecond);
   }
 }
