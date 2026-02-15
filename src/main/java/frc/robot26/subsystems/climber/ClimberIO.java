@@ -19,7 +19,9 @@ public interface ClimberIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(ClimberIOInputs inputs) {};
+  public default void updateInputs(ClimberIOInputs inputs) {}
+  ;
 
-  public default void setClimberOpenLoop(Voltage output) {};
+  public default void setClimberOpenLoop(Voltage output) {}
+  ;
 }

@@ -26,12 +26,16 @@ public class ClimberIOSim implements ClimberIO {
 
   // one is the actual simulator and one is like the which model is used and its
   // gearbox configuration, using both flywheelsim and maple motor sim is good
-  private final FlywheelSim ClimberSim = new FlywheelSim(
-      LinearSystemId.createFlywheelSystem(climberGearbox, 0.1, GEARING), climberGearbox, 0.000015);
+  private final FlywheelSim ClimberSim =
+      new FlywheelSim(
+          LinearSystemId.createFlywheelSystem(climberGearbox, 0.1, GEARING),
+          climberGearbox,
+          0.000015);
 
   public ClimberIOSim() {
-    climberMotor = new MapleMotorSim(
-        new SimMotorConfigs(climberGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
+    climberMotor =
+        new MapleMotorSim(
+            new SimMotorConfigs(climberGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
     climberMotorController =
         climberMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
   }
