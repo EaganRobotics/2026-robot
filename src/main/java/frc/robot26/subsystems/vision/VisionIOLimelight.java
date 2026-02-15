@@ -51,6 +51,15 @@ public class VisionIOLimelight implements VisionIO {
         table.getDoubleArrayTopic("botpose_orb_wpiblue").subscribe(new double[] {});
   }
 
+  /*
+   *
+   * 9.898 x
+   * -11.512 y
+   * 8.474 z
+   * 32.2 degrees
+   *
+   */
+
   @Override
   public void updateInputs(VisionIOInputs inputs) {
     // Update connection status based on whether an update has been seen in the last
