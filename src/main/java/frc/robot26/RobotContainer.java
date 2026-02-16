@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCharacterization;
 import frc.robot26.commands.DriveCommands;
+import frc.robot26.commands.RollerCommands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.DriveConstants;
 import frc.robot26.subsystems.drive.GyroIO;
@@ -169,6 +171,20 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
 
+    NamedCommands.registerCommand(
+        "IntakeOut", intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    NamedCommands.registerCommand(
+        "IntakeIn", intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
+    NamedCommands.registerCommand("FeederOut", feeder.setOpenLoop(Volts.of(3)));
+    NamedCommands.registerCommand("FeederIn", feeder.setOpenLoop(Volts.of(-3)));
+    NamedCommands.registerCommand("FloorOut", floor.setOpenLoop(Volts.of(3)));
+    NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
+    NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
+    NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
+
+    NamedCommands.registerCommand(
+        "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder).withTimeout(3));
+
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
@@ -224,6 +240,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
+
+    driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder));
 
     operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
     operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
