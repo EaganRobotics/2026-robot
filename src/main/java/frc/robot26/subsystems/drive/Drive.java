@@ -310,18 +310,18 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     }
   }
 
-  public void swerveBreak() {
-    modules[0].setBrake();
-    modules[1].setBrake();
-    modules[2].setBrake();
-    modules[3].setBrake();
-  }
-
-  public void swerveCoast() {
-    modules[0].setCoast();
-    modules[1].setCoast();
-    modules[2].setCoast();
-    modules[3].setCoast();
+  public void swerveBreak(Boolean breakOn) {
+    if (breakOn == true) {
+      modules[0].setBrake();
+      modules[1].setBrake();
+      modules[2].setBrake();
+      modules[3].setBrake();
+    } else {
+      modules[0].setCoast();
+      modules[1].setCoast();
+      modules[2].setCoast();
+      modules[3].setCoast();
+    }
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

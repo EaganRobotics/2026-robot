@@ -189,7 +189,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void teleopInit() {
-    drive.swerveBreak();
+    drive.swerveBreak(true);
   }
 
   @Override
