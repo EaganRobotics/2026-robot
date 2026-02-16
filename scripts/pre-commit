@@ -36,9 +36,10 @@ if [ $RETVAL -ne 0 ]; then
     echo "=========================================="
     echo "SpotBugs found issues in your code!"
     echo "=========================================="
-    echo "To see the full error details in VS Code:"
-    echo "  1. Press Ctrl+Shift+B"
-    echo "  2. Select 'Build with SpotBugs'"
+    echo "To see the full error details:"
+    echo "  - In VS Code on Windows/Linux: press Ctrl+Shift+B, then select 'Build with SpotBugs'"
+    echo "  - In VS Code on macOS: press Cmd+Shift+B, then select 'Build with SpotBugs'"
+    echo "  - Or from the command line: run '$GRADLE_CMD spotbugsMain -PrunSpotBugs'"
     echo "=========================================="
     echo ""
     exit 1
