@@ -21,12 +21,25 @@ import frc.robot26.subsystems.drive.GyroIOSim;
 import frc.robot26.subsystems.drive.ModuleIO;
 import frc.robot26.subsystems.drive.ModuleIOSim;
 import frc.robot26.subsystems.drive.ModuleIOTalonFX;
+import frc.robot26.subsystems.feeder.Feeder;
+import frc.robot26.subsystems.feeder.FeederIO;
+import frc.robot26.subsystems.feeder.FeederIOSim;
+import frc.robot26.subsystems.feeder.FeederIOTalonFX;
+import frc.robot26.subsystems.floor.Floor;
+import frc.robot26.subsystems.floor.FloorIO;
+import frc.robot26.subsystems.floor.FloorIOSim;
+import frc.robot26.subsystems.floor.FloorIOTalonFX;
 import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
+import frc.robot26.subsystems.shooter.Shooter;
+import frc.robot26.subsystems.shooter.ShooterIO;
+import frc.robot26.subsystems.shooter.ShooterIOSim;
+import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot26.subsystems.vision.Vision;
 import frc.robot26.subsystems.vision.VisionConstants;
+import frc.robot26.subsystems.vision.VisionIOLimelight;
 import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -39,14 +52,17 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   // Subsystems
   private Drive drive;
+  private Intake intake;
+  private Feeder feeder;
+  private Floor floor;
+  private Shooter shooter;
 
   @SuppressFBWarnings("URF_UNREAD_FIELD")
   private Vision vision;
 
-  private Intake intake;
-
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // Drive simulation
   private static final SwerveDriveSimulation driveSimulation =
@@ -79,8 +95,18 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIOTalonFX(DriveConstants.BackLeft),
                 new ModuleIOTalonFX(DriveConstants.BackRight),
                 driveSimulation::setSimulationWorldPose);
-        vision = null;
+        vision =
+            new Vision(
+                drive,
+                new VisionIOLimelight(
+                    VisionConstants.limelightShooter, () -> drive.getPose().getRotation())
+                // , new VisionIOLimelight(VisionConstants.limelightBack,
+                // () -> drive.getPose().getRotation())
+                );
         intake = new Intake(new IntakeIOTalonFX());
+        feeder = new Feeder(new FeederIOTalonFX());
+        floor = new Floor(new FloorIOTalonFX());
+        shooter = new Shooter(new ShooterIOTalonFX());
         break;
       case SIM:
         super.configureDriveSimulation(driveSimulation);
@@ -105,6 +131,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     VisionConstants.robotToCameraBack,
                     driveSimulation::getSimulatedDriveTrainPose));
         intake = new Intake(new IntakeIOSim());
+        feeder = new Feeder(new FeederIOSim());
+        floor = new Floor(new FloorIOSim());
+        shooter = new Shooter(new ShooterIOSim());
         break;
       case REPLAY:
         drive =
@@ -117,6 +146,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 driveSimulation::setSimulationWorldPose);
         vision = null;
         intake = new Intake(new IntakeIO() {});
+        feeder = new Feeder(new FeederIO() {});
+        floor = new Floor(new FloorIO() {});
+        shooter = new Shooter(new ShooterIO() {});
         break;
       default:
         drive =
@@ -129,6 +161,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 driveSimulation::setSimulationWorldPose);
         vision = null;
         intake = new Intake(new IntakeIO() {});
+        feeder = new Feeder(new FeederIO() {});
+        floor = new Floor(new FloorIO() {});
+        shooter = new Shooter(new ShooterIO() {});
         throw new IllegalStateException(
             "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
@@ -168,9 +203,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               driverController::getLeftY,
               driverController::getLeftX,
               () -> -driverController.getRightX() * .85));
+      shooter.setDefaultCommand(
+          shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
+      intake.setDefaultCommand(
+          intake.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
+      feeder.setDefaultCommand(
+          feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+      floor.setDefaultCommand(
+          floor.setJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
     }
-
-    driverController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
 
     driverController
         .start()
@@ -182,9 +223,20 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
-    driverController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
-    driverController.x().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
-    driverController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
+
+    operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
+    operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
+    operatorController.x().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    operatorController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
+
+    operatorController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));
+    operatorController.rightTrigger().whileTrue(feeder.setOpenLoop(Volts.of(-3)));
+
+    operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
+    operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));
+
+    operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
+    operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
   }
 
   @Override
@@ -194,7 +246,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void simulationInit() {
-
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     arena.getBlueHub().setOnScoredCallback((gp) -> System.out.println("Blue Hub Scored!"));
@@ -204,7 +255,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void simulationPeriodic() {
-
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     Logger.recordOutput(
