@@ -1,5 +1,6 @@
 package frc.robot26;
 
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -255,6 +256,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
     operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
+
+    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
   }
 
   @Override
