@@ -185,6 +185,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand(
         "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder).withTimeout(3));
 
+    NamedCommands.registerCommand("SnapToRadius", DriveCommands.snapToRadius(drive, Feet.of(10.0)));
+
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
