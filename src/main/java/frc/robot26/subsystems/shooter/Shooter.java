@@ -1,8 +1,10 @@
 package frc.robot26.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +34,17 @@ public class Shooter extends SubsystemBase {
               io.setShooterOpenLoop(Volts.of(0));
             })
         .withName("Shooter.setOpenLoop");
+  }
+
+  public Command setShooterClosedLoop(AngularVelocity velocity) {
+    return this.startEnd(
+            () -> {
+              io.setShooterClosedLoop(velocity);
+            },
+            () -> {
+              io.setShooterClosedLoop(RPM.of(0));
+            })
+        .withName("Shooter.setClosedLoop");
   }
 
   public Command setHoodPosition(Angle angle) {

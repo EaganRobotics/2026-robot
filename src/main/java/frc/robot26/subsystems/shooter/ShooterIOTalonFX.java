@@ -14,6 +14,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -29,6 +30,7 @@ import frc.robot26.subsystems.shooter.ShooterConstants.Real;
 public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFX leadLeft, followerLeft, leadRight, followerRight, hood;
   private final MotionMagicVoltage hoodPositionRequest = new MotionMagicVoltage(0);
+  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
   private final StatusSignal<Angle> leadPositionLeft, leadPositionRight, hoodPosition;
   private final StatusSignal<AngularVelocity> leadVelocityLeft, leadVelocityRight, hoodVelocity;
   private final StatusSignal<Voltage> leadVoltageLeft, leadVoltageRight, hoodVoltage;
@@ -91,8 +93,9 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
 
-    Real.shooterPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
-    Real.shooterPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
+    // Apply velocity-specific PID gains to the shooter Talons (tunable via dashboard)
+    Real.shooterVelocityPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
+    Real.shooterVelocityPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
     Real.hoodPIDs.applyToTalonFXConfig(hood, hoodConfig);
 
     leadLeft.getConfigurator().apply(leadConfigLeft, 0.25);
@@ -128,6 +131,12 @@ public class ShooterIOTalonFX implements ShooterIO {
   public void setShooterOpenLoop(Voltage output) {
     leadLeft.setVoltage(output.in(Volts));
     leadRight.setVoltage(output.in(Volts));
+  }
+
+  @Override
+  public void setShooterClosedLoop(AngularVelocity velocity) {
+    leadLeft.setControl(velocityVoltageRequest.withVelocity(velocity));
+    leadRight.setControl(velocityVoltageRequest.withVelocity(velocity));
   }
 
   @Override
