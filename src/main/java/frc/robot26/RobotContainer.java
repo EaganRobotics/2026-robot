@@ -3,6 +3,7 @@ package frc.robot26;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -167,6 +168,17 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         throw new IllegalStateException(
             "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
+
+    NamedCommands.registerCommand(
+        "IntakeOut", intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    NamedCommands.registerCommand(
+        "IntakeIn", intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
+    NamedCommands.registerCommand("FeederOut", feeder.setOpenLoop(Volts.of(3)));
+    NamedCommands.registerCommand("FeederIn", feeder.setOpenLoop(Volts.of(-3)));
+    NamedCommands.registerCommand("FloorOut", floor.setOpenLoop(Volts.of(3)));
+    NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
+    NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
+    NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
