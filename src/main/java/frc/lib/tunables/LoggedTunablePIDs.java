@@ -34,13 +34,13 @@ public class LoggedTunablePIDs {
         });
   }
 
-  public ProfiledPIDController createController(double max_velocity, double max_acceleration) {
+  public ProfiledPIDController createController(double maxVelocity, double maxAcceleration) {
     ProfiledPIDController controller =
         new ProfiledPIDController(
             kP.getValue(),
             kI.getValue(),
             kD.getValue(),
-            new TrapezoidProfile.Constraints(max_velocity, max_acceleration));
+            new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
 
     kP.addListener(controller::setP);
     kI.addListener(controller::setI);
