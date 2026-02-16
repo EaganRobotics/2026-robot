@@ -36,8 +36,6 @@ import org.littletonrobotics.junction.Logger;
 public class DriveCommands {
   private static final double DEADBAND = 0.05;
 
-  /// Auto snap to position distance
-
   private static final Distance BLUE_HUB_CENTER_X = Inches.of(182);
   private static final Distance BLUE_HUB_CENTER_Y = Inches.of(159.0935);
 
