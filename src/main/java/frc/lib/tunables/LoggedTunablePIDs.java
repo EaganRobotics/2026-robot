@@ -2,6 +2,8 @@ package frc.lib.tunables;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class LoggedTunablePIDs {
   private final LoggedTunableNumber kP;
@@ -30,6 +32,21 @@ public class LoggedTunablePIDs {
           config.Slot0.kD = kD;
           talon.getConfigurator().apply(config);
         });
+  }
+
+  public ProfiledPIDController createController(double max_velocity, double max_acceleration) {
+    ProfiledPIDController controller =
+        new ProfiledPIDController(
+            kP.getValue(),
+            kI.getValue(),
+            kD.getValue(),
+            new TrapezoidProfile.Constraints(max_velocity, max_acceleration));
+
+    kP.addListener(controller::setP);
+    kI.addListener(controller::setI);
+    kD.addListener(controller::setD);
+
+    return controller;
   }
 
   public double getKP() {
