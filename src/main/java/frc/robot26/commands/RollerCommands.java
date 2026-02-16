@@ -9,7 +9,7 @@ import frc.robot26.subsystems.shooter.Shooter;
 
 public class RollerCommands {
 
-  public static Command shoot(Shooter shooter, Floor floor, Feeder feeder) {
+  public static Command shootOpenLoop(Shooter shooter, Floor floor, Feeder feeder) {
     return shooter
         .setShooterOpenLoop(Volts.of(3))
         .alongWith(floor.setOpenLoop(Volts.of(3)))
