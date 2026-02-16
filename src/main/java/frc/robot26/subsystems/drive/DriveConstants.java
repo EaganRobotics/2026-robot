@@ -20,7 +20,7 @@ public class DriveConstants {
   private static final Current kSlipCurrent = Amps.of(120.0); // TODO measure this
 
   // PathPlanner and Maple Sim config constants
-  public static final Distance kWheelRadius = Inches.of(1.891); // TODO measure often
+  public static final Distance kWheelRadius = Inches.of(1.836); // last measured 2/16
   public static final double ROBOT_MASS_KG = 60.78;
   public static final double ROBOT_MOI = 5.4;
   public static final double WHEEL_COF = 1.45;
