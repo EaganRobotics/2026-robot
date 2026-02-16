@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCharacterization;
 import frc.robot26.commands.DriveCommands;
+import frc.robot26.commands.RollerCommands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.DriveConstants;
 import frc.robot26.subsystems.drive.GyroIO;
@@ -180,6 +181,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
 
+    NamedCommands.registerCommand(
+        "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder).withTimeout(3));
+
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
     // Set up SysId routines
@@ -235,6 +239,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
+
+    driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder));
 
     operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
     operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));

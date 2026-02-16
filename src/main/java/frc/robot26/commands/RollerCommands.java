@@ -1,0 +1,19 @@
+package frc.robot26.commands;
+
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot26.subsystems.feeder.Feeder;
+import frc.robot26.subsystems.floor.Floor;
+import frc.robot26.subsystems.shooter.Shooter;
+
+public class RollerCommands {
+
+  public static Command shoot(Shooter shooter, Floor floor, Feeder feeder) {
+    return shooter
+        .setShooterOpenLoop(Volts.of(3))
+        .alongWith(floor.setOpenLoop(Volts.of(3)))
+        .alongWith(feeder.setOpenLoop(Volts.of(3)))
+        .withName("RollerCommands.shoot");
+  }
+}
