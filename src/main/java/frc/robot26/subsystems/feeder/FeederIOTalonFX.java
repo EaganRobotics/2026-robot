@@ -10,6 +10,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -27,6 +28,7 @@ public class FeederIOTalonFX implements FeederIO {
   private final StatusSignal<AngularVelocity> leadVelocity;
   private final StatusSignal<Voltage> leadVoltage;
   private final StatusSignal<Current> leadCurrent;
+  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
 
   public FeederIOTalonFX() {
     lead = new TalonFX(Real.leadMotorID);
@@ -59,6 +61,11 @@ public class FeederIOTalonFX implements FeederIO {
   @Override
   public void setFeederOpenLoop(Voltage output) {
     lead.setVoltage(output.in(Volts));
+  }
+
+  @Override
+  public void setFeederClosedLoop(AngularVelocity velocity) {
+    lead.setControl(velocityVoltageRequest.withVelocity(velocity));
   }
 
   @Override
