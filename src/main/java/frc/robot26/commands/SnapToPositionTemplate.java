@@ -21,12 +21,11 @@ import static edu.wpi.first.units.Units.Radians;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.lib.tunables.LoggedTunableNumber;
+import frc.lib.tunables.LoggedTunablePIDs;
 import frc.robot26.subsystems.drive.Drive;
 import java.util.Optional;
 import java.util.Set;
@@ -40,39 +39,32 @@ public class SnapToPositionTemplate {
   private static final double POSITION_MAX_ACCELERATION = 6;
   private static final double POSITION_TOLERANCE = Inches.of(1).in(Meters);
 
-  // PID
-  private static final LoggedTunableNumber ANGLE_KP =
-      new LoggedTunableNumber("Tuning/SnapToPosition/Angle_kP", 7.0);
-  private static final LoggedTunableNumber ANGLE_KI =
-      new LoggedTunableNumber("Tuning/SnapToPosition/Angle_kI", 0.0);
-  private static final LoggedTunableNumber ANGLE_KD =
-      new LoggedTunableNumber("Tuning/SnapToPosition/Angle_kD", 0.4);
-
-  private static final LoggedTunableNumber POSITION_KP =
-      new LoggedTunableNumber("Tuning/SnapToPosition/Position_kP", 4);
-  private static final LoggedTunableNumber POSITION_KI =
-      new LoggedTunableNumber("Tuning/SnapToPosition/Position_kI", 0);
-  private static final LoggedTunableNumber POSITION_KD =
-      new LoggedTunableNumber("Tuning/SnapToPosition/Position_kD", 0);
-
   // PID controllers
-  private static final ProfiledPIDController xController =
-      new ProfiledPIDController(
-          0,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+  public static final double X_KP = 4.0;
+  public static final double X_KI = 0.0;
+  public static final double X_KD = 0.0;
 
-  private static final ProfiledPIDController yController =
-      new ProfiledPIDController(
-          0,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION));
+  public static final double Y_KP = 4.0;
+  public static final double Y_KI = 0.0;
+  public static final double Y_KD = 0.0;
 
-  private static final ProfiledPIDController angleController =
-      new ProfiledPIDController(
-          0, 0, 0, new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+  public static final double ANGLE_KP = 7.0;
+  public static final double ANGLE_KI = 0.0;
+  public static final double ANGLE_KD = 0.4;
+
+  private static final LoggedTunablePIDs xPIDs =
+      new LoggedTunablePIDs("SnapToPosition/X", X_KP, X_KI, X_KD);
+  private static final LoggedTunablePIDs yPIDs =
+      new LoggedTunablePIDs("SnapToPosition/Y", Y_KP, Y_KI, Y_KD);
+  private static final LoggedTunablePIDs anglePIDs =
+      new LoggedTunablePIDs("SnapToPosition/Angle", ANGLE_KP, ANGLE_KI, ANGLE_KD);
+
+  public static final ProfiledPIDController xController =
+      xPIDs.createController(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION);
+  public static final ProfiledPIDController yController =
+      yPIDs.createController(POSITION_MAX_VELOCITY, POSITION_MAX_ACCELERATION);
+  public static final ProfiledPIDController angleController =
+      anglePIDs.createController(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION);
 
   static {
     // Setup PID controllers
@@ -80,24 +72,14 @@ public class SnapToPositionTemplate {
     yController.setTolerance(POSITION_TOLERANCE);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
     angleController.setTolerance(ANGLE_TOLERANCE);
-
-    // This also sets the PID gains immediately
-    POSITION_KP.addListener(xController::setP);
-    POSITION_KI.addListener(xController::setI);
-    POSITION_KD.addListener(xController::setD);
-    POSITION_KP.addListener(yController::setP);
-    POSITION_KI.addListener(yController::setI);
-    POSITION_KD.addListener(yController::setD);
-    ANGLE_KP.addListener(angleController::setP);
-    ANGLE_KI.addListener(angleController::setI);
-    ANGLE_KD.addListener(angleController::setD);
   }
 
   // EXAMPLE OF HOW TO MAKE POSITION ARRAYS FOR SNAP TO POSITION:
 
   // public static Pose2d[] makeReefPositions(Distance reefOffset) {
   // Transform2d REEF_BRANCH_TO_ROBOT = new Transform2d(
-  // Inches.of(-INCHES_FROM_REEF).minus(reefOffset), Inches.zero(), Rotation2d.kZero);
+  // Inches.of(-INCHES_FROM_REEF).minus(reefOffset), Inches.zero(),
+  // Rotation2d.kZero);
   // return new Pose2d[] {
   // new Pose2d(
   // BLUE_REEF_CENTER.plus(
@@ -109,7 +91,8 @@ public class SnapToPositionTemplate {
   // Rotation2d.kZero).transformBy(REEF_BRANCH_TO_ROBOT)};
   // }
 
-  // private static final Pose2d[] REEF_POSITIONS = makeReefPositions(Inches.of(12));
+  // private static final Pose2d[] REEF_POSITIONS =
+  // makeReefPositions(Inches.of(12));
 
   private SnapToPositionTemplate() {}
 

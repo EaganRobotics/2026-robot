@@ -74,18 +74,6 @@ public class DriveConstants {
     public static final double POSITION_MAX_ACCELERATION = 6;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
-
-    public static final double X_KP = 0.1;
-    public static final double X_KI = 0.0;
-    public static final double X_KD = 0.0;
-
-    public static final double Y_KP = 0.1;
-    public static final double Y_KI = 0.0;
-    public static final double Y_KD = 0.0;
-
-    public static final double ANGLE_KP = 0.1;
-    public static final double ANGLE_KI = 0.0;
-    public static final double ANGLE_KD = 0.0;
   }
 
   /* These Gains constants only affect simulation */
