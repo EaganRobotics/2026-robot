@@ -293,33 +293,15 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     stop();
   }
 
-  public void toggleCoast() {
-    if (coastModeOn == false) {
-      modules[0].setCoast();
-      modules[1].setCoast();
-      modules[2].setCoast();
-      modules[3].setCoast();
-      coastModeOn = true;
-    } else {
-      modules[0].setBrake();
-      modules[1].setBrake();
-      modules[2].setBrake();
-      modules[3].setBrake();
-      coastModeOn = false;
-    }
-  }
-
   public void swerveBreak(Boolean breakOn) {
     if (breakOn == true) {
-      modules[0].setBrake();
-      modules[1].setBrake();
-      modules[2].setBrake();
-      modules[3].setBrake();
+      for (Module swerve : modules) {
+        swerve.setCoast();
+      }
     } else {
-      modules[0].setCoast();
-      modules[1].setCoast();
-      modules[2].setCoast();
-      modules[3].setCoast();
+      for (Module swerve : modules) {
+        swerve.setCoast();
+      }
     }
   }
 
