@@ -7,12 +7,15 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
   private final FeederIO io;
   private final FeederIOInputsAutoLogged inputs = new FeederIOInputsAutoLogged();
+
+  private AngularVelocity velocitySetpoint = RPM.of(0);
 
   public Feeder(FeederIO io) {
     this.io = io;
@@ -44,6 +47,13 @@ public class Feeder extends SubsystemBase {
               io.setFeederClosedLoop(RPM.of(0));
             })
         .withName("Feeder.setClosedLoop");
+  }
+
+  public Trigger isAtVelocitySetpoint() {
+    return new Trigger(
+        () -> {
+          return inputs.feederVelocity.gte(velocitySetpoint);
+        });
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {

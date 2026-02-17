@@ -1,6 +1,7 @@
 package frc.robot26;
 
 import static edu.wpi.first.units.Units.Feet;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -244,6 +245,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .withName("RobotContainer.driverZeroCommand"));
 
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder));
+    driverController
+        .x()
+        .whileTrue(
+            RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100)));
+    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
 
     operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
     operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
@@ -258,8 +264,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
     operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
-
-    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
   }
 
   @Override

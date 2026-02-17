@@ -1,6 +1,7 @@
 package frc.robot26.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
@@ -21,6 +22,7 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -135,8 +137,9 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void setShooterClosedLoop(AngularVelocity velocity) {
-    leadLeft.setControl(velocityVoltageRequest.withVelocity(velocity));
-    leadRight.setControl(velocityVoltageRequest.withVelocity(velocity));
+    double velocityRotPerSec = Units.radiansToRotations(velocity.in(RadiansPerSecond));
+    leadLeft.setControl(velocityVoltageRequest.withVelocity(velocityRotPerSec));
+    leadRight.setControl(velocityVoltageRequest.withVelocity(velocityRotPerSec));
   }
 
   @Override
