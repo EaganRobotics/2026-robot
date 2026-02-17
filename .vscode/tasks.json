@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build with SpotBugs",
+            "type": "shell",
+            "command": "./gradlew",
+            "args": [
+                "build",
+                "-PrunSpotBugs"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Build robot code with SpotBugs static analysis enabled",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}
