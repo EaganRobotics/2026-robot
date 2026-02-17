@@ -224,7 +224,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               driverController::getLeftX,
               () -> -driverController.getRightX() * .85));
       shooter.setDefaultCommand(
-          shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
+          shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftX() * 2));
       intake.setDefaultCommand(
           intake.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
       feeder.setDefaultCommand(
@@ -250,6 +250,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .whileTrue(
             RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100)));
     driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
+    driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
 
     operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
     operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));

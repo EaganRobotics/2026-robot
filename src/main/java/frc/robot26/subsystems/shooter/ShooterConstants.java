@@ -21,10 +21,10 @@ public class ShooterConstants {
   public static final Angle hoodRotationEndLimit = Rotations.of(5.67); // TODO: adjust
 
   public static final class Real {
-    public static final int followerLeftMotorID = 26; // TODO: change to correct ID
-    public static final int leadLeftMotorID = 27; // TODO: change to correct ID
-    public static final int followerRightMotorID = 28; // TODO: change to correct ID
-    public static final int leadRightMotorID = 29; // TODO: change to correct ID
+    public static final int followerLeftMotorID = 13; // TODO: change to correct ID
+    public static final int leadLeftMotorID = 14; // TODO: change to correct ID
+    public static final int followerRightMotorID = 11; // TODO: change to correct ID
+    public static final int leadRightMotorID = 12; // TODO: change to correct ID
     public static final int hoodMotorID = 30; // TODO: change to correct ID
 
     public static final LoggedTunablePIDs shooterPIDs =
