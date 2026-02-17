@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.11868154158215,
-        "y": 4.3845537525354965
+        "x": 3.026693711967545,
+        "y": 4.504137931034483
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 4.936480730223123
       },
       "prevControl": {
-        "x": 3.0726876267748473,
-        "y": 4.421348884381338
+        "x": 2.778326572008113,
+        "y": 4.697312373225152
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 3.0,
-    "rotation": -43.363422958383175
+    "rotation": -39.207203504967744
   },
   "reversed": false,
   "folder": "Practice Path",

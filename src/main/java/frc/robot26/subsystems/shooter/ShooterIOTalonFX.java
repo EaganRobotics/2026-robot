@@ -69,7 +69,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     leadConfigLeft.Feedback.SensorToMechanismRatio = GEARING_SHOOTER;
     leadConfigLeft.Voltage.PeakForwardVoltage = 10;
     leadConfigLeft.Voltage.PeakReverseVoltage = -10;
-    leadConfigLeft.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    leadConfigLeft.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     leadConfigRight.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leadConfigRight.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -78,7 +78,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     leadConfigRight.Feedback.SensorToMechanismRatio = GEARING_SHOOTER;
     leadConfigRight.Voltage.PeakForwardVoltage = 10;
     leadConfigRight.Voltage.PeakReverseVoltage = -10;
-    leadConfigRight.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    leadConfigRight.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     hoodConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;

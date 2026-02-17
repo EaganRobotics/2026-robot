@@ -8,12 +8,15 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+
+  private AngularVelocity velocitySetpoint = RPM.of(0);
 
   public Shooter(ShooterIO io) {
     this.io = io;
@@ -45,6 +48,13 @@ public class Shooter extends SubsystemBase {
               io.setShooterClosedLoop(RPM.of(0));
             })
         .withName("Shooter.setClosedLoop");
+  }
+
+  public Trigger isAtVelocitySetpoint() {
+    return new Trigger(
+        () -> {
+          return inputs.shooterVelocity.gte(velocitySetpoint);
+        });
   }
 
   public Command setHoodPosition(Angle angle) {
