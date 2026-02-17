@@ -96,6 +96,8 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
               1),
           getModuleTranslations());
 
+  private boolean coastModeOn;
+
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
@@ -289,6 +291,18 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     }
     kinematics.resetHeadings(headings);
     stop();
+  }
+
+  public void swerveBreak(Boolean breakOn) {
+    if (breakOn == true) {
+      for (Module swerve : modules) {
+        swerve.setCoast();
+      }
+    } else {
+      for (Module swerve : modules) {
+        swerve.setCoast();
+      }
+    }
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */

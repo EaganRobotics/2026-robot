@@ -267,6 +267,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   }
 
   @Override
+  public void teleopInit() {
+    drive.swerveBreak(true);
+  }
+
+  @Override
   public void simulationInit() {
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
