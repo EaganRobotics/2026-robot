@@ -34,4 +34,6 @@ public interface ShooterIO {
   public default void setHoodOpenLoop(Voltage output) {}
 
   public default void setHoodPosition(Angle angle) {}
+
+  public default void setShooterClosedLoop(AngularVelocity velocity) {}
 }

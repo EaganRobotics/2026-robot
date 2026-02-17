@@ -26,6 +26,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.lib.devices.DigitalInputWrapper;
+import frc.robot26.subsystems.intake.IntakeConstants.Real;
 
 public class IntakeIOTalonFX implements IntakeIO {
   private final DigitalInputWrapper limitSwitch =
@@ -73,6 +74,13 @@ public class IntakeIOTalonFX implements IntakeIO {
     deployConfig.Voltage.PeakForwardVoltage = 10;
     deployConfig.Voltage.PeakReverseVoltage = -10;
     deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+    deployConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    deployConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
+        IntakeConstants.deployRotationLimit.in(Rotations);
+    deployConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    deployConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
+        IntakeConstants.retractRotationLimit.in(Rotations);
 
     Real.deployPIDs.applyToTalonFXConfig(deploy, deployConfig);
 

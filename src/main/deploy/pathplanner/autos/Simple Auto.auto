@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1M Foreward"
+            "pathName": "Simple.1"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "1M Left"
+            "name": "SnapToRadius"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "1M Right"
+            "name": "AutoShoot"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
-  "folder": "Test Autos",
+  "resetOdom": false,
+  "folder": "Practice Autos",
   "choreoAuto": false
 }

@@ -1,6 +1,7 @@
 package frc.robot26.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
@@ -14,12 +15,14 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -29,6 +32,7 @@ import frc.robot26.subsystems.shooter.ShooterConstants.Real;
 public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFX leadLeft, followerLeft, leadRight, followerRight, hood;
   private final MotionMagicVoltage hoodPositionRequest = new MotionMagicVoltage(0);
+  private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
   private final StatusSignal<Angle> leadPositionLeft, leadPositionRight, hoodPosition;
   private final StatusSignal<AngularVelocity> leadVelocityLeft, leadVelocityRight, hoodVelocity;
   private final StatusSignal<Voltage> leadVoltageLeft, leadVoltageRight, hoodVoltage;
@@ -67,7 +71,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     leadConfigLeft.Feedback.SensorToMechanismRatio = GEARING_SHOOTER;
     leadConfigLeft.Voltage.PeakForwardVoltage = 10;
     leadConfigLeft.Voltage.PeakReverseVoltage = -10;
-    leadConfigLeft.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    leadConfigLeft.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     leadConfigRight.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leadConfigRight.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -76,7 +80,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     leadConfigRight.Feedback.SensorToMechanismRatio = GEARING_SHOOTER;
     leadConfigRight.Voltage.PeakForwardVoltage = 10;
     leadConfigRight.Voltage.PeakReverseVoltage = -10;
-    leadConfigRight.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    leadConfigRight.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     hoodConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -91,8 +95,9 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
 
-    Real.shooterPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
-    Real.shooterPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
+    // Apply velocity-specific PID gains to the shooter Talons (tunable via dashboard)
+    Real.shooterVelocityPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
+    Real.shooterVelocityPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
     Real.hoodPIDs.applyToTalonFXConfig(hood, hoodConfig);
 
     leadLeft.getConfigurator().apply(leadConfigLeft, 0.25);
@@ -128,6 +133,13 @@ public class ShooterIOTalonFX implements ShooterIO {
   public void setShooterOpenLoop(Voltage output) {
     leadLeft.setVoltage(output.in(Volts));
     leadRight.setVoltage(output.in(Volts));
+  }
+
+  @Override
+  public void setShooterClosedLoop(AngularVelocity velocity) {
+    double velocityRotPerSec = Units.radiansToRotations(velocity.in(RadiansPerSecond));
+    leadLeft.setControl(velocityVoltageRequest.withVelocity(velocityRotPerSec));
+    leadRight.setControl(velocityVoltageRequest.withVelocity(velocityRotPerSec));
   }
 
   @Override
