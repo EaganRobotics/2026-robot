@@ -16,6 +16,19 @@ spotbugs {
     excludeFilter = file("spotbugs-exclude.xml")
 }
 
+// Disable SpotBugs from running during normal builds.
+// It will only run when explicitly invoked (pre-commit hook or CI).
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    enabled = false
+}
+
+// Allow enabling SpotBugs explicitly via: ./gradlew build -PrunSpotBugs
+if (project.hasProperty('runSpotBugs')) {
+    tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+        enabled = true
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17

@@ -1,7 +1,9 @@
 package frc.robot26.subsystems.feeder;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,6 +33,17 @@ public class Feeder extends SubsystemBase {
               io.setFeederOpenLoop(Volts.of(0));
             })
         .withName("Feeder.setOpenLoop");
+  }
+
+  public Command setClosedLoop(AngularVelocity velocity) {
+    return this.startEnd(
+            () -> {
+              io.setFeederClosedLoop(velocity);
+            },
+            () -> {
+              io.setFeederClosedLoop(RPM.of(0));
+            })
+        .withName("Feeder.setClosedLoop");
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {

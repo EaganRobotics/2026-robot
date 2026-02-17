@@ -20,7 +20,7 @@ public class DriveConstants {
   private static final Current kSlipCurrent = Amps.of(120.0); // TODO measure this
 
   // PathPlanner and Maple Sim config constants
-  public static final Distance kWheelRadius = Inches.of(1.891); // TODO measure often
+  public static final Distance kWheelRadius = Inches.of(1.836); // last measured 2/16
   public static final double ROBOT_MASS_KG = 60.78;
   public static final double ROBOT_MOI = 5.4;
   public static final double WHEEL_COF = 1.45;
@@ -74,18 +74,6 @@ public class DriveConstants {
     public static final double POSITION_MAX_ACCELERATION = 6;
     public static final double ANGLE_MAX_VELOCITY = 8.0;
     public static final double ANGLE_MAX_ACCELERATION = 20.0;
-
-    public static final double X_KP = 0.1;
-    public static final double X_KI = 0.0;
-    public static final double X_KD = 0.0;
-
-    public static final double Y_KP = 0.1;
-    public static final double Y_KI = 0.0;
-    public static final double Y_KD = 0.0;
-
-    public static final double ANGLE_KP = 0.1;
-    public static final double ANGLE_KI = 0.0;
-    public static final double ANGLE_KD = 0.0;
   }
 
   /* These Gains constants only affect simulation */

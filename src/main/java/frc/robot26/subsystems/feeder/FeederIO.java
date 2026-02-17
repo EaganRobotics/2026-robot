@@ -22,4 +22,6 @@ public interface FeederIO {
   public default void updateInputs(FeederIOInputs inputs) {}
 
   public default void setFeederOpenLoop(Voltage output) {}
+
+  public default void setFeederClosedLoop(AngularVelocity velocity) {}
 }

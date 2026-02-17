@@ -6,7 +6,6 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.feeder.FeederConstants.GEARING;
 import static frc.robot26.subsystems.feeder.FeederConstants.SUPPLY_CURRENT_LIMIT;
-import static frc.robot26.subsystems.feeder.FeederConstants.Sim;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -14,6 +13,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot26.subsystems.feeder.FeederConstants.Sim;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -43,6 +43,11 @@ public class FeederIOSim implements FeederIO {
   @Override
   public void setFeederOpenLoop(Voltage output) {
     feederAppliedVoltage = output;
+  }
+
+  @Override
+  public void setFeederClosedLoop(AngularVelocity velocity) {
+    feederAppliedVoltage = Volts.of(0); // TODO: Implement closed-loop control
   }
 
   @Override
