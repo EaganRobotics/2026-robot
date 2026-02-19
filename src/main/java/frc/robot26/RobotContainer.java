@@ -224,14 +224,16 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               driverController::getLeftX,
               () -> -driverController.getRightX() * .85));
       shooter.setDefaultCommand(
-          shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
+          shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
       intake.setDefaultCommand(
           intake.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
       feeder.setDefaultCommand(
           feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
       floor.setDefaultCommand(
-          floor.setJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
+          floor.setJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
     }
+
+    // Driver Controls
 
     driverController
         .start()
@@ -244,12 +246,17 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
 
+    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
+    driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder));
     driverController
         .x()
         .whileTrue(
-            RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100)));
-    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
+            Commands.sequence(
+                DriveCommands.snapToRadius(drive, Feet.of(7.0)),
+                RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100))));
+
+    // Operator Controls
 
     operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
     operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));

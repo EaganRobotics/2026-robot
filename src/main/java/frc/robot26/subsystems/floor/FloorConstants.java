@@ -14,7 +14,7 @@ public class FloorConstants {
   public static final double GEARING = 3.0;
 
   public static final class Real {
-    public static final int leadMotorID = 23; // TODO: change to correct ID
+    public static final int leadMotorID = 15; // TODO: change to correct ID
   }
 
   public static final class Sim {

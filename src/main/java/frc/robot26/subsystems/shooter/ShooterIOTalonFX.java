@@ -102,11 +102,11 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     leadLeft.getConfigurator().apply(leadConfigLeft, 0.25);
     leadLeft.setPosition(0);
-    followerLeft.setControl(new Follower(Real.leadLeftMotorID, MotorAlignmentValue.Opposed));
+    followerLeft.setControl(new Follower(Real.leadLeftMotorID, MotorAlignmentValue.Aligned));
 
     leadRight.getConfigurator().apply(leadConfigRight, 0.25);
     leadRight.setPosition(0);
-    followerRight.setControl(new Follower(Real.leadRightMotorID, MotorAlignmentValue.Opposed));
+    followerRight.setControl(new Follower(Real.leadRightMotorID, MotorAlignmentValue.Aligned));
 
     hood.getConfigurator().apply(hoodConfig, 0.25);
     hood.setPosition(0);

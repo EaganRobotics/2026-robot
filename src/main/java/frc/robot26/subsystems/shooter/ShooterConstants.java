@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.lib.tunables.LoggedTunablePIDs;
 
 public class ShooterConstants {
-  public static final double joystickSpeedMultiplier = 0.314;
+  public static final double joystickSpeedMultiplier = 0.85;
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
   public static final double GEARING_SHOOTER = 5.0; // TODO: adjust
   public static final double GEARING_HOOD = 5.0; // TODO: adjust
@@ -21,16 +21,17 @@ public class ShooterConstants {
   public static final Angle hoodRotationEndLimit = Rotations.of(5.67); // TODO: adjust
 
   public static final class Real {
-    public static final int followerLeftMotorID = 26; // TODO: change to correct ID
-    public static final int leadLeftMotorID = 27; // TODO: change to correct ID
-    public static final int followerRightMotorID = 28; // TODO: change to correct ID
-    public static final int leadRightMotorID = 29; // TODO: change to correct ID
+    public static final int followerLeftMotorID = 13; // TODO: change to correct ID
+    public static final int leadLeftMotorID = 14; // TODO: change to correct ID
+    public static final int followerRightMotorID = 11; // TODO: change to correct ID
+    public static final int leadRightMotorID = 12; // TODO: change to correct ID
     public static final int hoodMotorID = 30; // TODO: change to correct ID
 
     public static final LoggedTunablePIDs shooterPIDs =
-        new LoggedTunablePIDs("Shooter", 1.0, 0.1, 0.1);
+        new LoggedTunablePIDs("Shooter", 0.1, 0.0, 0.0);
     public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 1.0, 0.1, 0.1);
-    // Separate, tunable PID set specifically for the shooter velocity closed-loop on the Talon
+    // Separate, tunable PID set specifically for the shooter velocity closed-loop
+    // on the Talon
     public static final LoggedTunablePIDs shooterVelocityPIDs =
         new LoggedTunablePIDs("Shooter/Velocity", 1.0, 0.1, 0.1);
   }
