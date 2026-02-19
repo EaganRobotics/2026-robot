@@ -79,17 +79,14 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
                   DriveConstants.WHEEL_COF));
 
   // PathPlanner config constants
-  private static final double ROBOT_MASS_KG = 74.088;
-  private static final double ROBOT_MOI = 6.883;
-  private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
-          ROBOT_MASS_KG,
-          ROBOT_MOI,
+          DriveConstants.ROBOT_MASS_KG,
+          DriveConstants.ROBOT_MOI,
           new ModuleConfig(
               DriveConstants.FrontLeft.WheelRadius,
               DriveConstants.kSpeedAt12Volts.in(MetersPerSecond),
-              WHEEL_COF,
+              DriveConstants.WHEEL_COF,
               DCMotor.getKrakenX60Foc(1)
                   .withReduction(DriveConstants.FrontLeft.DriveMotorGearRatio),
               DriveConstants.FrontLeft.SlipCurrent,

@@ -13,25 +13,26 @@ import edu.wpi.first.units.measure.*;
 public class DriveConstants {
 
   // Stator current limits
-  public static final Current DRIVE_CURRENT_LIMIT = Amps.of(60);
-  public static final Current TURN_CURRENT_LIMIT = Amps.of(40);
+  public static final Current DRIVE_CURRENT_LIMIT = Amps.of(40); // TODO: adjust
+  public static final Current TURN_CURRENT_LIMIT = Amps.of(40); // TODO: adjust
 
   // The stator current at which the wheels start to slip;
   private static final Current kSlipCurrent = Amps.of(120.0); // TODO measure this
 
   // PathPlanner and Maple Sim config constants
   public static final Distance kWheelRadius = Inches.of(1.836); // last measured 2/16
-  public static final double ROBOT_MASS_KG = 60.78;
-  public static final double ROBOT_MOI = 5.4;
-  public static final double WHEEL_COF = 1.45;
+  public static final double ROBOT_MASS_KG = 68.0389; // TODO: change, this is max weight rn
+  public static final double ROBOT_MOI =
+      4.7523; // Lxx = 4.49, Lyy = 4.962, Lzz = 4.805; used avg of the 3
+  public static final double WHEEL_COF =
+      2.255; // https://www.chiefdelphi.com/t/what-is-the-coefficient-of-friction-of-the-new-swerve-drive-specialties-molded-spike-grip-wheels/512813
   public static final double kDriveRatioR1 = 7.03;
   public static final double kDriveRatioR2 = 6.03;
   public static final double kDriveRatioR3 = 5.27;
 
-  public static final double kDriveGearRatio = kDriveRatioR2; // Source: MK5i swerve module page
-  // gearing
-  private static final double kSteerGearRatio = 26.0; // Source: MK5i swerve module
-  // page
+  public static final double kDriveGearRatio =
+      kDriveRatioR2; // Source: MK5i swerve module page gearing
+  private static final double kSteerGearRatio = 26.0; // Source: MK5i swerve module page
   public static final double kMaxDriveMotorRPM = 6000.0;
   public static final LinearVelocity kSpeedR1 = FeetPerSecond.of(14.9);
   public static final LinearVelocity kSpeedR2 = FeetPerSecond.of(17.4);
@@ -67,13 +68,6 @@ public class DriveConstants {
             .withKS(0.19598)
             .withKV(0.77537)
             .withKA(0.058183 * METERS_TO_ROTATIONS);
-
-    // Motor PIDS
-
-    public static final double POSITION_MAX_VELOCITY = 4.5;
-    public static final double POSITION_MAX_ACCELERATION = 6;
-    public static final double ANGLE_MAX_VELOCITY = 8.0;
-    public static final double ANGLE_MAX_ACCELERATION = 20.0;
   }
 
   /* These Gains constants only affect simulation */
@@ -99,12 +93,8 @@ public class DriveConstants {
     private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.04);
     private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.01);
 
-    private static final Voltage kSteerFrictionVoltage = Volts.of(0.4); // suggested
-    // range 0.3 -
-    // 0.5
-    private static final Voltage kDriveFrictionVoltage = Volts.of(0.4); // suggested
-    // range 0.6 -
-    // 0.8
+    private static final Voltage kSteerFrictionVoltage = Volts.of(0.4); // suggested range 0.3 - 0.5
+    private static final Voltage kDriveFrictionVoltage = Volts.of(0.4); // suggested range 0.6 - 0.8
   }
 
   // The closed-loop output type to use for the steer motors;
