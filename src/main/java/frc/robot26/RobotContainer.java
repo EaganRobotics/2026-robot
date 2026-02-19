@@ -224,13 +224,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               driverController::getLeftX,
               () -> -driverController.getRightX() * .85));
       shooter.setDefaultCommand(
-          shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftX() * 2));
+          shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
       intake.setDefaultCommand(
           intake.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
       feeder.setDefaultCommand(
           feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
       floor.setDefaultCommand(
-          floor.setJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
+          floor.setJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
     }
 
     driverController
