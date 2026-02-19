@@ -19,10 +19,11 @@ public class FeederConstants {
     public static final int leadMotorID = 9;
 
     public static final LoggedTunablePIDs feederPIDs =
-        new LoggedTunablePIDs("Feeder", 1.0, 0.1, 0.1);
+        new LoggedTunablePIDs("Feeder", 1.0, 0.1, 0.1); // TODO: change
     // Separate PID set specifically for feeder velocity closed-loop on the Talon
     public static final LoggedTunablePIDs feederVelocityPIDs =
-        new LoggedTunablePIDs("Feeder/Velocity", 1.0, 0.1, 0.1);
+        new LoggedTunablePIDs("Feeder/Velocity", 1.0, 0.1, 0.1); // TODO:
+    // change
   }
 
   public static final class Sim {
