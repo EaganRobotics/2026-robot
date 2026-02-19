@@ -96,7 +96,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
               1),
           getModuleTranslations());
 
-  private boolean coastModeOn;
+  // private boolean coastModeOn;
 
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
