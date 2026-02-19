@@ -12,8 +12,8 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.lib.tunables.LoggedTunablePIDs;
 
 public class IntakeConstants {
-  public static final double joystickSpeedMultiplier = 0.314;
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
+  public static final double joystickSpeedMultiplier = 0.314; // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // TODO: change
   public static final double GEARING_INTAKE = 1.25;
   public static final double GEARING_DEPLOY = 10.0; // TODO: adjust (10:1 is an estimate)
 
