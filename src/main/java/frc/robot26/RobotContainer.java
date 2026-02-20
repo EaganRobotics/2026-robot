@@ -257,9 +257,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // Operator Controls
 
-    operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
-    operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
-    operatorController.x().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(1)));
+    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-1)));
+
+    operatorController.a().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
     operatorController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
 
     operatorController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));

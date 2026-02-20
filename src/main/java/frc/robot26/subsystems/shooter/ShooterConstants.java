@@ -30,7 +30,8 @@ public class ShooterConstants {
     public static final LoggedTunablePIDs shooterPIDs =
         new LoggedTunablePIDs("Shooter", 0.1, 0.0, 0.0); // TODO: change
     public static final LoggedTunablePIDs hoodPIDs =
-        new LoggedTunablePIDs("Hood", 1.0, 0.1, 0.1); // TODO: change
+        new LoggedTunablePIDs("Hood", 0.1, 0.1, 0.0); // TODO:
+    // change
     // Separate, tunable PID set specifically for the shooter velocity closed-loop
     // on the Talon
     public static final LoggedTunablePIDs shooterVelocityPIDs =
