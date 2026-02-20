@@ -47,6 +47,21 @@ public class DriveCommands {
   private static final Translation2d RED_HUB_CENTER =
       new Translation2d(RED_HUB_CENTER_X, RED_HUB_CENTER_Y);
 
+  public double distanceToHub(Drive drive) {
+    double rx = drive.getPose().getX();
+    double ry = drive.getPose().getY();
+    double hx = getHubCenter().getX();
+    double hy = getHubCenter().getY();
+    double mx;
+    double my;
+    double mp;
+    mx = hx - rx;
+    my = hy - ry;
+    mp = Math.sqrt(Math.pow(mx, 2) + Math.pow(my, 2));
+    return mp;
+  }
+  ;
+
   // public static Pose2d[] makeReefPositions(Distance reefOffset) {
   // Transform2d REEF_BRANCH_TO_ROBOT = new Transform2d(
   // Inches.of(-INCHES_FROM_REEF).minus(reefOffset), Inches.zero(),
@@ -65,10 +80,7 @@ public class DriveCommands {
   public static Command snapToRadius(Drive drive, Distance radius) {
     return Commands.defer(
             () -> {
-              Translation2d hubCenter =
-                  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
-                      ? RED_HUB_CENTER
-                      : BLUE_HUB_CENTER;
+              Translation2d hubCenter = getHubCenter();
 
               double radiusMeters = radius.in(Meters);
 
@@ -103,6 +115,12 @@ public class DriveCommands {
             },
             Set.of(drive))
         .withName("DriveCommands.snapToRadius");
+  }
+
+  private static Translation2d getHubCenter() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+        ? RED_HUB_CENTER
+        : BLUE_HUB_CENTER;
   }
 
   private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
