@@ -21,9 +21,9 @@ public class IntakeConstants {
   public static final Angle retractRotationLimit = Rotations.of(0); // TODO: adjust
 
   public static final class Real {
-    public static final int followerMotorID = 20; // TODO: change to correct ID
-    public static final int leadMotorID = 21; // TODO: change to correct ID
-    public static final int deployMotorID = 22; // TODO: change to correct ID
+    public static final int followerMotorID = 25; // TODO: change to correct ID
+    public static final int leadMotorID = 17;
+    public static final int deployMotorID = 18;
     public static final int limitSwitchChannel = 3; // TODO: change to correct ID
 
     public static final LoggedTunablePIDs deployPIDs =

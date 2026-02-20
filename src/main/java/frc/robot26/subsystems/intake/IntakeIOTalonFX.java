@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_DEPLOY;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_INTAKE;
-import static frc.robot26.subsystems.intake.IntakeConstants.Real;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
 import static frc.robot26.subsystems.intake.IntakeConstants.deployRotationLimit;
 import static frc.robot26.subsystems.intake.IntakeConstants.retractRotationLimit;
