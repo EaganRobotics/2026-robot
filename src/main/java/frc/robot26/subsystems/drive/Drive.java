@@ -79,14 +79,17 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
                   DriveConstants.WHEEL_COF));
 
   // PathPlanner config constants
+  private static final double ROBOT_MASS_KG = 74.088;
+  private static final double ROBOT_MOI = 6.883;
+  private static final double WHEEL_COF = 1.2;
   private static final RobotConfig PP_CONFIG =
       new RobotConfig(
-          DriveConstants.ROBOT_MASS_KG,
-          DriveConstants.ROBOT_MOI,
+          ROBOT_MASS_KG,
+          ROBOT_MOI,
           new ModuleConfig(
               DriveConstants.FrontLeft.WheelRadius,
               DriveConstants.kSpeedAt12Volts.in(MetersPerSecond),
-              DriveConstants.WHEEL_COF,
+              WHEEL_COF,
               DCMotor.getKrakenX60Foc(1)
                   .withReduction(DriveConstants.FrontLeft.DriveMotorGearRatio),
               DriveConstants.FrontLeft.SlipCurrent,
@@ -126,10 +129,10 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
       ModuleIO brModuleIO,
       Consumer<Pose2d> setSimulatedPoseCallback) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(flModuleIO, 0, DriveConstants.FrontLeft);
-    modules[1] = new Module(frModuleIO, 1, DriveConstants.FrontRight);
-    modules[2] = new Module(blModuleIO, 2, DriveConstants.BackLeft);
-    modules[3] = new Module(brModuleIO, 3, DriveConstants.BackRight);
+    modules[0] = new Module(flModuleIO, 0, DriveConstants.FrontLeft); // Encoder 1
+    modules[1] = new Module(frModuleIO, 1, DriveConstants.FrontRight); // Encoder 2
+    modules[2] = new Module(blModuleIO, 2, DriveConstants.BackLeft); // Encoder 0
+    modules[3] = new Module(brModuleIO, 3, DriveConstants.BackRight); // Encoder 3
 
     this.setSimulatedPoseCallback = setSimulatedPoseCallback;
 

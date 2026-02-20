@@ -7,15 +7,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.floor.Floor;
+import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.shooter.Shooter;
 
 public class RollerCommands {
 
-  public static Command shootOpenLoop(Shooter shooter, Floor floor, Feeder feeder) {
+  public static Command shootOpenLoop(Shooter shooter, Floor floor, Feeder feeder, Intake intake) {
     return shooter
         .setShooterOpenLoop(Volts.of(3))
-        .alongWith(floor.setOpenLoop(Volts.of(3)))
-        .alongWith(feeder.setOpenLoop(Volts.of(3)))
+        .alongWith(floor.setOpenLoop(Volts.of(5)))
+        .alongWith(feeder.setOpenLoop(Volts.of(7)))
+        .alongWith(intake.setOpenLoop(Volts.of(6)))
         .withName("RollerCommands.shoot");
   }
 

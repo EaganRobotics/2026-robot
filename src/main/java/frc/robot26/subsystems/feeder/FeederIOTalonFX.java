@@ -40,7 +40,7 @@ public class FeederIOTalonFX implements FeederIO {
 
     var leadConfig = new TalonFXConfiguration();
 
-    leadConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    leadConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     leadConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leadConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     leadConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
