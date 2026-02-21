@@ -97,12 +97,6 @@ public class DriveCommands {
     return new Pose2d(targetPosition, new Rotation2d(angleToHub));
   }
 
-  private static Translation2d getHubCenter() {
-    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
-        ? RED_HUB_CENTER
-        : BLUE_HUB_CENTER;
-  }
-
   public static Command snapToRadius(Drive drive, Distance radius) {
     return Commands.defer(
             () -> {
