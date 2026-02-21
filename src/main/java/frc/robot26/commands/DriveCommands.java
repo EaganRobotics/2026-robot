@@ -47,7 +47,8 @@ public class DriveCommands {
   private static final Translation2d RED_HUB_CENTER =
       new Translation2d(RED_HUB_CENTER_X, RED_HUB_CENTER_Y);
 
-  public double distanceToHub(Drive drive) {
+  public static Distance distanceToHub(Drive drive) {
+
     double rx = drive.getPose().getX();
     double ry = drive.getPose().getY();
     double hx = getHubCenter().getX();
@@ -58,9 +59,8 @@ public class DriveCommands {
     mx = hx - rx;
     my = hy - ry;
     mp = Math.sqrt(Math.pow(mx, 2) + Math.pow(my, 2));
-    return mp;
+    return Meters.of(mp);
   }
-  ;
 
   // public static Pose2d[] makeReefPositions(Distance reefOffset) {
   // Transform2d REEF_BRANCH_TO_ROBOT = new Transform2d(
