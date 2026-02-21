@@ -184,8 +184,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
 
-    NamedCommands.registerCommand(
-        "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder).withTimeout(3));
+    // NamedCommands.registerCommand(
+    // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder, intake).withTimeout(3));
 
     NamedCommands.registerCommand("SnapToRadius", DriveCommands.snapToRadius(drive, Feet.of(10.0)));
 
@@ -226,8 +226,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               () -> -driverController.getRightX() * .85));
       shooter.setDefaultCommand(
           shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
-      intake.setDefaultCommand(
-          intake.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
+      intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightX()));
       feeder.setDefaultCommand(
           feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
       floor.setDefaultCommand(
@@ -248,22 +247,25 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .withName("RobotContainer.driverZeroCommand"));
 
     driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
+    driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
     driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
-    driverController.y().whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
-    driverController.x().whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
-    // driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder));
-    // driverController
-    // .x()
-    // .whileTrue(
-    // Commands.sequence(
-    // DriveCommands.snapToRadius(drive, Feet.of(7.0)),
-    // RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100))));
+    driverController.leftTrigger().whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
+    driverController.rightTrigger().whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
+    
+    driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
+    driverController
+        .x()
+        .whileTrue(
+            Commands.sequence(
+                DriveCommands.snapToRadius(drive, Feet.of(3.0)),
+                RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100))));
 
     // Operator Controls
 
-    operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(3)));
-    operatorController.b().whileTrue(intake.setOpenLoop(Volts.of(-3)));
-    operatorController.x().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(1)));
+    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-1)));
+
+    operatorController.a().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
     operatorController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
 
     operatorController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));

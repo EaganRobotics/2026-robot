@@ -9,9 +9,9 @@ import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
 
 public class ClimberConstants {
-  public static final double joystickSpeedMultiplier = 0.314;
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
-  public static final double GEARING = 5.0;
+  public static final double joystickSpeedMultiplier = 0.314; // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // TODO: change
+  public static final double GEARING = 5.0; // TODO: change to correct gear ratio
 
   public static final class Real {
     public static final int followerMotorID = 24; // TODO: change to correct ID
