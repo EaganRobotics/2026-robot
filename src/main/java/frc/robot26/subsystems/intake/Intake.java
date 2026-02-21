@@ -80,6 +80,12 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setDeployPosition");
   }
 
+  public Command setTunableIntake() {
+    return Commands.defer(
+        () -> this.setIntakeClosedLoop(RPM.of(IntakeConstants.Real.intakeSpeed.get())),
+        Set.of(this));
+  }
+
   public Command setJoystickOpenLoop(DoubleSupplier speed) {
     return this.runEnd(
             () -> {

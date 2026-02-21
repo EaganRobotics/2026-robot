@@ -254,7 +254,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .whileTrue(
             Commands.sequence(
                 RollerCommands.shootClosedLoop(
-                    shooter, floor, feeder, RPM.of(2000), RPM.of(2000))));
+                    shooter, floor, feeder, RPM.of(1000), RPM.of(1000)))); // shooter then feeder
 
     // Operator Controls
 
