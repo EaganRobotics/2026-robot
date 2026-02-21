@@ -9,11 +9,11 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
-import frc.lib.tunables.LoggedTunablePIDs;
+import frc.lib.tunables.*;
 
 public class IntakeConstants {
   public static final double joystickSpeedMultiplier = 0.85; // TODO: change
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(5); // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(20); // TODO: change
   public static final double GEARING_INTAKE = 1.25;
   public static final double GEARING_DEPLOY = 10.0; // TODO: adjust (10:1 is an estimate)
 
@@ -26,8 +26,12 @@ public class IntakeConstants {
     public static final int deployMotorID = 18;
     public static final int limitSwitchChannel = 0;
 
+    public static final LoggedTunablePIDs intakePIDs =
+        new LoggedTunablePIDs("Intake", 7, 0.0, 0.001); // TODO: change
     public static final LoggedTunablePIDs deployPIDs =
         new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1); // TODO: change
+    public static final LoggedTunableNumber intakeSpeed =
+        new LoggedTunableNumber("Tuning/IntakeSpeed", 4000);
   }
 
   public static final class Sim {

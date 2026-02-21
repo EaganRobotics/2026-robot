@@ -22,4 +22,6 @@ public interface FloorIO {
   public default void updateInputs(FloorIOInputs inputs) {}
 
   public default void setFloorOpenLoop(Voltage output) {}
+
+  public default void setFloorClosedLoop(AngularVelocity velocity) {}
 }
