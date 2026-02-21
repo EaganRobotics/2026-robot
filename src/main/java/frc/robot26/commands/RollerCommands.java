@@ -23,13 +23,14 @@ public class RollerCommands {
       Floor floor,
       Feeder feeder,
       AngularVelocity shooterSetpoint,
-      AngularVelocity feederSetpoint) {
+      AngularVelocity feederSetpoint,
+      AngularVelocity floorSetpoint) {
     return shooter
         .setShooterClosedLoop(shooterSetpoint)
         .alongWith(feeder.setClosedLoop(feederSetpoint))
         .alongWith(
             Commands.waitUntil(shooter.isAtVelocitySetpoint().and(feeder.isAtVelocitySetpoint()))
-                .andThen(floor.setOpenLoop(Volts.of(3))))
+                .andThen(floor.setClosedLoop(floorSetpoint)))
         .withName("RollerCommands.shootClosedLoop");
   }
 }

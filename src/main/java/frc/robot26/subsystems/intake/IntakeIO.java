@@ -41,4 +41,8 @@ public interface IntakeIO {
   public default void setDeployOpenLoop(Voltage output) {}
 
   public default void setDeployPosition(DeployState state) {}
+
+  public default void setIntakeClosedLoop(AngularVelocity velocity) {}
+
+  public default void setDeployClosedLoop(AngularVelocity velocity) {}
 }

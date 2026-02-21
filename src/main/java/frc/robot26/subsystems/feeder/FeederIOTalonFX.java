@@ -50,7 +50,7 @@ public class FeederIOTalonFX implements FeederIO {
     leadConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     // Apply feeder velocity PID gains to the lead Talon (tunable via dashboard)
-    Real.feederVelocityPIDs.applyToTalonFXConfig(lead, leadConfig);
+    Real.feederPIDs.applyToTalonFXConfig(lead, leadConfig);
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
     follower.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));

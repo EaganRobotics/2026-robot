@@ -7,11 +7,18 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
+import frc.lib.tunables.LoggedTunableNumber;
+import frc.lib.tunables.LoggedTunablePIDs;
 
 public class FloorConstants {
   public static final double joystickSpeedMultiplier = 0.314; // TODO: change
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // TODO: change
   public static final double GEARING = 3.0;
+
+  public static final LoggedTunablePIDs floorPIDs =
+      new LoggedTunablePIDs("Floor", 1, 0.0, 0.0); // TODO: change
+  public static final LoggedTunableNumber floorSpeed =
+      new LoggedTunableNumber("Tuning/FloorSpeed", 1000);
 
   public static final class Real {
     public static final int leadMotorID = 15;

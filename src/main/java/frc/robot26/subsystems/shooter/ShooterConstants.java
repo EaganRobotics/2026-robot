@@ -9,7 +9,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
-import frc.lib.tunables.LoggedTunablePIDs;
+import frc.lib.tunables.*;
 
 public class ShooterConstants {
   public static final double joystickSpeedMultiplier = 0.85; // TODO: change
@@ -28,14 +28,10 @@ public class ShooterConstants {
     public static final int hoodMotorID = 16;
 
     public static final LoggedTunablePIDs shooterPIDs =
-        new LoggedTunablePIDs("Shooter", 0.1, 0.0, 0.0); // TODO: change
-    public static final LoggedTunablePIDs hoodPIDs =
-        new LoggedTunablePIDs("Hood", 0.1, 0.1, 0.0); // TODO:
-    // change
-    // Separate, tunable PID set specifically for the shooter velocity closed-loop
-    // on the Talon
-    public static final LoggedTunablePIDs shooterVelocityPIDs =
-        new LoggedTunablePIDs("Shooter/Velocity", 1.0, 0.1, 0.1); // TODO: change
+        new LoggedTunablePIDs("Shooter", 2.0, 0.0, 0.01); // TODO: change
+    public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 0.1, 0.1, 0.0);
+    public static final LoggedTunableNumber shooterSpeed =
+        new LoggedTunableNumber("Tuning/ShooterSpeed", 2500);
   }
 
   public static final class Sim {

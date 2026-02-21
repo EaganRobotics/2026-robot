@@ -14,6 +14,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -37,6 +38,8 @@ public class IntakeIOTalonFX implements IntakeIO {
   private final StatusSignal<AngularVelocity> leadVelocity, deployVelocity;
   private final StatusSignal<Voltage> leadVoltage, deployVoltage;
   private final StatusSignal<Current> leadCurrent, deployCurrent;
+  private final VelocityVoltage intakeVelocityVoltageRequest = new VelocityVoltage(0.0);
+  private final VelocityVoltage deployVelocityVoltageRequest = new VelocityVoltage(0.0);
 
   public IntakeIOTalonFX() {
     lead = new TalonFX(Real.leadMotorID);
@@ -82,6 +85,7 @@ public class IntakeIOTalonFX implements IntakeIO {
         IntakeConstants.retractRotationLimit.in(Rotations);
 
     Real.deployPIDs.applyToTalonFXConfig(deploy, deployConfig);
+    Real.intakePIDs.applyToTalonFXConfig(lead, leadConfig);
 
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
@@ -111,6 +115,16 @@ public class IntakeIOTalonFX implements IntakeIO {
   @Override
   public void setDeployOpenLoop(Voltage output) {
     deploy.setVoltage(output.in(Volts));
+  }
+
+  @Override
+  public void setIntakeClosedLoop(AngularVelocity velocity) {
+    lead.setControl(intakeVelocityVoltageRequest.withVelocity(velocity));
+  }
+
+  @Override
+  public void setDeployClosedLoop(AngularVelocity velocity) {
+    lead.setControl(deployVelocityVoltageRequest.withVelocity(velocity));
   }
 
   @Override

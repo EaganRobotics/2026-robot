@@ -184,12 +184,22 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
 
+    NamedCommands.registerCommand(
+        "AutoShoot",
+        RollerCommands.shootClosedLoop(
+            shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000)));
+
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder, intake).withTimeout(3));
 
     NamedCommands.registerCommand("SnapToRadius", DriveCommands.snapToRadius(drive, Feet.of(10.0)));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    autoChooser.addOption(
+        "Week0-Test",
+        RollerCommands.shootClosedLoop(
+                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
+            .withTimeout(10));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -245,7 +255,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
-
+    
     driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
     driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
     driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
@@ -261,16 +271,34 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .x()
         .whileTrue(
             Commands.sequence(
-                DriveCommands.snapToRadius(drive, Feet.of(3.0)),
-                RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100))));
+                RollerCommands.shootClosedLoop(
+                    shooter,
+                    floor,
+                    feeder,
+                    RPM.of(750),
+                    RPM.of(1000),
+                    RPM.of(1000)))); // shooter then feeder
+
+    // driverController
+    //     .b()
+    //     .whileTrue(
+    //         Commands.sequence(
+    //             RollerCommands.shootClosedLoop(
+    //                 shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000)))); //
+    // shooter then feeder
 
     // Operator Controls
 
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(1)));
-    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-1)));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
+    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
 
-    operatorController.a().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
-    operatorController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
+    operatorController.a().whileTrue(intake.setTunableIntake());
+    operatorController
+        .y()
+        .whileTrue(
+            Commands.sequence(
+                RollerCommands.shootClosedLoop(
+                    shooter, floor, feeder, RPM.of(600), RPM.of(1000), RPM.of(1000))));
 
     operatorController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));
     operatorController.rightTrigger().whileTrue(feeder.setOpenLoop(Volts.of(-3)));

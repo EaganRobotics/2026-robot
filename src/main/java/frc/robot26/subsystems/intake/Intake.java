@@ -1,12 +1,15 @@
 package frc.robot26.subsystems.intake;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -62,6 +65,28 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setDeployOpenLoop");
   }
 
+  public Command setIntakeClosedLoop(AngularVelocity velocity) {
+    return this.startEnd(
+            () -> {
+              io.setIntakeClosedLoop(velocity);
+            },
+            () -> {
+              io.setIntakeClosedLoop(RPM.of(0));
+            })
+        .withName("Intake.setIntakeClosedLoop");
+  }
+
+  public Command setDeployClosedLoop(AngularVelocity velocity) {
+    return this.startEnd(
+            () -> {
+              io.setDeployClosedLoop(velocity);
+            },
+            () -> {
+              io.setDeployClosedLoop(RPM.of(0));
+            })
+        .withName("Intake.setDeployClosedLoop");
+  }
+
   public Command setDeployPosition(IntakeIO.DeployState state) {
     return this.runOnce(
             () -> {
@@ -78,6 +103,12 @@ public class Intake extends SubsystemBase {
                   io.setDeployOpenLoop(Volts.of(0));
                 }))
         .withName("Intake.setDeployPosition");
+  }
+
+  public Command setTunableIntake() {
+    return Commands.defer(
+        () -> this.setIntakeClosedLoop(RPM.of(IntakeConstants.Real.intakeSpeed.get())),
+        Set.of(this));
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {
