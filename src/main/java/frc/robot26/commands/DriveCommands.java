@@ -62,47 +62,74 @@ public class DriveCommands {
 
   private DriveCommands() {}
 
+  private static Pose2d getRadiusTargetPose(
+      Translation2d hubCenter, Translation2d robotPos, double radiusMeters) {
+    Translation2d hubToRobot = robotPos.minus(hubCenter);
+    double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+
+    Translation2d targetPosition =
+        hubCenter.plus(
+            new Translation2d(
+                radiusMeters * Math.cos(angleToRobot), radiusMeters * Math.sin(angleToRobot)));
+
+    // Heading: face the hub from the target position on the circle.
+    // Both targetPosition and hubCenter are fixed at defer time so this angle is
+    // perfectly stable — no per-cycle noise.
+    double angleToHub =
+        Math.atan2(
+            hubCenter.getY() - targetPosition.getY(), hubCenter.getX() - targetPosition.getX());
+
+    return new Pose2d(targetPosition, new Rotation2d(angleToHub));
+  }
+
+  private static Translation2d getHubCenter() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+        ? RED_HUB_CENTER
+        : BLUE_HUB_CENTER;
+  }
+
   public static Command snapToRadius(Drive drive, Distance radius) {
     return Commands.defer(
             () -> {
-              Translation2d hubCenter =
-                  DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
-                      ? RED_HUB_CENTER
-                      : BLUE_HUB_CENTER;
+              Translation2d hubCenter = getHubCenter();
+              double radiusMeters = radius.in(Meters);
+              Translation2d robotPos = drive.getPose().getTranslation();
 
+              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
+
+              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
+              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
+
+              return SnapToPositionTemplate.snapToPosition(drive, innerPose);
+            },
+            Set.of(drive))
+        .withName("DriveCommands.snapToRadius");
+  }
+
+  public static Command snapToRadiusInterpolation(Drive drive, Distance radius) {
+    return Commands.defer(
+            () -> {
+              Translation2d hubCenter = getHubCenter();
               double radiusMeters = radius.in(Meters);
 
               Pose2d currentPose = drive.getPose();
               Translation2d robotPos = currentPose.getTranslation();
 
-              Translation2d hubToRobot = robotPos.minus(hubCenter);
-              double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-
-              Translation2d targetPosition =
-                  hubCenter.plus(
-                      new Translation2d(
-                          radiusMeters * Math.cos(angleToRobot),
-                          radiusMeters * Math.sin(angleToRobot)));
-
-              double angleToHub =
-                  Math.atan2(
-                      hubCenter.getY() - targetPosition.getY(),
-                      hubCenter.getX() - targetPosition.getX());
-
               Pose2d outerPose = currentPose;
-              Pose2d innerPose = new Pose2d(targetPosition, new Rotation2d(angleToHub));
+              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
 
-              double interpolateTime = robotPos.getDistance(targetPosition) > 1.5 ? 1.5 : 0.75;
+              double interpolateTime =
+                  robotPos.getDistance(innerPose.getTranslation()) > 1.5 ? 0.75 : 0.35;
 
               Logger.recordOutput("SnapToRadius/OuterPose", outerPose);
               Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
               Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
 
-              return SnapToPositionTemplate.snapToPosition(
+              return SnapToPositionTemplate.snapToPositionInterpolation(
                   drive, outerPose, innerPose, interpolateTime);
             },
             Set.of(drive))
-        .withName("DriveCommands.snapToRadius");
+        .withName("DriveCommands.snapToRadiusInterpolation");
   }
 
   private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
@@ -217,4 +244,3 @@ public class DriveCommands {
         .withName("DriveCommands.joystickDriveAtAngle");
   }
 }
-// puting this here to rebuild

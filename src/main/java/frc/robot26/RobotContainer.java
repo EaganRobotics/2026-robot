@@ -246,6 +246,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .withName("RobotContainer.driverZeroCommand"));
 
     driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
+    driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
     driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder, intake));
     driverController
