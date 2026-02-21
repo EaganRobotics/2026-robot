@@ -6,14 +6,13 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_DEPLOY;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_INTAKE;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
-import static frc.robot26.subsystems.intake.IntakeConstants.deployRotationLimit;
-import static frc.robot26.subsystems.intake.IntakeConstants.retractRotationLimit;
+import static frc.robot26.subsystems.intake.IntakeConstants.deployRotationsFrom;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,13 +32,12 @@ public class IntakeIOTalonFX implements IntakeIO {
       new DigitalInputWrapper(Real.limitSwitchChannel, "limitSwitch", true); // TODO:
   // adjust
   private final TalonFX lead, follower, deploy;
-  private final MotionMagicVoltage deployPositionRequest = new MotionMagicVoltage(0);
   private final StatusSignal<Angle> leadPosition, deployPosition;
   private final StatusSignal<AngularVelocity> leadVelocity, deployVelocity;
   private final StatusSignal<Voltage> leadVoltage, deployVoltage;
   private final StatusSignal<Current> leadCurrent, deployCurrent;
   private final VelocityVoltage intakeVelocityVoltageRequest = new VelocityVoltage(0.0);
-  private final VelocityVoltage deployVelocityVoltageRequest = new VelocityVoltage(0.0);
+  private final PositionVoltage deployPositionVoltageRequest = new PositionVoltage(0.0);
 
   public IntakeIOTalonFX() {
     lead = new TalonFX(Real.leadMotorID);
@@ -79,10 +77,11 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     deployConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
     deployConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
-        IntakeConstants.deployRotationLimit.in(Rotations);
+        deployRotationsFrom(IntakeConstants.deployLimit).in(Rotations);
     deployConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     deployConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
-        IntakeConstants.retractRotationLimit.in(Rotations);
+        deployRotationsFrom(IntakeConstants.retractLimit).in(Rotations);
+    ;
 
     Real.deployPIDs.applyToTalonFXConfig(deploy, deployConfig);
     Real.intakePIDs.applyToTalonFXConfig(lead, leadConfig);
@@ -123,8 +122,8 @@ public class IntakeIOTalonFX implements IntakeIO {
   }
 
   @Override
-  public void setDeployClosedLoop(AngularVelocity velocity) {
-    lead.setControl(deployVelocityVoltageRequest.withVelocity(velocity));
+  public void setDeployClosedLoop(Angle angle) {
+    lead.setControl(deployPositionVoltageRequest.withPosition(angle));
   }
 
   @Override
@@ -146,17 +145,5 @@ public class IntakeIOTalonFX implements IntakeIO {
     inputs.deployPosition = deployPosition.getValue();
 
     inputs.limit = limitSwitch.get();
-  }
-
-  @Override
-  public void setDeployPosition(DeployState state) {
-    switch (state) {
-      case EXTENDED:
-        deploy.setControl(deployPositionRequest.withPosition(deployRotationLimit.in(Rotations)));
-        break;
-      case RETRACTED:
-        deploy.setControl(deployPositionRequest.withPosition(retractRotationLimit.in(Rotations)));
-        break;
-    }
   }
 }

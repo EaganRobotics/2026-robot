@@ -28,11 +28,6 @@ public interface IntakeIO {
     public boolean limit = false;
   }
 
-  public static enum DeployState {
-    EXTENDED,
-    RETRACTED
-  }
-
   /** Updates the set of loggable inputs. */
   public default void updateInputs(IntakeIOInputs inputs) {}
 
@@ -40,9 +35,7 @@ public interface IntakeIO {
 
   public default void setDeployOpenLoop(Voltage output) {}
 
-  public default void setDeployPosition(DeployState state) {}
-
   public default void setIntakeClosedLoop(AngularVelocity velocity) {}
 
-  public default void setDeployClosedLoop(AngularVelocity velocity) {}
+  public default void setDeployClosedLoop(Angle angle) {}
 }
