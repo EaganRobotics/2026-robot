@@ -13,8 +13,8 @@ import edu.wpi.first.units.measure.*;
 public class DriveConstants {
 
   // Stator current limits
-  public static final Current DRIVE_CURRENT_LIMIT = Amps.of(40); // TODO: adjust
-  public static final Current TURN_CURRENT_LIMIT = Amps.of(40); // TODO: adjust
+  public static final Current DRIVE_CURRENT_LIMIT = Amps.of(80); // in nick we trust
+  public static final Current TURN_CURRENT_LIMIT = Amps.of(30);
 
   // The stator current at which the wheels start to slip;
   private static final Current kSlipCurrent = Amps.of(120.0); // TODO measure this

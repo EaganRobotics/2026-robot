@@ -13,7 +13,7 @@ import frc.lib.tunables.*;
 
 public class IntakeConstants {
   public static final double joystickSpeedMultiplier = 0.85; // TODO: change
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(5); // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(20); // TODO: change
   public static final double GEARING_INTAKE = 1.25;
   public static final double GEARING_DEPLOY = 10.0; // TODO: adjust (10:1 is an estimate)
 
@@ -27,11 +27,11 @@ public class IntakeConstants {
     public static final int limitSwitchChannel = 0;
 
     public static final LoggedTunablePIDs intakePIDs =
-        new LoggedTunablePIDs("Intake", 1.0, 0.1, 0.1); // TODO: change
+        new LoggedTunablePIDs("Intake", 7, 0.0, 0.001); // TODO: change
     public static final LoggedTunablePIDs deployPIDs =
         new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1); // TODO: change
     public static final LoggedTunableNumber intakeSpeed =
-        new LoggedTunableNumber("Tuning/IntakeSpeed", 100);
+        new LoggedTunableNumber("Tuning/IntakeSpeed", 4000);
   }
 
   public static final class Sim {
