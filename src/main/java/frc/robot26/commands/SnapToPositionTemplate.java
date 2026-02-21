@@ -34,21 +34,21 @@ import org.littletonrobotics.junction.Logger;
 public class SnapToPositionTemplate {
   private static final double ANGLE_MAX_VELOCITY = 8.0;
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
-  private static final double ANGLE_TOLERANCE = Degrees.of(1).in(Radians);
+  private static final double ANGLE_TOLERANCE = Degrees.of(3).in(Radians);
   private static final double POSITION_MAX_VELOCITY = 4.5;
   private static final double POSITION_MAX_ACCELERATION = 6;
   private static final double POSITION_TOLERANCE = Inches.of(1).in(Meters);
 
   // PID controllers
-  public static final double X_KP = 4.0;
+  public static final double X_KP = 0.5;
   public static final double X_KI = 0.0;
   public static final double X_KD = 0.0;
 
-  public static final double Y_KP = 4.0;
+  public static final double Y_KP = 0.5;
   public static final double Y_KI = 0.0;
   public static final double Y_KD = 0.0;
 
-  public static final double ANGLE_KP = 7.0;
+  public static final double ANGLE_KP = 0.5;
   public static final double ANGLE_KI = 0.0;
   public static final double ANGLE_KD = 0.4;
 

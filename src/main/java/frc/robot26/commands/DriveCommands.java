@@ -89,7 +89,9 @@ public class DriveCommands {
                       hubCenter.getY() - targetPosition.getY(),
                       hubCenter.getX() - targetPosition.getX());
 
-              Pose2d outerPose = currentPose;
+              Pose2d outerPose =
+                  new Pose2d(
+                      targetPosition.plus(new Translation2d(-1, -1)), new Rotation2d(angleToHub));
               Pose2d innerPose = new Pose2d(targetPosition, new Rotation2d(angleToHub));
 
               double interpolateTime = robotPos.getDistance(targetPosition) > 1.5 ? 1.5 : 0.75;

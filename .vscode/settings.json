@@ -7,7 +7,7 @@
   "editor.defaultFormatter": null,
 
   // Format on Save: YES. This minimizes pre-commit hook failures.
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
 
   // DISABLE generic editor trimming (Spotless handles this; dual handling causes conflicts)
   "files.trimTrailingWhitespace": false,

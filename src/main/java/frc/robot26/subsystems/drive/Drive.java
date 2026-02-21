@@ -180,6 +180,8 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     return ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getPose().getRotation());
   }
 
+  // TODO:
+
   @Override
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
@@ -374,6 +376,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     this.setSimulatedPoseCallback.accept(pose);
+    gyroIO.setYaw(pose.getRotation().unaryMinus());
     poseEstimator.resetPosition(rawGyroRotation.unaryMinus(), getModulePositions(), pose);
   }
 
