@@ -17,6 +17,7 @@ import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCharacterization;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
+import frc.robot26.commands.ShooterCommands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.DriveConstants;
 import frc.robot26.subsystems.drive.GyroIO;
@@ -255,10 +256,16 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
 
-    driverController.a().whileTrue(feeder.setTunableFeeder());
-    // driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
-    // driverController.b().whileTrue(shooter.setTunableShooter());
-    // driverController.b().whileTrue(intake.setTunableIntake());
+    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
+    driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
+    driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
+    driverController
+        .leftTrigger()
+        .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
+    driverController
+        .rightTrigger()
+        .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
+
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
     driverController
         .x()
