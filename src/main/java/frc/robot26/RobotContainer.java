@@ -17,6 +17,7 @@ import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCharacterization;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
+import frc.robot26.commands.ShooterCommands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.DriveConstants;
 import frc.robot26.subsystems.drive.GyroIO;
@@ -248,13 +249,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
     driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
-    driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder));
-    driverController
-        .x()
-        .whileTrue(
-            Commands.sequence(
-                DriveCommands.snapToRadius(drive, Feet.of(7.0)),
-                RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100))));
+    driverController.y().whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
+    driverController.x().whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
+    // driverController.y().whileTrue(RollerCommands.shootOpenLoop(shooter, floor, feeder));
+    // driverController
+    // .x()
+    // .whileTrue(
+    // Commands.sequence(
+    // DriveCommands.snapToRadius(drive, Feet.of(7.0)),
+    // RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100))));
 
     // Operator Controls
 
