@@ -115,8 +115,24 @@ public class DriveCommands {
               Pose2d currentPose = drive.getPose();
               Translation2d robotPos = currentPose.getTranslation();
 
-              Pose2d outerPose = currentPose;
-              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
+              Translation2d hubToRobot = robotPos.minus(hubCenter);
+              double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+
+              Translation2d targetPosition =
+                  hubCenter.plus(
+                      new Translation2d(
+                          radiusMeters * Math.cos(angleToRobot),
+                          radiusMeters * Math.sin(angleToRobot)));
+
+              double angleToHub =
+                  Math.atan2(
+                      hubCenter.getY() - targetPosition.getY(),
+                      hubCenter.getX() - targetPosition.getX());
+
+              Pose2d outerPose =
+                  new Pose2d(
+                      targetPosition.plus(new Translation2d(-1, -1)), new Rotation2d(angleToHub));
+              Pose2d innerPose = new Pose2d(targetPosition, new Rotation2d(angleToHub));
 
               double interpolateTime =
                   robotPos.getDistance(innerPose.getTranslation()) > 1.5 ? 0.75 : 0.35;
