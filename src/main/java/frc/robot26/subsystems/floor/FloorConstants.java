@@ -9,12 +9,12 @@ import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
 
 public class FloorConstants {
-  public static final double joystickSpeedMultiplier = 0.314;
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
+  public static final double joystickSpeedMultiplier = 0.314; // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // TODO: change
   public static final double GEARING = 3.0;
 
   public static final class Real {
-    public static final int leadMotorID = 15; // TODO: change to correct ID
+    public static final int leadMotorID = 15;
   }
 
   public static final class Sim {

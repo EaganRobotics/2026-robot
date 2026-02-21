@@ -12,8 +12,8 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.lib.tunables.LoggedTunablePIDs;
 
 public class IntakeConstants {
-  public static final double joystickSpeedMultiplier = 0.314;
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
+  public static final double joystickSpeedMultiplier = 0.85; // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(5); // TODO: change
   public static final double GEARING_INTAKE = 1.25;
   public static final double GEARING_DEPLOY = 10.0; // TODO: adjust (10:1 is an estimate)
 
@@ -21,13 +21,13 @@ public class IntakeConstants {
   public static final Angle retractRotationLimit = Rotations.of(0); // TODO: adjust
 
   public static final class Real {
-    public static final int followerMotorID = 20; // TODO: change to correct ID
-    public static final int leadMotorID = 21; // TODO: change to correct ID
-    public static final int deployMotorID = 22; // TODO: change to correct ID
-    public static final int limitSwitchChannel = 0; // TODO: change to correct ID
+    public static final int followerMotorID = 25; // TODO: change to correct ID
+    public static final int leadMotorID = 17;
+    public static final int deployMotorID = 18;
+    public static final int limitSwitchChannel = 0;
 
     public static final LoggedTunablePIDs deployPIDs =
-        new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1);
+        new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1); // TODO: change
   }
 
   public static final class Sim {

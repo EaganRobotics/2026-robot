@@ -10,8 +10,8 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.lib.tunables.LoggedTunablePIDs;
 
 public class FeederConstants {
-  public static final double joystickSpeedMultiplier = 0.314;
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
+  public static final double joystickSpeedMultiplier = 0.314; // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // TODO: change
   public static final double GEARING = 1.5;
 
   public static final class Real {
@@ -19,10 +19,11 @@ public class FeederConstants {
     public static final int leadMotorID = 9;
 
     public static final LoggedTunablePIDs feederPIDs =
-        new LoggedTunablePIDs("Feeder", 1.0, 0.1, 0.1);
+        new LoggedTunablePIDs("Feeder", 1.0, 0.1, 0.1); // TODO: change
     // Separate PID set specifically for feeder velocity closed-loop on the Talon
     public static final LoggedTunablePIDs feederVelocityPIDs =
-        new LoggedTunablePIDs("Feeder/Velocity", 1.0, 0.1, 0.1);
+        new LoggedTunablePIDs("Feeder/Velocity", 1.0, 0.1, 0.1); // TODO:
+    // change
   }
 
   public static final class Sim {

@@ -129,10 +129,10 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
       ModuleIO brModuleIO,
       Consumer<Pose2d> setSimulatedPoseCallback) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(flModuleIO, 0, DriveConstants.FrontLeft);
-    modules[1] = new Module(frModuleIO, 1, DriveConstants.FrontRight);
-    modules[2] = new Module(blModuleIO, 2, DriveConstants.BackLeft);
-    modules[3] = new Module(brModuleIO, 3, DriveConstants.BackRight);
+    modules[0] = new Module(flModuleIO, 0, DriveConstants.FrontLeft); // Encoder 1
+    modules[1] = new Module(frModuleIO, 1, DriveConstants.FrontRight); // Encoder 2
+    modules[2] = new Module(blModuleIO, 2, DriveConstants.BackLeft); // Encoder 0
+    modules[3] = new Module(brModuleIO, 3, DriveConstants.BackRight); // Encoder 3
 
     this.setSimulatedPoseCallback = setSimulatedPoseCallback;
 
@@ -179,6 +179,8 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     var robotRelativeSpeeds = kinematics.toChassisSpeeds(getModuleStates());
     return ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getPose().getRotation());
   }
+
+  // TODO:
 
   @Override
   public void periodic() {
@@ -374,6 +376,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
     this.setSimulatedPoseCallback.accept(pose);
+    gyroIO.setYaw(pose.getRotation().unaryMinus());
     poseEstimator.resetPosition(rawGyroRotation.unaryMinus(), getModulePositions(), pose);
   }
 
