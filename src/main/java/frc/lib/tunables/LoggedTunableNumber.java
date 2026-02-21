@@ -5,7 +5,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.MatchType;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -15,7 +14,7 @@ public class LoggedTunableNumber extends LoggedNetworkNumber implements LoggedTu
 
   private final double defaultValue;
   private final DoubleEntry entry;
-  private final List<WeakReference<Consumer<Double>>> listeners;
+  private final List<Consumer<Double>> listeners;
 
   public Double getDefaultValue() {
     return defaultValue;
@@ -25,7 +24,7 @@ public class LoggedTunableNumber extends LoggedNetworkNumber implements LoggedTu
     return get();
   }
 
-  public List<WeakReference<Consumer<Double>>> getListeners() {
+  public List<Consumer<Double>> getListeners() {
     return listeners;
   }
 
