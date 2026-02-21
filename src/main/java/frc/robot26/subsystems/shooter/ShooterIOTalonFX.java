@@ -1,7 +1,6 @@
 package frc.robot26.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
@@ -22,7 +21,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -96,8 +94,8 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
 
     // Apply velocity-specific PID gains to the shooter Talons (tunable via dashboard)
-    Real.shooterVelocityPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
-    Real.shooterVelocityPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
+    Real.shooterPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
+    Real.shooterPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
     Real.hoodPIDs.applyToTalonFXConfig(hood, hoodConfig);
 
     leadLeft.getConfigurator().apply(leadConfigLeft, 0.25);
@@ -137,9 +135,8 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void setShooterClosedLoop(AngularVelocity velocity) {
-    double velocityRotPerSec = Units.radiansToRotations(velocity.in(RadiansPerSecond));
-    leadLeft.setControl(velocityVoltageRequest.withVelocity(velocityRotPerSec));
-    leadRight.setControl(velocityVoltageRequest.withVelocity(velocityRotPerSec));
+    leadLeft.setControl(velocityVoltageRequest.withVelocity(velocity));
+    leadRight.setControl(velocityVoltageRequest.withVelocity(velocity));
   }
 
   @Override

@@ -245,23 +245,22 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
 
-    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
-    driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
-    driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
+    driverController.a().whileTrue(feeder.setTunableFeeder());
+    // driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
+    driverController.b().whileTrue(shooter.setTunableShooter());
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
     driverController
         .x()
         .whileTrue(
             Commands.sequence(
-                DriveCommands.snapToRadius(drive, Feet.of(3.0)),
-                RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(100), RPM.of(100))));
+                RollerCommands.shootClosedLoop(shooter, floor, feeder, RPM.of(500), RPM.of(500))));
 
     // Operator Controls
 
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(1)));
-    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-1)));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
+    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
 
-    operatorController.a().onTrue(intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+    operatorController.a().whileTrue(intake.setOpenLoop(Volts.of(12)));
     operatorController.y().onTrue(intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
 
     operatorController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));
