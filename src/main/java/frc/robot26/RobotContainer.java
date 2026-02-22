@@ -199,7 +199,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     autoChooser.addOption(
         "Week0-Test",
         RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(1500))
+                shooter, floor, feeder, RPM.of(515), RPM.of(1000), RPM.of(1500))
             .withTimeout(17));
 
     // Set up SysId routines
@@ -293,7 +293,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .whileTrue(
             Commands.sequence(
                 RollerCommands.shootClosedLoop(
-                    shooter, floor, feeder, RPM.of(600), RPM.of(1000), RPM.of(2000))));
+                    shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
     operatorController
         .leftTrigger()
