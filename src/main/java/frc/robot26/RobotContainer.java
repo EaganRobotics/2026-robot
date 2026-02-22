@@ -35,6 +35,7 @@ import frc.robot26.subsystems.floor.FloorIO;
 import frc.robot26.subsystems.floor.FloorIOSim;
 import frc.robot26.subsystems.floor.FloorIOTalonFX;
 import frc.robot26.subsystems.intake.Intake;
+import frc.robot26.subsystems.intake.IntakeConstants;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
@@ -174,9 +175,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     }
 
     NamedCommands.registerCommand(
-        "IntakeOut", intake.setDeployPosition(IntakeIO.DeployState.EXTENDED));
+        "IntakeOut", intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
     NamedCommands.registerCommand(
-        "IntakeIn", intake.setDeployPosition(IntakeIO.DeployState.RETRACTED));
+        "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
     NamedCommands.registerCommand("FeederOut", feeder.setOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("FeederIn", feeder.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("FloorOut", floor.setOpenLoop(Volts.of(3)));
@@ -198,8 +199,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     autoChooser.addOption(
         "Week0-Test",
         RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
-            .withTimeout(10));
+                shooter, floor, feeder, RPM.of(515), RPM.of(1000), RPM.of(1500))
+            .withTimeout(17));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -235,12 +236,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
               driverController::getLeftX,
               () -> -driverController.getRightX() * .85));
       shooter.setDefaultCommand(
-          shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
-      intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightX()));
+          shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
+      intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
       feeder.setDefaultCommand(
           feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
       floor.setDefaultCommand(
-          floor.setJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
+          floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
     }
 
     // Driver Controls
@@ -256,9 +257,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .ignoringDisable(true)
                 .withName("RobotContainer.driverZeroCommand"));
 
-    driverController.a().whileTrue(DriveCommands.snapToRadius(drive, Feet.of(7.0)));
-    driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
-    driverController.b().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
+    driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
     driverController
         .leftTrigger()
         .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
@@ -266,6 +265,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .rightTrigger()
         .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
 
+    driverController.a().whileTrue(feeder.setTunableFeeder());
+    // driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
+    // driverController.b().whileTrue(shooter.setTunableShooter());
+    driverController.b().whileTrue(floor.setTunableFloor());
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
     driverController
         .x()
@@ -279,14 +282,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     RPM.of(1000),
                     RPM.of(1000)))); // shooter then feeder
 
-    // driverController
-    //     .b()
-    //     .whileTrue(
-    //         Commands.sequence(
-    //             RollerCommands.shootClosedLoop(
-    //                 shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000)))); //
-    // shooter then feeder
-
     // Operator Controls
 
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
@@ -298,10 +293,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .whileTrue(
             Commands.sequence(
                 RollerCommands.shootClosedLoop(
-                    shooter, floor, feeder, RPM.of(600), RPM.of(1000), RPM.of(1000))));
+                    shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
-    operatorController.leftTrigger().whileTrue(feeder.setOpenLoop(Volts.of(3)));
-    operatorController.rightTrigger().whileTrue(feeder.setOpenLoop(Volts.of(-3)));
+    operatorController
+        .leftTrigger()
+        .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
+    operatorController
+        .rightTrigger()
+        .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
 
     operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
     operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));

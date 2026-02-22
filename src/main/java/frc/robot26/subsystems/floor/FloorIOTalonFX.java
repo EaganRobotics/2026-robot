@@ -3,7 +3,6 @@ package frc.robot26.subsystems.floor;
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.floor.FloorConstants.GEARING;
-import static frc.robot26.subsystems.floor.FloorConstants.Real;
 import static frc.robot26.subsystems.floor.FloorConstants.SUPPLY_CURRENT_LIMIT;
 
 import com.ctre.phoenix6.BaseStatusSignal;
