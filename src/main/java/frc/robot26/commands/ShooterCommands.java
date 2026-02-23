@@ -21,7 +21,7 @@ public final class ShooterCommands {
   private static final LoggedTunableNumber hoodAngle = new LoggedTunableNumber("hoodAngle", 0);
 
   public static Command shootAutoAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
-    Distance distance = DriveCommands.distanceToHub(drive);
+    Distance distance = SnapCommands.distanceToHub(drive);
     ShooterSetpoint setpoint = ShooterDistanceTable.getShooterSetpoint(distance);
 
     return shooter

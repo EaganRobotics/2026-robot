@@ -1,4 +1,4 @@
-package frc.lib.devices;
+package frc.robot26.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Degrees;
 
@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 public class PWMEncoder {
   private AnalogInput encoder;
   private Angle offset;
-  private static final int oversampling = 4; // Set to 1 to disable oversampling
+  private final int oversampling = 4; // Set to 1 to disable oversampling
 
   public PWMEncoder(int analogPort, Angle offset) {
     this.offset = offset;
@@ -18,11 +18,11 @@ public class PWMEncoder {
 
   public Angle getPosition() {
     // return encoder.getAverageValue() * 360 / 4096.0 / Math.pow(2, oversampling);
-    return getRawUnoffsettedPosition().minus(offset);
+    return getRawUnoffsettedPosition().plus(offset);
   }
 
   public Angle getRawUnoffsettedPosition() {
     // return encoder.getAverageValue() * 360 / 4096.0 / Math.pow(2, oversampling);
-    return Degrees.of(encoder.getValue() * -360.0 / 4096.0);
+    return Degrees.of(encoder.getValue() * 360.0 / 4096.0);
   }
 }

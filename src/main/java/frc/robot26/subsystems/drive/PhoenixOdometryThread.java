@@ -9,9 +9,9 @@ package frc.robot26.subsystems.drive;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot26.generated.TunerConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -29,18 +29,17 @@ import java.util.function.DoubleSupplier;
  * time synchronization.
  */
 public class PhoenixOdometryThread extends Thread {
-  private final Lock signalsLock = new ReentrantLock(); // Prevents conflicts when registering
-  // signals
+  private final Lock signalsLock =
+      new ReentrantLock(); // Prevents conflicts when registering signals
   private BaseStatusSignal[] phoenixSignals = new BaseStatusSignal[0];
   private final List<DoubleSupplier> genericSignals = new ArrayList<>();
   private final List<Queue<Double>> phoenixQueues = new ArrayList<>();
   private final List<Queue<Double>> genericQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
-  private static boolean isCANFD = DriveConstants.kCANBus.isNetworkFD();
+  private static boolean isCANFD = TunerConstants.kCANBus.isNetworkFD();
   private static PhoenixOdometryThread instance = null;
 
-  @SuppressFBWarnings("LI_LAZY_INIT_STATIC")
   public static PhoenixOdometryThread getInstance() {
     if (instance == null) {
       instance = new PhoenixOdometryThread();

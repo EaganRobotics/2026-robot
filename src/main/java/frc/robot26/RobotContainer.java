@@ -1,54 +1,51 @@
 package frc.robot26;
 
-import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.simulation.SimConstants;
-import frc.robot26.commands.DriveCharacterization;
+// import frc.robot26.commands.DriveCharacterization;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.ShooterCommands;
+import frc.robot26.generated.TunerConstants;
 import frc.robot26.subsystems.drive.Drive;
-import frc.robot26.subsystems.drive.DriveConstants;
+// import frc.robot26.subsystems.drive.DriveConstants;
 import frc.robot26.subsystems.drive.GyroIO;
 import frc.robot26.subsystems.drive.GyroIOPigeon2;
-import frc.robot26.subsystems.drive.GyroIOSim;
+// import frc.robot26.subsystems.drive.GyroIOSim;
 import frc.robot26.subsystems.drive.ModuleIO;
-import frc.robot26.subsystems.drive.ModuleIOSim;
 import frc.robot26.subsystems.drive.ModuleIOTalonFX;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.feeder.FeederIO;
-import frc.robot26.subsystems.feeder.FeederIOSim;
 import frc.robot26.subsystems.feeder.FeederIOTalonFX;
 import frc.robot26.subsystems.floor.Floor;
 import frc.robot26.subsystems.floor.FloorIO;
-import frc.robot26.subsystems.floor.FloorIOSim;
 import frc.robot26.subsystems.floor.FloorIOTalonFX;
 import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.intake.IntakeConstants;
 import frc.robot26.subsystems.intake.IntakeIO;
-import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.shooter.Shooter;
 import frc.robot26.subsystems.shooter.ShooterIO;
-import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot26.subsystems.vision.Vision;
+import frc.robot26.subsystems.vision.Vision.VisionConsumer;
 import frc.robot26.subsystems.vision.VisionConstants;
 import frc.robot26.subsystems.vision.VisionIOLimelight;
-import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
 import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -71,8 +68,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // Drive simulation
-  private static final SwerveDriveSimulation driveSimulation =
-      new SwerveDriveSimulation(Drive.MAPLE_SIM_CONFIG, SimConstants.SIM_INITIAL_FIELD_POSE);
+  //   private static final SwerveDriveSimulation driveSimulation =
+  //       new SwerveDriveSimulation(Drive.MAPLE_SIM_CONFIG, SimConstants.SIM_INITIAL_FIELD_POSE);
 
   private LoggedDashboardChooser<Command> autoChooser;
 
@@ -96,14 +93,29 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         drive =
             new Drive(
                 new GyroIOPigeon2(),
-                new ModuleIOTalonFX(DriveConstants.FrontLeft),
-                new ModuleIOTalonFX(DriveConstants.FrontRight),
-                new ModuleIOTalonFX(DriveConstants.BackLeft),
-                new ModuleIOTalonFX(DriveConstants.BackRight),
-                driveSimulation::setSimulationWorldPose);
+                new ModuleIOTalonFX(TunerConstants.FrontLeft),
+                new ModuleIOTalonFX(TunerConstants.FrontRight),
+                new ModuleIOTalonFX(TunerConstants.BackLeft),
+                new ModuleIOTalonFX(TunerConstants.BackRight));
+        ;
+        // drive =
+        //     new Drive(
+        //         new GyroIOPigeon2(),
+        //         new ModuleIOTalonFX(DriveConstants.FrontLeft),
+        //         new ModuleIOTalonFX(DriveConstants.FrontRight),
+        //         new ModuleIOTalonFX(DriveConstants.BackLeft),
+        //         new ModuleIOTalonFX(DriveConstants.BackRight),
+        //         driveSimulation::setSimulationWorldPose);
         vision =
             new Vision(
-                drive,
+                new VisionConsumer() {
+                  public void accept(
+                      Pose2d visionRobotPoseMeters,
+                      double timestampSeconds,
+                      Matrix<N3, N1> visionMeasurementStdDevs) {
+                    /* TODO: sim */
+                  }
+                },
                 new VisionIOLimelight(
                     VisionConstants.limelightShooter, () -> drive.getPose().getRotation())
                 // , new VisionIOLimelight(VisionConstants.limelightBack,
@@ -114,33 +126,33 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         floor = new Floor(new FloorIOTalonFX());
         shooter = new Shooter(new ShooterIOTalonFX());
         break;
-      case SIM:
-        super.configureDriveSimulation(driveSimulation);
-        drive =
-            new Drive(
-                new GyroIOSim(driveSimulation.getGyroSimulation()),
-                new ModuleIOSim(driveSimulation.getModules()[0]),
-                new ModuleIOSim(driveSimulation.getModules()[1]),
-                new ModuleIOSim(driveSimulation.getModules()[2]),
-                new ModuleIOSim(driveSimulation.getModules()[3]),
-                driveSimulation::setSimulationWorldPose);
-        drive.setPose(SimConstants.SIM_INITIAL_FIELD_POSE);
-        vision =
-            new Vision(
-                drive,
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.limelightShooter,
-                    VisionConstants.robotToCameraShooter,
-                    driveSimulation::getSimulatedDriveTrainPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.limelightBack,
-                    VisionConstants.robotToCameraBack,
-                    driveSimulation::getSimulatedDriveTrainPose));
-        intake = new Intake(new IntakeIOSim());
-        feeder = new Feeder(new FeederIOSim());
-        floor = new Floor(new FloorIOSim());
-        shooter = new Shooter(new ShooterIOSim());
-        break;
+      //   case SIM:
+      // super.configureDriveSimulation(driveSimulation);
+      // drive =
+      //     new Drive(
+      //         new GyroIOSim(driveSimulation.getGyroSimulation()),
+      //         new ModuleIOSim(driveSimulation.getModules()[0]),
+      //         new ModuleIOSim(driveSimulation.getModules()[1]),
+      //         new ModuleIOSim(driveSimulation.getModules()[2]),
+      //         new ModuleIOSim(driveSimulation.getModules()[3]),
+      //         driveSimulation::setSimulationWorldPose);
+      // drive.setPose(SimConstants.SIM_INITIAL_FIELD_POSE);
+      // vision =
+      //     new Vision(
+      //         drive,
+      //         new VisionIOPhotonVisionSim(
+      //             VisionConstants.limelightShooter,
+      //             VisionConstants.robotToCameraShooter,
+      //             driveSimulation::getSimulatedDriveTrainPose),
+      //         new VisionIOPhotonVisionSim(
+      //             VisionConstants.limelightBack,
+      //             VisionConstants.robotToCameraBack,
+      //             driveSimulation::getSimulatedDriveTrainPose));
+      // intake = new Intake(new IntakeIOSim());
+      // feeder = new Feeder(new FeederIOSim());
+      // floor = new Floor(new FloorIOSim());
+      // shooter = new Shooter(new ShooterIOSim());
+      // break;
       case REPLAY:
         drive =
             new Drive(
@@ -148,8 +160,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {},
-                driveSimulation::setSimulationWorldPose);
+                new ModuleIO() {}
+                // ,
+                // driveSimulation::setSimulationWorldPose
+                );
         vision = null;
         intake = new Intake(new IntakeIO() {});
         feeder = new Feeder(new FeederIO() {});
@@ -163,8 +177,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {},
-                new ModuleIO() {},
-                driveSimulation::setSimulationWorldPose);
+                new ModuleIO() {} // ,
+                // driveSimulation::setSimulationWorldPose
+                );
         vision = null;
         intake = new Intake(new IntakeIO() {});
         feeder = new Feeder(new FeederIO() {});
@@ -193,7 +208,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder, intake).withTimeout(3));
 
-    NamedCommands.registerCommand("SnapToRadius", DriveCommands.snapToRadius(drive, Feet.of(10.0)));
+    // NamedCommands.registerCommand("SnapToRadius", DriveCommands.snapToRadius(drive,
+    // Feet.of(10.0)));
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.addOption(
@@ -204,11 +220,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // Set up SysId routines
     autoChooser.addOption(
-        "Drive Wheel Radius Characterization",
-        DriveCharacterization.wheelRadiusCharacterization(drive));
+        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
     autoChooser.addOption(
-        "Drive Simple FF Characterization",
-        DriveCharacterization.feedforwardCharacterization(drive));
+        "Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
     autoChooser.addOption(
         "Drive SysId (Quasistatic Forward)",
         drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
@@ -228,36 +242,47 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   }
 
   private void configureButtonBindings() {
-    if (drive != null) {
-      drive.setDefaultCommand(
-          DriveCommands.joystickDrive(
-              drive,
-              driverController::getLeftY,
-              driverController::getLeftX,
-              () -> -driverController.getRightX() * .85));
-      shooter.setDefaultCommand(
-          shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
-      intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
-      feeder.setDefaultCommand(
-          feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
-      floor.setDefaultCommand(
-          floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
-    }
+    drive.setDefaultCommand(
+        DriveCommands.joystickDrive(
+            drive,
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getLeftX(),
+            () -> -driverController.getRightX()));
+    shooter.setDefaultCommand(
+        shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
+    intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
+    feeder.setDefaultCommand(
+        feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+    floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
 
     // Driver Controls
 
+    // Lock to 0° when A button is held
+    driverController
+        .a()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
+                () -> Rotation2d.kZero));
+
+    // Switch to X pattern when X button is pressed
+    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+    // Reset gyro to 0° when B button is pressed
     driverController
         .start()
+        .or(driverController.back())
         .onTrue(
             Commands.runOnce(
-                    () -> {
-                      drive.setPose(new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero));
-                    },
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
-                .ignoringDisable(true)
-                .withName("RobotContainer.driverZeroCommand"));
+                .ignoringDisable(true));
 
-    driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
+    // driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
     driverController
         .leftTrigger()
         .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
@@ -265,22 +290,22 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .rightTrigger()
         .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
 
-    driverController.a().whileTrue(feeder.setTunableFeeder());
+    // driverController.a().whileTrue(feeder.setTunableFeeder());
     // driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
     // driverController.b().whileTrue(shooter.setTunableShooter());
-    driverController.b().whileTrue(floor.setTunableFloor());
+    // driverController.b().whileTrue(floor.setTunableFloor());
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
-    driverController
-        .x()
-        .whileTrue(
-            Commands.sequence(
-                RollerCommands.shootClosedLoop(
-                    shooter,
-                    floor,
-                    feeder,
-                    RPM.of(750),
-                    RPM.of(1000),
-                    RPM.of(1000)))); // shooter then feeder
+    // driverController
+    //     .x()
+    //     .whileTrue(
+    //         Commands.sequence(
+    //             RollerCommands.shootClosedLoop(
+    //                 shooter,
+    //                 floor,
+    //                 feeder,
+    //                 RPM.of(750),
+    //                 RPM.of(1000),
+    //                 RPM.of(1000)))); // shooter then feeder
 
     // Operator Controls
 
@@ -311,7 +336,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void teleopInit() {
-    drive.swerveBreak(true);
+    // drive.swerveBreak(true);
   }
 
   @Override

@@ -32,51 +32,33 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot26.subsystems.vision.Vision.VisionConsumer;
+import frc.lib.simulation.SimConstants;
+import frc.lib.simulation.SimConstants.Mode;
+import frc.robot26.generated.TunerConstants;
 import frc.robot26.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
-import org.ironmaple.simulation.drivesims.COTS;
-import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
-import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public final class Drive extends SubsystemBase implements VisionConsumer {
+public class Drive extends SubsystemBase {
   // TunerConstants doesn't include these constants, so they are declared locally
-  static final double ODOMETRY_FREQUENCY = DriveConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
+  static final double ODOMETRY_FREQUENCY = TunerConstants.kCANBus.isNetworkFD() ? 250.0 : 100.0;
   public static final double DRIVE_BASE_RADIUS =
       Math.max(
           Math.max(
-              Math.hypot(DriveConstants.FrontLeft.LocationX, DriveConstants.FrontLeft.LocationY),
-              Math.hypot(DriveConstants.FrontRight.LocationX, DriveConstants.FrontRight.LocationY)),
+              Math.hypot(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
+              Math.hypot(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY)),
           Math.max(
-              Math.hypot(DriveConstants.BackLeft.LocationX, DriveConstants.BackLeft.LocationY),
-              Math.hypot(DriveConstants.BackRight.LocationX, DriveConstants.BackRight.LocationY)));
-
-  // Maple Sim config constants
-  public static final DriveTrainSimulationConfig MAPLE_SIM_CONFIG =
-      DriveTrainSimulationConfig.Default()
-          .withRobotMass(Kilograms.of(DriveConstants.ROBOT_MASS_KG))
-          .withCustomModuleTranslations(getModuleTranslations())
-          .withGyro(COTS.ofPigeon2())
-          .withSwerveModule(
-              new SwerveModuleSimulationConfig(
-                  DCMotor.getKrakenX60(1),
-                  DCMotor.getFalcon500(1),
-                  DriveConstants.FrontLeft.DriveMotorGearRatio,
-                  DriveConstants.FrontLeft.SteerMotorGearRatio,
-                  Volts.of(DriveConstants.FrontLeft.DriveFrictionVoltage),
-                  Volts.of(DriveConstants.FrontLeft.SteerFrictionVoltage),
-                  Meters.of(DriveConstants.FrontLeft.WheelRadius),
-                  KilogramSquareMeters.of(DriveConstants.FrontLeft.SteerInertia),
-                  DriveConstants.WHEEL_COF));
+              Math.hypot(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
+              Math.hypot(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)));
 
   // PathPlanner config constants
   private static final double ROBOT_MASS_KG = 74.088;
@@ -87,25 +69,22 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
           ROBOT_MASS_KG,
           ROBOT_MOI,
           new ModuleConfig(
-              DriveConstants.FrontLeft.WheelRadius,
-              DriveConstants.kSpeedAt12Volts.in(MetersPerSecond),
+              TunerConstants.FrontLeft.WheelRadius,
+              TunerConstants.kSpeedAt12Volts.in(MetersPerSecond),
               WHEEL_COF,
               DCMotor.getKrakenX60Foc(1)
-                  .withReduction(DriveConstants.FrontLeft.DriveMotorGearRatio),
-              DriveConstants.FrontLeft.SlipCurrent,
+                  .withReduction(TunerConstants.FrontLeft.DriveMotorGearRatio),
+              TunerConstants.FrontLeft.SlipCurrent,
               1),
           getModuleTranslations());
-
-  // private boolean coastModeOn;
 
   static final Lock odometryLock = new ReentrantLock();
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
-  // private final Alert gyroDisconnectedAlert = new Alert("Disconnected gyro,
-  // using kinematics as fallback.",
-  // AlertType.kError);
+  private final Alert gyroDisconnectedAlert =
+      new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(getModuleTranslations());
   private Rotation2d rawGyroRotation = Rotation2d.kZero;
@@ -119,22 +98,17 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, Pose2d.kZero);
 
-  private final Consumer<Pose2d> setSimulatedPoseCallback;
-
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
       ModuleIO frModuleIO,
       ModuleIO blModuleIO,
-      ModuleIO brModuleIO,
-      Consumer<Pose2d> setSimulatedPoseCallback) {
+      ModuleIO brModuleIO) {
     this.gyroIO = gyroIO;
-    modules[0] = new Module(flModuleIO, 0, DriveConstants.FrontLeft); // Encoder 1
-    modules[1] = new Module(frModuleIO, 1, DriveConstants.FrontRight); // Encoder 2
-    modules[2] = new Module(blModuleIO, 2, DriveConstants.BackLeft); // Encoder 0
-    modules[3] = new Module(brModuleIO, 3, DriveConstants.BackRight); // Encoder 3
-
-    this.setSimulatedPoseCallback = setSimulatedPoseCallback;
+    modules[0] = new Module(flModuleIO, 0, TunerConstants.FrontLeft);
+    modules[1] = new Module(frModuleIO, 1, TunerConstants.FrontRight);
+    modules[2] = new Module(blModuleIO, 2, TunerConstants.BackLeft);
+    modules[3] = new Module(brModuleIO, 3, TunerConstants.BackRight);
 
     // Usage reporting for swerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
@@ -175,25 +149,15 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
                 (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
   }
 
-  public ChassisSpeeds getFieldRelativeSpeeds() {
-    var robotRelativeSpeeds = kinematics.toChassisSpeeds(getModuleStates());
-    return ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds, getPose().getRotation());
-  }
-
-  // TODO:
-
   @Override
   public void periodic() {
     odometryLock.lock(); // Prevents odometry updates while reading data
-    try {
-      gyroIO.updateInputs(gyroInputs);
-      Logger.processInputs("Drive/Gyro", gyroInputs);
-      for (var module : modules) {
-        module.periodic();
-      }
-    } finally {
-      odometryLock.unlock();
+    gyroIO.updateInputs(gyroInputs);
+    Logger.processInputs("Drive/Gyro", gyroInputs);
+    for (var module : modules) {
+      module.periodic();
     }
+    odometryLock.unlock();
 
     // Stop moving when disabled
     if (DriverStation.isDisabled()) {
@@ -209,8 +173,8 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     }
 
     // Update odometry
-    double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled
-    // together
+    double[] sampleTimestamps =
+        modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
@@ -241,9 +205,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     }
 
     // Update gyro alert
-    // TODO: do we need this?
-    // gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode !=
-    // Mode.SIM);
+    gyroDisconnectedAlert.set(!gyroInputs.connected && SimConstants.CURRENT_MODE != Mode.SIM);
   }
 
   /**
@@ -255,7 +217,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, DriveConstants.kSpeedAt12Volts);
+    SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants.kSpeedAt12Volts);
 
     // Log unoptimized setpoints and setpoint speeds
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
@@ -293,18 +255,6 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
     }
     kinematics.resetHeadings(headings);
     stop();
-  }
-
-  public void swerveBreak(Boolean breakOn) {
-    if (breakOn == true) {
-      for (Module swerve : modules) {
-        swerve.setCoast();
-      }
-    } else {
-      for (Module swerve : modules) {
-        swerve.setCoast();
-      }
-    }
   }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
@@ -375,9 +325,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
 
   /** Resets the current odometry pose. */
   public void setPose(Pose2d pose) {
-    this.setSimulatedPoseCallback.accept(pose);
-    gyroIO.setYaw(pose.getRotation().unaryMinus());
-    poseEstimator.resetPosition(rawGyroRotation.unaryMinus(), getModulePositions(), pose);
+    poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
   /** Adds a new timestamped vision measurement. */
@@ -391,7 +339,7 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
 
   /** Returns the maximum linear speed in meters per sec. */
   public double getMaxLinearSpeedMetersPerSec() {
-    return DriveConstants.kSpeedAt12Volts.in(MetersPerSecond);
+    return TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
   }
 
   /** Returns the maximum angular speed in radians per sec. */
@@ -402,20 +350,10 @@ public final class Drive extends SubsystemBase implements VisionConsumer {
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
-      new Translation2d(DriveConstants.FrontLeft.LocationX, DriveConstants.FrontLeft.LocationY),
-      new Translation2d(DriveConstants.FrontRight.LocationX, DriveConstants.FrontRight.LocationY),
-      new Translation2d(DriveConstants.BackLeft.LocationX, DriveConstants.BackLeft.LocationY),
-      new Translation2d(DriveConstants.BackRight.LocationX, DriveConstants.BackRight.LocationY)
+      new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
+      new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
+      new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
+      new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
     };
-  }
-
-  /** Adds a new timestamped vision measurement. */
-  @Override
-  public void accept(
-      Pose2d visionRobotPoseMeters,
-      double timestampSeconds,
-      Matrix<N3, N1> visionMeasurementStdDevs) {
-    poseEstimator.addVisionMeasurement(
-        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
 }
