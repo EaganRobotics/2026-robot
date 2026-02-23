@@ -12,4 +12,7 @@
     <Match><Bug pattern="EI_EXPOSE_REP2" /></Match>
     <Match><Bug pattern="MS_EXPOSE_REP" /></Match>
     <Match><Class name="~frc\.lib\.limelight\.LimelightHelpers.*"/></Match>
+    <Match><Class name="~frc\.robot26\.subsystems\.drive\.PhoenixOdometryThread.*"/></Match>
+    <Match><Class name="~frc\.robot26\.subsystems\.drive\.Drive.*"/></Match>
+    <Match><Class name="~frc\.robot26\.subsystems\.drive\.PWMEncoder.*"/></Match>
 </FindBugsFilter>
