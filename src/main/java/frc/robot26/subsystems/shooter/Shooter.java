@@ -45,9 +45,11 @@ public class Shooter extends SubsystemBase {
     return this.startEnd(
             () -> {
               io.setShooterClosedLoop(velocity);
+              velocitySetpoint = velocity;
             },
             () -> {
               io.setShooterClosedLoop(RPM.of(0));
+              velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setClosedLoop");
   }
