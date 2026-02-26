@@ -2,9 +2,9 @@ package frc.robot26.commands;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.RPM;
-import static frc.robot26.subsystems.feeder.FeederConstants.Real.feederSpeed;
-import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngle;
-import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterSpeed;
+import static frc.robot26.subsystems.feeder.FeederConstants.Real.feederSpeedRPM;
+import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngleDegrees;
+import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterSpeedRPM;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
@@ -36,11 +36,11 @@ public final class ShooterCommands {
   public static Command shootManualAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
 
     return shooter
-        .setShooterClosedLoop(RPM.of(shooterSpeed.get()))
+        .setShooterClosedLoop(RPM.of(shooterSpeedRPM.get()))
         .andThen(
             feeder
-                .setClosedLoop(RPM.of(feederSpeed.get()))
-                .andThen(shooter.setHoodPosition(Degree.of(hoodAngle.get()))));
+                .setClosedLoop(RPM.of(feederSpeedRPM.get()))
+                .andThen(shooter.setHoodPosition(Degree.of(hoodAngleDegrees.get()))));
   }
 
   public static Command shooterDefaultCommand(
@@ -53,11 +53,11 @@ public final class ShooterCommands {
         () -> {
           double linearMagnitude = MathUtil.applyDeadband(doubleSupplier.getAsDouble(), DEADBAND);
           if (Math.abs(linearMagnitude) > DEADBAND) {
-            return RPM.of(shooterSpeed.get() * linearMagnitude);
+            return RPM.of(shooterSpeedRPM.get() * linearMagnitude);
           }
 
           if (distanceSupplier.get().lte(radius)) {
-            return RPM.of(shooterSpeed.get() * 0.75);
+            return RPM.of(shooterSpeedRPM.get() * 0.75);
           }
 
           return RPM.of(0);

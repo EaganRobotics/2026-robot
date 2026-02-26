@@ -1,5 +1,6 @@
 package frc.robot26.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -70,7 +71,13 @@ public class Shooter extends SubsystemBase {
 
   public Command setTunableShooter() {
     return Commands.defer(
-        () -> this.setShooterClosedLoop(RPM.of(ShooterConstants.Real.shooterSpeed.get())),
+        () -> this.setShooterClosedLoop(RPM.of(ShooterConstants.Real.shooterSpeedRPM.get())),
+        Set.of(this));
+  }
+
+  public Command setTunableHood() {
+    return Commands.defer(
+        () -> this.setHoodPosition(Degree.of(ShooterConstants.Real.hoodAngleDegrees.get())),
         Set.of(this));
   }
 

@@ -50,7 +50,7 @@ public class Floor extends SubsystemBase {
 
   public Command setTunableFloor() {
     return Commands.defer(
-        () -> this.setClosedLoop(RPM.of(FloorConstants.floorSpeed.get())), Set.of(this));
+        () -> this.setClosedLoop(RPM.of(FloorConstants.floorSpeedRPM.get())), Set.of(this));
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {

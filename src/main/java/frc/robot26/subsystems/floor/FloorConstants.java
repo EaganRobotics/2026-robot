@@ -17,8 +17,8 @@ public class FloorConstants {
 
   public static final LoggedTunablePIDs floorPIDs =
       new LoggedTunablePIDs("Floor", 0.5, 0.0, 0.0); // TODO: change
-  public static final LoggedTunableNumber floorSpeed =
-      new LoggedTunableNumber("Tuning/FloorSpeed", 3000);
+  public static final LoggedTunableNumber floorSpeedRPM =
+      new LoggedTunableNumber("Tuning/FloorSpeedRPM", 3000);
 
   public static final class Real {
     public static final int leadMotorID = 15;

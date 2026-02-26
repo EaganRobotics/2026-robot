@@ -55,10 +55,10 @@ public class IntakeConstants {
         new LoggedTunablePIDs("Intake", 2.5, 0.0, 0.25); // TODO: change
     public static final LoggedTunablePIDs deployPIDs =
         new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1); // TODO: change
-    public static final LoggedTunableNumber intakeSpeed =
-        new LoggedTunableNumber("Tuning/IntakeSpeed", 4000);
-    public static final LoggedTunableNumber deployPosition =
-        new LoggedTunableNumber("Tuning/DeployPosition", 4000);
+    public static final LoggedTunableNumber intakeSpeedRPM =
+        new LoggedTunableNumber("Tuning/IntakeSpeedRPM", 4000);
+    public static final LoggedTunableNumber deployPositionInches =
+        new LoggedTunableNumber("Tuning/DeployPositionInches", 20);
   }
 
   public static final class Sim {

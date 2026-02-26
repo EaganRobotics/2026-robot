@@ -55,7 +55,7 @@ public class Feeder extends SubsystemBase {
 
   public Command setTunableFeeder() {
     return Commands.defer(
-        () -> this.setClosedLoop(RPM.of(FeederConstants.Real.feederSpeed.get())), Set.of(this));
+        () -> this.setClosedLoop(RPM.of(FeederConstants.Real.feederSpeedRPM.get())), Set.of(this));
   }
 
   public Trigger isAtVelocitySetpoint() {
