@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.floor.Floor;
+import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.shooter.Shooter;
 
 public class RollerCommands {
@@ -32,5 +33,18 @@ public class RollerCommands {
             Commands.waitUntil(shooter.isAtVelocitySetpoint().and(feeder.isAtVelocitySetpoint()))
                 .andThen(floor.setClosedLoop(floorSetpoint)))
         .withName("RollerCommands.shootClosedLoop");
+  }
+
+  public static Command scoreOpenCommand(
+      Shooter shooter, Feeder feeder, Floor floor, Intake intake) {
+    return shooter
+        .setTunableShooter()
+        .raceWith(
+            Commands.waitSeconds(2)
+                .andThen(
+                    floor
+                        .setTunableFloor()
+                        .alongWith(
+                            feeder.setTunableFeeder().alongWith(intake.setTunableIntake()))));
   }
 }
