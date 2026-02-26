@@ -1,5 +1,6 @@
 package frc.robot26;
 
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -20,6 +21,7 @@ import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.ShooterCommands;
+import frc.robot26.commands.SnapCommands;
 import frc.robot26.generated.TunerConstants;
 import frc.robot26.subsystems.drive.Drive;
 // import frc.robot26.subsystems.drive.DriveConstants;
@@ -249,7 +251,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()));
     shooter.setDefaultCommand(
-        shooter.setShooterJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
+        ShooterCommands.shooterDefaultCommand(
+            shooter,
+            () -> SnapCommands.distanceToHub(drive),
+            () -> -driverController.getRightY(),
+            Feet.of(5)));
     intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
     feeder.setDefaultCommand(
         feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
