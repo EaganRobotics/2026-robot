@@ -42,7 +42,7 @@ public final class ShooterCommands {
   public static Command preaccelerateShooter(
       Shooter shooter, Supplier<Distance> distanceSupplier, Distance radius) {
     if (distanceSupplier.get().lte(radius)) {
-      return shooter.setShooterClosedLoop(RPM.of(shooterSpeed.get()));
+      return shooter.setShooterClosedLoop(RPM.of(shooterSpeed.get() * 0.75));
     } else {
       return shooter.setShooterClosedLoop(RPM.of(0));
     }
