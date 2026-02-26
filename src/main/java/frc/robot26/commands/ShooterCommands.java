@@ -6,6 +6,7 @@ import static frc.robot26.subsystems.feeder.FeederConstants.Real.feederSpeed;
 import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngle;
 import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterSpeed;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot26.subsystems.drive.Drive;
@@ -14,9 +15,12 @@ import frc.robot26.subsystems.floor.Floor;
 import frc.robot26.subsystems.shooter.Shooter;
 import frc.robot26.subsystems.shooter.setpoint.ShooterDistanceTable;
 import frc.robot26.subsystems.shooter.setpoint.ShooterSetpoint;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public final class ShooterCommands {
+  private static final double DEADBAND = 0.1;
+
   public static Command shootAutoAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
     Distance distance = SnapCommands.distanceToHub(drive);
     ShooterSetpoint setpoint = ShooterDistanceTable.getShooterSetpoint(distance);
@@ -39,12 +43,24 @@ public final class ShooterCommands {
                 .andThen(shooter.setHoodPosition(Degree.of(hoodAngle.get()))));
   }
 
-  public static Command preaccelerateShooter(
-      Shooter shooter, Supplier<Distance> distanceSupplier, Distance radius) {
-    if (distanceSupplier.get().lte(radius)) {
-      return shooter.setShooterClosedLoop(RPM.of(shooterSpeed.get() * 0.75));
-    } else {
-      return shooter.setShooterClosedLoop(RPM.of(0));
-    }
+  public static Command shooterDefaultCommand(
+      Shooter shooter,
+      Supplier<Distance> distanceSupplier,
+      DoubleSupplier doubleSupplier,
+      Distance radius) {
+
+    return shooter.setShooterClosedLoop(
+        () -> {
+          double linearMagnitude = MathUtil.applyDeadband(doubleSupplier.getAsDouble(), DEADBAND);
+          if (Math.abs(linearMagnitude) > DEADBAND) {
+            return RPM.of(shooterSpeed.get() * linearMagnitude);
+          }
+
+          if (distanceSupplier.get().lte(radius)) {
+            return RPM.of(shooterSpeed.get() * 0.75);
+          }
+
+          return RPM.of(0);
+        });
   }
 }
