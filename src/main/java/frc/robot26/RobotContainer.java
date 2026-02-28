@@ -114,7 +114,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                       Pose2d visionRobotPoseMeters,
                       double timestampSeconds,
                       Matrix<N3, N1> visionMeasurementStdDevs) {
-                    /* TODO: sim */
+                    drive.addVisionMeasurement(
+                        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
                   }
                 },
                 new VisionIOLimelight(
