@@ -44,9 +44,11 @@ public class Feeder extends SubsystemBase {
     return this.startEnd(
             () -> {
               io.setFeederClosedLoop(velocity);
+              velocitySetpoint = velocity;
             },
             () -> {
               io.setFeederClosedLoop(RPM.of(0));
+              velocitySetpoint = RPM.of(0);
             })
         .withName("Feeder.setClosedLoop");
   }
