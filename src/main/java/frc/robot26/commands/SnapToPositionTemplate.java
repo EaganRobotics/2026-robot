@@ -40,17 +40,17 @@ public class SnapToPositionTemplate {
   private static final double POSITION_TOLERANCE = Inches.of(1).in(Meters);
 
   // PID controllers
-  public static final double X_KP = 0.5;
+  public static final double X_KP = 5;
   public static final double X_KI = 0.0;
-  public static final double X_KD = 0.0;
+  public static final double X_KD = 0.2;
 
-  public static final double Y_KP = 0.5;
-  public static final double Y_KI = 0.0;
-  public static final double Y_KD = 0.0;
+  public static final double Y_KP = X_KP;
+  public static final double Y_KI = X_KI;
+  public static final double Y_KD = X_KD;
 
-  public static final double ANGLE_KP = 0.5;
+  public static final double ANGLE_KP = 2;
   public static final double ANGLE_KI = 0.0;
-  public static final double ANGLE_KD = 0.0;
+  public static final double ANGLE_KD = 0.3;
 
   private static final LoggedTunablePIDs xPIDs =
       new LoggedTunablePIDs("SnapToPosition/X", X_KP, X_KI, X_KD);
@@ -141,19 +141,19 @@ public class SnapToPositionTemplate {
         index -> new Pose2dSequence(innerPositions[index], outerPositions[index]));
   }
 
-  // public static Command snapToClosestPosition(
-  //     Drive drive, Pose2d[] outerPositions, Pose2d[] innerPositions, Distance maxRadius) {
-  //   return Commands.defer(
-  //           () -> {
-  //             Pose2dSequence poses =
-  //                 getClosestPositionSequence(drive, outerPositions, innerPositions, maxRadius)
-  //                     .orElse(Pose2dSequence.kZero);
+  public static Command snapToClosestPosition(
+      Drive drive, Pose2d[] outerPositions, Pose2d[] innerPositions, Distance maxRadius) {
+    return Commands.defer(
+            () -> {
+              Pose2dSequence poses =
+                  getClosestPositionSequence(drive, outerPositions, innerPositions, maxRadius)
+                      .orElse(Pose2dSequence.kZero);
 
-  //             return snapToPosition(drive, poses.outer, poses.inner);
-  //           },
-  //           Set.of(drive))
-  //       .withName("snapToPositionTemplate.snapToClosestPosition");
-  // }
+              return snapToPosition(drive, poses.outer, poses.inner);
+            },
+            Set.of(drive))
+        .withName("snapToPositionTemplate.snapToClosestPosition");
+  }
 
   public static Command snapToClosestPositionInterpolation(
       Drive drive, Pose2d[] outerPositions, Pose2d[] innerPositions, Distance maxRadius) {
@@ -176,17 +176,17 @@ public class SnapToPositionTemplate {
         .withName("snapToPositionTemplate.snapToClosestPositionInterpolation");
   }
 
-  // public static Command snapToPosition(Drive drive, Pose2d outerPose, Pose2d innerPose) {
-  //   return Commands.defer(
-  //           () -> {
-  //             Logger.recordOutput("Snap/OuterPose", outerPose);
-  //             Logger.recordOutput("Snap/InnerPose", innerPose);
+  public static Command snapToPosition(Drive drive, Pose2d outerPose, Pose2d innerPose) {
+    return Commands.defer(
+            () -> {
+              Logger.recordOutput("Snap/OuterPose", outerPose);
+              Logger.recordOutput("Snap/InnerPose", innerPose);
 
-  //             return snapToPosition(drive, outerPose).andThen(snapToPosition(drive, innerPose));
-  //           },
-  //           Set.of(drive))
-  //       .withName("snapToPositionTemplate.snapToPosition");
-  // }
+              return snapToPosition(drive, outerPose).andThen(snapToPosition(drive, innerPose));
+            },
+            Set.of(drive))
+        .withName("snapToPositionTemplate.snapToPosition");
+  }
 
   public static Command snapToPositionInterpolation(
       Drive drive, Pose2d outerPose, Pose2d innerPose, double interpolateTime) {
@@ -228,32 +228,32 @@ public class SnapToPositionTemplate {
         Set.of(drive));
   }
 
-  // public static Command snapToPosition(Drive drive, Pose2d desiredPosition) {
-  //   return Commands.run(
-  //           () -> {
-  //             var x = xController.calculate(drive.getPose().getX(), desiredPosition.getX());
-  //             var y = yController.calculate(drive.getPose().getY(), desiredPosition.getY());
-  //             var omega =
-  //                 angleController.calculate(
-  //                     drive.getRotation().getRadians(),
-  // desiredPosition.getRotation().getRadians());
+  public static Command snapToPosition(Drive drive, Pose2d desiredPosition) {
+    return Commands.run(
+            () -> {
+              var x = xController.calculate(drive.getPose().getX(), desiredPosition.getX());
+              var y = yController.calculate(drive.getPose().getY(), desiredPosition.getY());
+              var omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), desiredPosition.getRotation().getRadians());
 
-  //             Logger.recordOutput("Snap/DesiredPose", desiredPosition);
+              Logger.recordOutput("Snap/DesiredPose", desiredPosition);
 
-  //             ChassisSpeeds speeds = new ChassisSpeeds(x, y, omega);
-  //             drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds,
-  // drive.getRotation()));
-  //           },
-  //           drive)
-  //       .beforeStarting(
-  //           () -> {
-  //             var fieldRelativeSpeeds = drive.getFieldRelativeSpeeds();
-  //             angleController.reset(
-  //                 drive.getRotation().getRadians(), fieldRelativeSpeeds.omegaRadiansPerSecond);
-  //             xController.reset(drive.getPose().getX(), fieldRelativeSpeeds.vxMetersPerSecond);
-  //             yController.reset(drive.getPose().getY(), fieldRelativeSpeeds.vyMetersPerSecond);
-  //           })
-  //       .until(() -> angleController.atGoal() && xController.atGoal() && yController.atGoal())
-  //       .withName("snapToPositionTemplate.snapToPosition");
-  // }
+              ChassisSpeeds speeds = new ChassisSpeeds(x, y, omega);
+              drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, drive.getRotation()));
+            },
+            drive)
+        .beforeStarting(
+            () -> {
+              var fieldRelativeSpeeds =
+                  ChassisSpeeds.fromRobotRelativeSpeeds(
+                      drive.getChassisSpeeds(), drive.getPose().getRotation());
+              angleController.reset(
+                  drive.getRotation().getRadians(), fieldRelativeSpeeds.omegaRadiansPerSecond);
+              xController.reset(drive.getPose().getX(), fieldRelativeSpeeds.vxMetersPerSecond);
+              yController.reset(drive.getPose().getY(), fieldRelativeSpeeds.vyMetersPerSecond);
+            })
+        .until(() -> angleController.atGoal() && xController.atGoal() && yController.atGoal())
+        .withName("snapToPositionTemplate.snapToPosition");
+  }
 }

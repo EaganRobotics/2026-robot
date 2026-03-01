@@ -77,23 +77,23 @@ public class SnapCommands {
     return new Pose2d(targetPosition, new Rotation2d(angleToHub));
   }
 
-  // public static Command snapToRadius(Drive drive, Distance radius) {
-  //   return Commands.defer(
-  //           () -> {
-  //             Translation2d hubCenter = getHubCenter();
-  //             double radiusMeters = radius.in(Meters);
-  //             Translation2d robotPos = drive.getPose().getTranslation();
+  public static Command snapToRadius(Drive drive, Distance radius) {
+    return Commands.defer(
+            () -> {
+              Translation2d hubCenter = getHubCenter();
+              double radiusMeters = radius.in(Meters);
+              Translation2d robotPos = drive.getPose().getTranslation();
 
-  //             Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
+              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
 
-  //             Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
-  //             Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
+              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
+              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
 
-  //             return SnapToPositionTemplate.snapToPosition(drive, innerPose);
-  //           },
-  //           Set.of(drive))
-  //       .withName("DriveCommands.snapToRadius");
-  // }
+              return SnapToPositionTemplate.snapToPosition(drive, innerPose);
+            },
+            Set.of(drive))
+        .withName("DriveCommands.snapToRadius");
+  }
 
   public static Command snapToRadiusInterpolation(Drive drive, Distance radius) {
     return Commands.defer(
