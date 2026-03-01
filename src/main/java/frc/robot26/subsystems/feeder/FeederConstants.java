@@ -21,7 +21,7 @@ public class FeederConstants {
     public static final LoggedTunablePIDs feederPIDs =
         new LoggedTunablePIDs("Feeder", 0.5, 0.0, 0.001); // TODO: change
     public static final LoggedTunableNumber feederSpeed =
-        new LoggedTunableNumber("Tuning/FeederSpeed", 3000);
+        new LoggedTunableNumber("Tuning/FeederSpeed", 2000);
   }
 
   public static final class Sim {
