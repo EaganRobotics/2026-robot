@@ -48,9 +48,9 @@ public class SnapToPositionTemplate {
   public static final double Y_KI = X_KI;
   public static final double Y_KD = X_KD;
 
-  public static final double ANGLE_KP = 2;
+  public static final double ANGLE_KP = 30;
   public static final double ANGLE_KI = 0.0;
-  public static final double ANGLE_KD = 0.3;
+  public static final double ANGLE_KD = 1;
 
   private static final LoggedTunablePIDs xPIDs =
       new LoggedTunablePIDs("SnapToPosition/X", X_KP, X_KI, X_KD);
