@@ -1,7 +1,9 @@
 package frc.robot26.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngle;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -87,6 +89,14 @@ public class Shooter extends SubsystemBase {
     return this.runOnce(
             () -> {
               io.setHoodPosition(angle);
+            })
+        .withName("Shooter.setHoodPosition");
+  }
+
+  public Command setTunableHood() {
+    return this.run(
+            () -> {
+              io.setHoodPosition(Degrees.of(hoodAngle.get()));
             })
         .withName("Shooter.setHoodPosition");
   }

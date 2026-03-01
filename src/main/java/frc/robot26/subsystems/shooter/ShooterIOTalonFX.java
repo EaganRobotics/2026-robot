@@ -81,17 +81,17 @@ public class ShooterIOTalonFX implements ShooterIO {
     leadConfigRight.Voltage.PeakReverseVoltage = -10;
     leadConfigRight.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    hoodConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     hoodConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     hoodConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
-    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
     hoodConfig.Feedback.SensorToMechanismRatio = GEARING_HOOD;
     hoodConfig.Voltage.PeakForwardVoltage = 10;
     hoodConfig.Voltage.PeakReverseVoltage = -10;
     hoodConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = hoodRotationEndLimit.in(Rotations);
-    hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
 
     // Apply velocity-specific PID gains to the shooter Talons (tunable via dashboard)

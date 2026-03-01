@@ -264,6 +264,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     feeder.setDefaultCommand(
         feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+    shooter.setDefaultCommand(
+        shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
 
     // Driver Controls
 
@@ -347,8 +349,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
     // operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
-    operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(1)));
-    operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(-1)));
+
+    operatorController.povLeft().whileTrue(shooter.setTunableHood());
+
+    operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(2)));
+    operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(-2)));
   }
 
   @Override
