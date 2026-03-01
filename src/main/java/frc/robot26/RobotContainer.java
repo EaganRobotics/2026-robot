@@ -302,7 +302,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
 
     // driverController.a().whileTrue(feeder.setTunableFeeder());
-    // driverController.x().whileTrue(DriveCommands.snapToRadiusInterpolation(drive, Feet.of(7.0)));
+    driverController.x().whileTrue(SnapCommands.tuneableFlipitySnipitySnap(drive));
     // driverController.b().whileTrue(shooter.setTunableShooter());
     // driverController.b().whileTrue(floor.setTunableFloor());
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
