@@ -1,6 +1,8 @@
 package frc.robot26.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -15,6 +17,9 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot26.subsystems.intake.IntakeConstants.Sim;
+import org.ironmaple.simulation.IntakeSimulation;
+import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -30,6 +35,8 @@ public class IntakeIOSim implements IntakeIO {
   private final MapleMotorSim deployMotor;
   private Voltage deployAppliedVoltage = Volts.of(0);
 
+  private final IntakeSimulation intakeSimulation;
+
   // one is the actual simulator and one is like the which model is used and its
   // gearbox configuration, using both flywheelsim and maple motor sim is good
   private final FlywheelSim intakeSim =
@@ -44,7 +51,23 @@ public class IntakeIOSim implements IntakeIO {
           deployGearbox,
           0.000015);
 
-  public IntakeIOSim() {
+  public IntakeIOSim(AbstractDriveTrainSimulation driveTrain) {
+    // Here, create the intake simulation with respect to the intake on your real robot
+    this.intakeSimulation =
+        IntakeSimulation.OverTheBumperIntake(
+            // Specify the type of game pieces that the intake can collect
+            "Fuel",
+            // Specify the drivetrain to which this intake is attached
+            driveTrain,
+            // Width of the intake
+            Meters.of(0.7),
+            // The extension length of the intake beyond the robot's frame (when activated)
+            Meters.of(0.2),
+            // The intake is mounted on the back side of the chassis
+            IntakeSimulation.IntakeSide.BACK,
+            // The intake can hold up to 1 note
+            1);
+
     intakeMotor =
         new MapleMotorSim(
             new SimMotorConfigs(
@@ -60,14 +83,33 @@ public class IntakeIOSim implements IntakeIO {
         deployMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
   }
 
+  boolean isDeployed = false;
+
   @Override
   public void setIntakeOpenLoop(Voltage output) {
     intakeAppliedVoltage = output;
+    if (isDeployed) {
+      intakeSimulation.setIntakeVoltage(
+          output); // Set the intake voltage based on the applied voltage
+    } else {
+      intakeSimulation.setIntakeVoltage(Volts.of(0));
+    } // If the intake is not deployed, set voltage to 0
+  }
+
+  @Override
+  public void setIntakeClosedLoop(AngularVelocity velocity) {
+    intakeAppliedVoltage = Volts.of(velocity.in(RPM) * 0.01); // Convert RPM to voltage (simplified)
+    setIntakeOpenLoop(intakeAppliedVoltage); // Use the open loop method to set the voltage
   }
 
   @Override
   public void setDeployOpenLoop(Voltage output) {
     deployAppliedVoltage = output;
+    if (output.in(Volts) > 0.5) {
+      isDeployed = true;
+    } else if (output.in(Volts) < -0.5) {
+      isDeployed = false;
+    }
   }
 
   @Override

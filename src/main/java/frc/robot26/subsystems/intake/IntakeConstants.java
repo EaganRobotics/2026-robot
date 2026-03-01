@@ -46,9 +46,9 @@ public class IntakeConstants {
   }
 
   public static final class Real {
-    public static final int followerMotorID = 25; // TODO: change to correct ID
-    public static final int leadMotorID = 17;
-    public static final int deployMotorID = 18;
+    public static final int followerMotorID = 19;
+    public static final int leadMotorID = 18;
+    public static final int deployMotorID = 17;
     public static final int limitSwitchChannel = 0;
 
     public static final LoggedTunablePIDs intakePIDs =
