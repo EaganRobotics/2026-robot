@@ -1,6 +1,5 @@
 package frc.robot26;
 
-import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -20,7 +19,6 @@ import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.ShooterCommands;
-import frc.robot26.commands.SnapCommands;
 import frc.robot26.generated.TunerConstants;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.drive.DriveSimConfig;
@@ -158,7 +156,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     VisionConstants.limelightBack,
                     VisionConstants.robotToCameraBack,
                     driveSimulation::getSimulatedDriveTrainPose));
-        intake = new Intake(new IntakeIOSim());
+        intake = new Intake(new IntakeIOSim(RobotContainer.driveSimulation));
         feeder = new Feeder(new FeederIOSim());
         floor = new Floor(new FloorIOSim());
         shooter = new Shooter(new ShooterIOSim());
@@ -255,12 +253,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             () -> -driverController.getLeftY(),
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()));
-    shooter.setDefaultCommand(
-        ShooterCommands.shooterDefaultCommand(
-            shooter,
-            () -> SnapCommands.distanceToHub(drive),
-            () -> -driverController.getRightY(),
-            Feet.of(5)));
+    // shooter.setDefaultCommand(
+    //     ShooterCommands.shooterDefaultCommand(
+    //         shooter,
+    //         () -> SnapCommands.distanceToHub(drive),
+    //         () -> -driverController.getRightY(),
+    //         Feet.of(5)));
     intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
     feeder.setDefaultCommand(
         feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
@@ -331,18 +329,25 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 RollerCommands.shootClosedLoop(
                     shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
-    operatorController
-        .leftTrigger()
-        .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
-    operatorController
-        .rightTrigger()
-        .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+    // operatorController
+    //     .leftTrigger()
+    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
+    // operatorController
+    //     .rightTrigger()
+    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
 
-    operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
-    operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));
+    // operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
+    // operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));
 
-    operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
-    operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
+    operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
+    operatorController.leftBumper().whileTrue(floor.setTunableFloor());
+    operatorController.rightTrigger().whileTrue(shooter.setTunableShooter());
+    operatorController.rightBumper().whileTrue(feeder.setTunableFeeder());
+
+    // operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
+    // operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
+    operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(1)));
+    operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(-1)));
   }
 
   @Override

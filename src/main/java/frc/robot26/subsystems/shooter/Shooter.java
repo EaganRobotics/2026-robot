@@ -112,4 +112,15 @@ public class Shooter extends SubsystemBase {
             })
         .withName("Shooter.setHoodJoystickOpenLoop");
   }
+
+  public Command setHoodOpenLoop(Voltage voltage) {
+    return this.runEnd(
+            () -> {
+              io.setHoodOpenLoop(voltage);
+            },
+            () -> {
+              io.setHoodOpenLoop(Volts.of(0));
+            })
+        .withName("Shooter.setHoodJoystickOpenLoop");
+  }
 }
