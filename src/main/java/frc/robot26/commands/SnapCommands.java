@@ -100,7 +100,7 @@ public class SnapCommands {
         .withName("DriveCommands.snapToRadius");
   }
 
-  public static Command tuneableSnapToRadius(Drive drive) {
+  public static Command tuneableFlipitySnipitySnap(Drive drive) {
     return Commands.defer(
             () -> {
               Translation2d hubCenter = getHubCenter();
