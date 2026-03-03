@@ -287,4 +287,26 @@ public class DriveCommands {
     Rotation2d lastAngle = Rotation2d.kZero;
     double gyroDelta = 0.0;
   }
+
+  // yes i know i spelld it wrong, its intentional ok!
+  public static void checkAuspition() {
+    System.out.println(DriverStation.getRawAllianceStation().toString());
+
+    switch (DriverStation.getRawAllianceStation().toString()) {
+      case "Blue3":
+        break;
+      case "Blue2":
+        break;
+      case "Blue1":
+        break;
+      case "Red1":
+        break;
+      case "Red2":
+        break;
+      case "Red3":
+        break;
+      default:
+        break;
+    }
+  }
 }
