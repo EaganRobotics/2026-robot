@@ -298,25 +298,31 @@ public class DriveCommands {
 
     switch (DriverStation.getRawAllianceStation().toString()) {
       case "Blue3":
-        Auspition.set("test");
+        Auspition.set(
+            "Highly Auspicious - West position, primary metal direction, strong creative and completion energy");
         break;
       case "Blue2":
-        Auspition.set("e");
+        Auspition.set(
+            "Moderately Auspicious - Center-bottom position, neutral metal energy, balanced but undirected");
         break;
       case "Blue1":
-        Auspition.set("test");
+        Auspition.set(
+            "Inauspicious - East position, metal cuts wood energy, clashes with health and family");
         break;
       case "Red1":
-        Auspition.set("test");
+        Auspition.set(
+            "Highly Auspicious - Northwest position, secondary metal direction, powerful leadership and helpful people energy");
         break;
       case "Red2":
-        Auspition.set("test");
+        Auspition.set(
+            "Moderately Auspicious - North-center position, metal feeds water cycle, supports career energy");
         break;
       case "Red3":
-        Auspition.set("test");
+        Auspition.set(
+            "Inauspicious - Northeast position, metal energy dispersed, weakened and unsupported direction");
         break;
       default:
-        Auspition.set("Unknown");
+        Auspition.set("Unknown - Position outside the bagua, no feng shui metal reading available");
         break;
     }
   }
