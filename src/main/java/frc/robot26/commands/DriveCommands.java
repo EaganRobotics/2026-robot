@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.tunables.LoggedTunableString;
 import frc.robot26.subsystems.drive.Drive;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -292,20 +293,30 @@ public class DriveCommands {
   public static void checkAuspition() {
     System.out.println(DriverStation.getRawAllianceStation().toString());
 
+    LoggedTunableString Auspition =
+        new LoggedTunableString("Auspition", "Unknown"); // TODO: Make better
+
     switch (DriverStation.getRawAllianceStation().toString()) {
       case "Blue3":
+        Auspition.set("test");
         break;
       case "Blue2":
+        Auspition.set("e");
         break;
       case "Blue1":
+        Auspition.set("test");
         break;
       case "Red1":
+        Auspition.set("test");
         break;
       case "Red2":
+        Auspition.set("test");
         break;
       case "Red3":
+        Auspition.set("test");
         break;
       default:
+        Auspition.set("Unknown");
         break;
     }
   }
