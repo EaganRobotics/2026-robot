@@ -13,6 +13,7 @@
 
 package frc.robot26.commands;
 
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.tunables.LoggedTunableNumber;
 import frc.robot26.subsystems.drive.Drive;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
@@ -34,6 +36,9 @@ public class SnapCommands {
 
   private static final Distance RED_HUB_CENTER_X = Inches.of(469);
   private static final Distance RED_HUB_CENTER_Y = Inches.of(159.0935);
+
+  public static final LoggedTunableNumber TUNEABLE_SNAP_DISTANCE =
+      new LoggedTunableNumber("Tuning/TUNEABLE_SNAP_DISTANCE_FEET", 5);
 
   private static final Translation2d BLUE_HUB_CENTER =
       new Translation2d(BLUE_HUB_CENTER_X, BLUE_HUB_CENTER_Y);
@@ -77,23 +82,41 @@ public class SnapCommands {
     return new Pose2d(targetPosition, new Rotation2d(angleToHub));
   }
 
-  // public static Command snapToRadius(Drive drive, Distance radius) {
-  //   return Commands.defer(
-  //           () -> {
-  //             Translation2d hubCenter = getHubCenter();
-  //             double radiusMeters = radius.in(Meters);
-  //             Translation2d robotPos = drive.getPose().getTranslation();
+  public static Command snapToRadius(Drive drive, Distance radius) {
+    return Commands.defer(
+            () -> {
+              Translation2d hubCenter = getHubCenter();
+              double radiusMeters = radius.in(Meters);
+              Translation2d robotPos = drive.getPose().getTranslation();
 
-  //             Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
+              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
 
-  //             Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
-  //             Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
+              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
+              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
 
-  //             return SnapToPositionTemplate.snapToPosition(drive, innerPose);
-  //           },
-  //           Set.of(drive))
-  //       .withName("DriveCommands.snapToRadius");
-  // }
+              return SnapToPositionTemplate.snapToPosition(drive, innerPose);
+            },
+            Set.of(drive))
+        .withName("DriveCommands.snapToRadius");
+  }
+
+  public static Command tuneableFlipitySnipitySnap(Drive drive) {
+    return Commands.defer(
+            () -> {
+              Translation2d hubCenter = getHubCenter();
+              double radiusMeters = Feet.of(TUNEABLE_SNAP_DISTANCE.get()).in(Meters);
+              Translation2d robotPos = drive.getPose().getTranslation();
+
+              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
+
+              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
+              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
+
+              return SnapToPositionTemplate.snapToPosition(drive, innerPose);
+            },
+            Set.of(drive))
+        .withName("DriveCommands.snapToRadius");
+  }
 
   public static Command snapToRadiusInterpolation(Drive drive, Distance radius) {
     return Commands.defer(
