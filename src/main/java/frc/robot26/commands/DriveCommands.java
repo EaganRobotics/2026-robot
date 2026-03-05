@@ -291,38 +291,37 @@ public class DriveCommands {
 
   // yes i know i spelld it wrong, its intentional ok!
   public static void checkAuspition() {
-    System.out.println(DriverStation.getRawAllianceStation().toString());
 
-    LoggedTunableString Auspition =
-        new LoggedTunableString("Auspition", "Unknown"); // TODO: Make better
+    LoggedTunableString auspition =
+        new LoggedTunableString("auspition", "Unknown"); // TODO: Make better
 
     switch (DriverStation.getRawAllianceStation().toString()) {
       case "Blue3":
-        Auspition.set(
+        auspition.set(
             "Highly Auspicious - West position, primary metal direction, strong creative and completion energy");
         break;
       case "Blue2":
-        Auspition.set(
+        auspition.set(
             "Moderately Auspicious - Center-bottom position, neutral metal energy, balanced but undirected");
         break;
       case "Blue1":
-        Auspition.set(
+        auspition.set(
             "Inauspicious - East position, metal cuts wood energy, clashes with health and family");
         break;
       case "Red1":
-        Auspition.set(
+        auspition.set(
             "Highly Auspicious - Northwest position, secondary metal direction, powerful leadership and helpful people energy");
         break;
       case "Red2":
-        Auspition.set(
+        auspition.set(
             "Moderately Auspicious - North-center position, metal feeds water cycle, supports career energy");
         break;
       case "Red3":
-        Auspition.set(
+        auspition.set(
             "Inauspicious - Northeast position, metal energy dispersed, weakened and unsupported direction");
         break;
       default:
-        Auspition.set("Unknown - Position outside the bagua, no feng shui metal reading available");
+        auspition.set("Unknown - Position outside the bagua, no feng shui metal reading available");
         break;
     }
   }
