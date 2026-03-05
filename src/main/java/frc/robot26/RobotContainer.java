@@ -322,8 +322,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
-
-    operatorController.a().whileTrue(intake.setTunableIntake());
+    operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
     operatorController
         .y()
         .whileTrue(
@@ -331,23 +330,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 RollerCommands.shootClosedLoop(
                     shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
-    // operatorController
-    //     .leftTrigger()
-    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
-    // operatorController
-    //     .rightTrigger()
-    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
-
-    // operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
-    // operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));
-
-    operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
-    operatorController.leftBumper().whileTrue(floor.setTunableFloor());
-    operatorController.rightTrigger().whileTrue(shooter.setTunableShooter());
-    operatorController.rightBumper().whileTrue(feeder.setTunableFeeder());
-
-    // operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
-    // operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
     operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(1)));
     operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(-1)));
   }
