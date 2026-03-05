@@ -59,6 +59,10 @@ public class IntakeConstants {
         new LoggedTunableNumber("Tuning/IntakeSpeed", 4000);
     public static final LoggedTunableNumber deployPosition =
         new LoggedTunableNumber("Tuning/DeployPosition", 4000);
+    public static final LoggedTunableNumber deployCruiseVelocity =
+        new LoggedTunableNumber("Tuning/deployCruiseVelocity", 1000);
+    public static final LoggedTunableNumber deployAcceleration =
+        new LoggedTunableNumber("Tuning/deployAcceleration", 1000);
   }
 
   public static final class Sim {
