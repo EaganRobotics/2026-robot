@@ -52,7 +52,8 @@ public class Shooter extends SubsystemBase {
               velocitySetpoint = velocity;
             },
             () -> {
-              io.setShooterClosedLoop(RPM.of(0));
+              io.setShooterOpenLoop(Volts.of(0));
+              // io.setShooterClosedLoop(RPM.of(0));
               velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");
@@ -65,7 +66,8 @@ public class Shooter extends SubsystemBase {
               velocitySetpoint = velocity.get();
             },
             () -> {
-              io.setShooterClosedLoop(RPM.of(0));
+              io.setShooterOpenLoop(Volts.of(0));
+              // io.setShooterClosedLoop(RPM.of(0));
               velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");
