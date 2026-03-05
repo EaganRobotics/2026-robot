@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.lib.tunables.LoggedTunableString;
 import frc.robot26.subsystems.drive.Drive;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -286,5 +287,42 @@ public class DriveCommands {
     double[] positions = new double[4];
     Rotation2d lastAngle = Rotation2d.kZero;
     double gyroDelta = 0.0;
+  }
+
+  // yes i know i spelld it wrong, its intentional ok!
+  public static void checkAuspition() {
+
+    LoggedTunableString auspition =
+        new LoggedTunableString("auspition", "Unknown"); // TODO: Make better
+
+    switch (DriverStation.getRawAllianceStation().toString()) {
+      case "Blue3":
+        auspition.set(
+            "Highly Auspicious - West position, primary metal direction, strong creative and completion energy");
+        break;
+      case "Blue2":
+        auspition.set(
+            "Moderately Auspicious - Center-bottom position, neutral metal energy, balanced but undirected");
+        break;
+      case "Blue1":
+        auspition.set(
+            "Inauspicious - East position, metal cuts wood energy, clashes with health and family");
+        break;
+      case "Red1":
+        auspition.set(
+            "Highly Auspicious - Northwest position, secondary metal direction, powerful leadership and helpful people energy");
+        break;
+      case "Red2":
+        auspition.set(
+            "Moderately Auspicious - North-center position, metal feeds water cycle, supports career energy");
+        break;
+      case "Red3":
+        auspition.set(
+            "Inauspicious - Northeast position, metal energy dispersed, weakened and unsupported direction");
+        break;
+      default:
+        auspition.set("Unknown - Position outside the bagua, no feng shui metal reading available");
+        break;
+    }
   }
 }
