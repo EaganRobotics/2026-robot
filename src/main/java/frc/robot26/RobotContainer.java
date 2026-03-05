@@ -1,5 +1,6 @@
 package frc.robot26;
 
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -376,6 +377,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     Logger.recordOutput(
         "FieldSimulation/FuelPositions", arena.getGamePieceManager().getPosesArrayByType("Fuel"));
+  }
+
+  @Override
+  public void robotPeriodic() {
+    Logger.recordOutput(
+        "Drive/DistanceToHubCenterFeet", SnapCommands.distanceToHub(drive).in(Feet));
   }
 
   @Override
