@@ -221,9 +221,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     autoChooser.addOption(
-        "Week0-Test",
+        "Center-Hub",
         RollerCommands.shootClosedLoop(
                 shooter, floor, feeder, RPM.of(515), RPM.of(1000), RPM.of(1500))
+            .withTimeout(17));
+
+    autoChooser.addOption(
+        "Angle-Hub",
+        RollerCommands.shootClosedLoop(
+                shooter, floor, feeder, RPM.of(545), RPM.of(1000), RPM.of(1500))
             .withTimeout(17));
 
     // Set up SysId routines
