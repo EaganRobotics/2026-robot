@@ -265,6 +265,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     feeder.setDefaultCommand(
         feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+    // shooter.setDefaultCommand(
+    //     shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
 
     // Driver Controls
 
@@ -332,6 +334,31 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(1)));
     operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(-1)));
+    // operatorController
+    //     .leftTrigger()
+    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
+    // operatorController
+    //     .rightTrigger()
+    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+
+    // operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
+    // operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));
+
+    operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
+    operatorController.leftBumper().whileTrue(floor.setTunableFloor());
+    operatorController.rightTrigger().whileTrue(shooter.setTunableShooter());
+    operatorController.rightBumper().whileTrue(feeder.setTunableFeeder());
+
+    // operatorController.povUp().whileTrue(shooter.setShooterOpenLoop(Volts.of(3)));
+    // operatorController.povDown().whileTrue(shooter.setShooterOpenLoop(Volts.of(-3)));
+
+    // operatorController.povLeft().whileTrue(shooter.setTunableHood());
+
+    // operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(2)));
+    // operatorController.povDown().whileTrue(shooter.setHoodOpenLoop(Volts.of(-2)));
+
+    operatorController.povLeft().onTrue(shooter.setTunableHood());
+    operatorController.povRight().onTrue(shooter.setTunableHoodBack());
   }
 
   @Override
