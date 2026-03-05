@@ -34,6 +34,19 @@ public class RollerCommands {
         .withName("RollerCommands.shootClosedLoop");
   }
 
+  public static Command tuneableShootClosedLoop(
+      Shooter shooter,
+      Floor floor,
+      Feeder feeder,
+      AngularVelocity feederSetpoint,
+      AngularVelocity floorSetpoint) {
+    return shooter
+        .setTunableShooter()
+        .alongWith(feeder.setClosedLoop(feederSetpoint))
+        .alongWith(floor.setClosedLoop(floorSetpoint))
+        .withName("RollerCommands.shootClosedLoop");
+  }
+
   public static Command shootClosedLoopDangerous(
       Shooter shooter,
       Floor floor,

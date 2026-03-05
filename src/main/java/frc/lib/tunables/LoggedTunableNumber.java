@@ -24,6 +24,10 @@ public class LoggedTunableNumber extends LoggedNetworkNumber implements LoggedTu
     return get();
   }
 
+  public void incrementBy(double value) {
+    set(get() + value);
+  }
+
   public List<Consumer<Double>> getListeners() {
     return listeners;
   }
