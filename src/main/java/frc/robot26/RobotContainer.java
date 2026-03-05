@@ -1,6 +1,5 @@
 package frc.robot26;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
@@ -45,6 +44,7 @@ import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.shooter.Shooter;
+import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
@@ -330,17 +330,38 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .y()
         .whileTrue(
             Commands.sequence(
-                RollerCommands.shootClosedLoop(
+                RollerCommands.shootClosedLoopDangerous(
                     shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
     operatorController
         .a()
         .whileTrue(
-            RollerCommands.shootClosedLoopDangerous(
+            RollerCommands.shootClosedLoop(
                 shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000)));
 
-    operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(50)));
-    operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-50)));
+    // operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(50)));
+    // operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-50)));
+
+    operatorController
+        .rightBumper()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ShooterConstants.Real.shooterSpeed.incrementBy(50);
+                }));
+    operatorController
+        .leftBumper()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ShooterConstants.Real.shooterSpeed.incrementBy(-50);
+                }));
+
+    operatorController
+        .rightTrigger()
+        .whileTrue(
+            RollerCommands.tuneableShootClosedLoop(
+                shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
 
     // operatorController
     //     .leftTrigger()
