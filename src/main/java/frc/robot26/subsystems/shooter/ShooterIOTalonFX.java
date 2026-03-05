@@ -1,7 +1,11 @@
 package frc.robot26.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_SHOOTER;
@@ -85,6 +89,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     hoodConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
+    hoodConfig.CurrentLimits.StatorCurrentLimitEnable = false;
     hoodConfig.Feedback.SensorToMechanismRatio = GEARING_HOOD;
     hoodConfig.Voltage.PeakForwardVoltage = 10;
     hoodConfig.Voltage.PeakReverseVoltage = -10;
@@ -93,7 +98,18 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = hoodRotationEndLimit.in(Rotations);
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     hoodConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = hoodRotationStartLimit.in(Rotations);
-
+    Real.hoodAcceleration.addListener(
+        (acceleration) -> {
+          hoodConfig.MotionMagic.MotionMagicAcceleration =
+              DegreesPerSecondPerSecond.of(acceleration).in(RotationsPerSecondPerSecond);
+          hood.getConfigurator().apply(hoodConfig);
+        });
+    Real.hoodCruiseVelocity.addListener(
+        (velocity) -> {
+          hoodConfig.MotionMagic.MotionMagicCruiseVelocity =
+              DegreesPerSecond.of(velocity).in(RotationsPerSecond);
+          hood.getConfigurator().apply(hoodConfig);
+        });
     // Apply velocity-specific PID gains to the shooter Talons (tunable via dashboard)
     Real.shooterPIDs.applyToTalonFXConfig(leadLeft, leadConfigLeft);
     Real.shooterPIDs.applyToTalonFXConfig(leadRight, leadConfigRight);
