@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.floor.Floor;
 import frc.robot26.subsystems.shooter.Shooter;
@@ -25,13 +24,15 @@ public class RollerCommands {
       AngularVelocity shooterSetpoint,
       AngularVelocity feederSetpoint,
       AngularVelocity floorSetpoint) {
-    return shooter
-        .setShooterClosedLoop(shooterSetpoint)
-        .alongWith(feeder.setClosedLoop(feederSetpoint))
-        .alongWith(
-            Commands.waitUntil(shooter.isAtVelocitySetpoint().and(feeder.isAtVelocitySetpoint()))
-                .andThen(floor.setClosedLoop(floorSetpoint)))
-        .withName("RollerCommands.shootClosedLoop");
+    return shootClosedLoopDangerous(
+        shooter, floor, feeder, shooterSetpoint, feederSetpoint, floorSetpoint);
+    // return shooter
+    //     .setShooterClosedLoop(shooterSetpoint)
+    //     .alongWith(feeder.setClosedLoop(feederSetpoint))
+    //     .alongWith(
+    //         Commands.waitUntil(shooter.isAtVelocitySetpoint().and(feeder.isAtVelocitySetpoint()))
+    //             .andThen(floor.setClosedLoop(floorSetpoint)))
+    //     .withName("RollerCommands.shootClosedLoop");
   }
 
   public static Command tuneableShootClosedLoop(
