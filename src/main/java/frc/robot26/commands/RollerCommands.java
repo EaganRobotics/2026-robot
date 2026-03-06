@@ -72,4 +72,13 @@ public class RollerCommands {
         intake.setDeployClosedLoop(Inches.of(1)),
         Commands.waitSeconds(0.75));
   }
+
+  public static Command intakeJiggleOpenLoop(Intake intake) {
+    return Commands.repeatingSequence(
+        intake.setDeployOpenLoop(Volts.of(3)).withTimeout(0.75),
+        Commands.waitSeconds(0.1),
+        intake.setDeployOpenLoop(Volts.of(3)).withTimeout(0.75),
+        Commands.waitSeconds(0.1));
+    // i made volts 3 not 2 lol
+  }
 }
