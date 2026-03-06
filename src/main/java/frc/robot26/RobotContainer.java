@@ -121,7 +121,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   }
                 },
                 new VisionIOLimelight(
-                    VisionConstants.limelightShooter, () -> drive.getPose().getRotation())
+                    VisionConstants.limelightBack, () -> drive.getPose().getRotation()),
+                new VisionIOLimelight(
+                    VisionConstants.limelightTop, () -> drive.getPose().getRotation())
                 // , new VisionIOLimelight(VisionConstants.limelightBack,
                 // () -> drive.getPose().getRotation())
                 );
@@ -153,12 +155,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   }
                 },
                 new VisionIOPhotonVisionSim(
-                    VisionConstants.limelightShooter,
-                    VisionConstants.robotToCameraShooter,
-                    driveSimulation::getSimulatedDriveTrainPose),
-                new VisionIOPhotonVisionSim(
                     VisionConstants.limelightBack,
                     VisionConstants.robotToCameraBack,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.limelightTop,
+                    VisionConstants.robotToCameraTop,
                     driveSimulation::getSimulatedDriveTrainPose));
         intake = new Intake(new IntakeIOSim(RobotContainer.driveSimulation));
         feeder = new Feeder(new FeederIOSim());

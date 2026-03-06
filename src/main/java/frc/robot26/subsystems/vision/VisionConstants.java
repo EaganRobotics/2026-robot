@@ -7,6 +7,8 @@
 
 package frc.robot26.subsystems.vision;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -19,17 +21,19 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static final String limelightShooter = "limelight-shooter";
   public static final String limelightBack = "limelightBack";
+  public static final String limelightTop = "limelightTop";
 
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
-  public static final Transform3d robotToCameraShooter =
-      new Transform3d(0.2514, 0.2924, 0.2153, new Rotation3d(0.0, 23.2, 0.0));
   public static final Transform3d robotToCameraBack =
-      new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
+      new Transform3d(0.2514, 0.2924, 0.2153, new Rotation3d(0.0, 23.2, 0.0));
+  public static final Transform3d robotToCameraTop =
+      new Transform3d(
+          Inches.of(-4.069), Inches.of(11.615), Inches.of(28.204), new Rotation3d(0.0, 15, 6.76));
 
   // Basic filtering thresholds
+
   public static final double maxAmbiguity = 0.3;
   public static final double maxZError = 0.75;
 

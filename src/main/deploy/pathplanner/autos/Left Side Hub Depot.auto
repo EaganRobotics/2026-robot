@@ -11,9 +11,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Left Hub to Depot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left Hub to Depot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeOut"
+                }
+              }
+            ]
           }
         },
         {
