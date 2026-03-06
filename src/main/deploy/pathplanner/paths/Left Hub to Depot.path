@@ -16,19 +16,40 @@
     },
     {
       "anchor": {
-        "x": 0.4695848161348156,
-        "y": 0.6512336892010058
+        "x": 2.382910128388017,
+        "y": 0.8714978601997154
       },
       "prevControl": {
-        "x": 1.0183036773521155,
-        "y": 1.5334875444701777
+        "x": 3.034234168216266,
+        "y": 0.8714978601997154
+      },
+      "nextControl": {
+        "x": 1.8394864479315256,
+        "y": 0.8714978601997155
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.15746077032582706,
+        "y": 0.6644793152639101
+      },
+      "prevControl": {
+        "x": 0.40746077032582706,
+        "y": 0.6644793152639101
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 179.01223960097204
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -178.20788103832504
   },
   "reversed": false,
   "folder": "week 1 paths",
