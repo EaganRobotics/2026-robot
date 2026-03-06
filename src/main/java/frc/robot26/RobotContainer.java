@@ -41,7 +41,6 @@ import frc.robot26.subsystems.floor.FloorIO;
 import frc.robot26.subsystems.floor.FloorIOSim;
 import frc.robot26.subsystems.floor.FloorIOTalonFX;
 import frc.robot26.subsystems.intake.Intake;
-import frc.robot26.subsystems.intake.IntakeConstants;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
@@ -199,10 +198,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
 
+    // NamedCommands.registerCommand(
+    //     "IntakeOut", intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+    // NamedCommands.registerCommand(
+    //     "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
     NamedCommands.registerCommand(
-        "IntakeOut", intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+        "IntakeOut", intake.setDeployOpenLoop(Volts.of(2)).withTimeout(2));
     NamedCommands.registerCommand(
-        "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
+        "IntakeIn", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(2));
     NamedCommands.registerCommand("FeederOut", feeder.setOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("FeederIn", feeder.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("FloorOut", floor.setOpenLoop(Volts.of(3)));
