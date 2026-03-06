@@ -160,7 +160,7 @@ public class SnapCommands {
         .withName("DriveCommands.snapToRadiusInterpolation");
   }
 
-  private static Translation2d getHubCenter() {
+  public static Translation2d getHubCenter() {
     return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
         ? RED_HUB_CENTER
         : BLUE_HUB_CENTER;

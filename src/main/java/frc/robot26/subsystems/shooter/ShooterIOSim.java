@@ -1,6 +1,8 @@
 package frc.robot26.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -72,8 +74,16 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
+  public void setShooterClosedLoop(AngularVelocity velocity) {
+    shooterAppliedVoltage =
+        Volts.of(velocity.in(RPM) * 0.01); // Convert RPM to voltage (simplified)
+    setShooterOpenLoop(shooterAppliedVoltage); // Use the open loop method to set the voltage
+  }
+
+  @Override
   public void setHoodPosition(Angle angle) {
-    // TODO: angle
+    hoodAppliedVoltage = Volts.of(angle.in(Degrees)); // this is wrong
+    setHoodOpenLoop(hoodAppliedVoltage);
   }
 
   @Override
