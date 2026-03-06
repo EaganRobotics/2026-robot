@@ -1,5 +1,6 @@
 package frc.robot26;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
@@ -345,8 +346,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             RollerCommands.shootClosedLoop(
                 shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000)));
 
-    // operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(50)));
-    // operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-50)));
+    operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(100)));
+    operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-100)));
+
+    // operatorController.povUp().onTrue(shooter.setTunableHood());
+    // operatorController.povDown().onTrue(shooter.setTunableHoodBack());
+
+    // operatorController.povUp().onTrue(intake.setTunableIntakeDeploy());
+    // operatorController.povDown().onTrue(intake.setTunableIntakeDeployBack());
 
     operatorController
         .rightBumper()
