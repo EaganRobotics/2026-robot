@@ -1,11 +1,14 @@
 package frc.robot26.commands;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.floor.Floor;
+import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.shooter.Shooter;
 
 public class RollerCommands {
@@ -60,5 +63,13 @@ public class RollerCommands {
         .alongWith(feeder.setClosedLoop(feederSetpoint))
         .alongWith(floor.setClosedLoop(floorSetpoint))
         .withName("RollerCommands.shootClosedLoopDangerous");
+  }
+
+  public static Command intakeJiggleClosedLoop(Intake intake) {
+    return Commands.repeatingSequence(
+        intake.setDeployClosedLoop(Inches.of(1)),
+        Commands.waitSeconds(0.75),
+        intake.setDeployClosedLoop(Inches.of(1)),
+        Commands.waitSeconds(0.75));
   }
 }
