@@ -205,9 +205,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // NamedCommands.registerCommand(
     //     "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
     NamedCommands.registerCommand(
-        "IntakeOut", intake.setDeployOpenLoop(Volts.of(2)).withTimeout(2));
+        "IntakeOut", intake.setDeployOpenLoop(Volts.of(3)).withTimeout(2));
     NamedCommands.registerCommand(
-        "IntakeIn", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(2));
+        "IntakeIn", intake.setDeployOpenLoop(Volts.of(-3)).withTimeout(2));
     NamedCommands.registerCommand("FeederOut", feeder.setOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("FeederIn", feeder.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("FloorOut", floor.setOpenLoop(Volts.of(3)));
@@ -350,8 +350,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // Operator Controls
 
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
-    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
+    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
     operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
     operatorController
         .y()
