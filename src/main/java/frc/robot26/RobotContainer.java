@@ -2,6 +2,7 @@ package frc.robot26;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
@@ -336,6 +337,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.b().whileTrue(shooter.setTunableShooter());
     // driverController.b().whileTrue(floor.setTunableFloor());
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
+
+    driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
+
+    // 3.5m
     // driverController
     //     .x()
     //     .whileTrue(
@@ -360,7 +365,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .setHoodPosition(Radians.of(0))
                 .andThen(
                     RollerCommands.shootClosedLoopDangerous(
-                        shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
+                        shooter, floor, feeder, RPM.of(525), RPM.of(1000), RPM.of(2000))));
 
     operatorController
         .a()
@@ -385,14 +390,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  ShooterConstants.Real.shooterSpeed.incrementBy(50);
+                  ShooterConstants.Real.shooterSpeed.incrementBy(15);
                 }));
     operatorController
         .leftBumper()
         .onTrue(
             Commands.runOnce(
                 () -> {
-                  ShooterConstants.Real.shooterSpeed.incrementBy(-50);
+                  ShooterConstants.Real.shooterSpeed.incrementBy(-15);
                 }));
 
     operatorController
