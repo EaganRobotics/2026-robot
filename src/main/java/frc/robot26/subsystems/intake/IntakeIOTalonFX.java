@@ -77,7 +77,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     deployConfig.Feedback.SensorToMechanismRatio = GEARING_DEPLOY;
     deployConfig.Voltage.PeakForwardVoltage = 10;
     deployConfig.Voltage.PeakReverseVoltage = -10;
-    deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     deployConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     deployConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =

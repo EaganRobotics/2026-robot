@@ -3,6 +3,7 @@ package frc.robot26;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -11,6 +12,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
-import frc.robot26.commands.ShooterCommands;
 import frc.robot26.commands.SnapCommands;
 import frc.robot26.generated.TunerConstants;
 import frc.robot26.subsystems.drive.Drive;
@@ -40,7 +41,6 @@ import frc.robot26.subsystems.floor.FloorIO;
 import frc.robot26.subsystems.floor.FloorIOSim;
 import frc.robot26.subsystems.floor.FloorIOTalonFX;
 import frc.robot26.subsystems.intake.Intake;
-import frc.robot26.subsystems.intake.IntakeConstants;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
@@ -121,7 +121,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   }
                 },
                 new VisionIOLimelight(
-                    VisionConstants.limelightShooter, () -> drive.getPose().getRotation())
+                    VisionConstants.limelightBack, () -> drive.getPose().getRotation()),
+                new VisionIOLimelight(
+                    VisionConstants.limelightTop, () -> drive.getPose().getRotation())
                 // , new VisionIOLimelight(VisionConstants.limelightBack,
                 // () -> drive.getPose().getRotation())
                 );
@@ -153,12 +155,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   }
                 },
                 new VisionIOPhotonVisionSim(
-                    VisionConstants.limelightShooter,
-                    VisionConstants.robotToCameraShooter,
-                    driveSimulation::getSimulatedDriveTrainPose),
-                new VisionIOPhotonVisionSim(
                     VisionConstants.limelightBack,
                     VisionConstants.robotToCameraBack,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOPhotonVisionSim(
+                    VisionConstants.limelightTop,
+                    VisionConstants.robotToCameraTop,
                     driveSimulation::getSimulatedDriveTrainPose));
         intake = new Intake(new IntakeIOSim(RobotContainer.driveSimulation));
         feeder = new Feeder(new FeederIOSim());
@@ -198,21 +200,34 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
 
+    // NamedCommands.registerCommand(
+    //     "IntakeOut", intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+    // NamedCommands.registerCommand(
+    //     "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
     NamedCommands.registerCommand(
-        "IntakeOut", intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+        "IntakeOut", intake.setDeployOpenLoop(Volts.of(3)).withTimeout(2));
     NamedCommands.registerCommand(
-        "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
+        "IntakeIn", intake.setDeployOpenLoop(Volts.of(-3)).withTimeout(2));
     NamedCommands.registerCommand("FeederOut", feeder.setOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("FeederIn", feeder.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("FloorOut", floor.setOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
+    NamedCommands.registerCommand("Intake", intake.setTunableIntake().withTimeout(5));
+
+    // autos wont work till intake out works
 
     NamedCommands.registerCommand(
-        "AutoShoot",
+        "AutoShootT17",
         RollerCommands.shootClosedLoop(
-            shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000)));
+                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
+            .withTimeout(17));
+    NamedCommands.registerCommand(
+        "AutoShootT5",
+        RollerCommands.shootClosedLoop(
+                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
+            .withTimeout(5));
 
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder, intake).withTimeout(3));
@@ -286,7 +301,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 drive,
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX(),
-                () -> Rotation2d.kZero));
+                () -> {
+                  Translation2d hubToRobot =
+                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+                  return new Rotation2d(angleToRobot);
+                }));
 
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -304,15 +324,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .ignoringDisable(true));
 
     // driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
-    driverController
-        .leftTrigger()
-        .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
-    driverController
-        .rightTrigger()
-        .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
+    // driverController
+    //     .leftTrigger()
+    //     .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
+    // driverController
+    //     .rightTrigger()
+    //     .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
 
     // driverController.a().whileTrue(feeder.setTunableFeeder());
-    driverController.x().whileTrue(SnapCommands.tuneableFlipitySnipitySnap(drive));
+    // driverController.x().whileTrue(SnapCommands.tuneableFlipitySnipitySnap(drive));
     // driverController.b().whileTrue(shooter.setTunableShooter());
     // driverController.b().whileTrue(floor.setTunableFloor());
     driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
@@ -330,21 +350,26 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // Operator Controls
 
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
-    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
+    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
     operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
     operatorController
         .y()
         .whileTrue(
-            Commands.sequence(
-                RollerCommands.shootClosedLoopDangerous(
-                    shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
+            shooter
+                .setHoodPosition(Radians.of(0))
+                .andThen(
+                    RollerCommands.shootClosedLoopDangerous(
+                        shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
     operatorController
         .a()
         .whileTrue(
-            RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000)));
+            shooter
+                .setHoodPosition(Radians.of(9.2))
+                .andThen(
+                    RollerCommands.shootClosedLoopDangerous(
+                        shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(100)));
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-100)));
