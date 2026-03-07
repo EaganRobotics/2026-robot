@@ -36,17 +36,17 @@ import org.littletonrobotics.junction.Logger;
 public class SnapToPositionTemplate {
 
   // PID controllers
-  public static final double X_KP = 10;
+  public static final double X_KP = 5.0;
   public static final double X_KI = 0.0;
-  public static final double X_KD = 0.2;
+  public static final double X_KD = 0.0;
 
   public static final double Y_KP = X_KP;
   public static final double Y_KI = X_KI;
   public static final double Y_KD = X_KD;
 
-  public static final double ANGLE_KP = 30;
+  public static final double ANGLE_KP = 5.0;
   public static final double ANGLE_KI = 0.0;
-  public static final double ANGLE_KD = 1;
+  public static final double ANGLE_KD = 0.0;
 
   private static final LoggedTunablePIDs xPIDs =
       new LoggedTunablePIDs("SnapToPosition/X", X_KP, X_KI, X_KD);
