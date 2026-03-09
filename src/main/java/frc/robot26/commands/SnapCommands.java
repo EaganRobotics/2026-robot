@@ -20,6 +20,7 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -98,6 +99,12 @@ public class SnapCommands {
             },
             Set.of(drive))
         .withName("DriveCommands.snapToRadius");
+  }
+
+  public static Command snapToPosition(Drive drive, double x, double y, Angle angle) {
+    // todo: make x and y respect units
+    return SnapToPositionTemplate.snapToPosition(
+        drive, new Pose2d(new Translation2d(x, y), new Rotation2d(angle)));
   }
 
   public static Command tuneableFlipitySnipitySnap(Drive drive) {

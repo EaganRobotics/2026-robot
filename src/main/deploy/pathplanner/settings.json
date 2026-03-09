@@ -3,16 +3,18 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "week 1 paths",
+    "Test",
     "Practice Path",
     "Test Paths",
-    "Week 0 Paths"
+    "Week 0 Paths",
+    "week 1 paths"
   ],
   "autoFolders": [
-    "Week 1 Autos",
+    "Test",
     "Practice Autos",
     "Test Autos",
-    "Week 0 Autos"
+    "Week 0 Autos",
+    "Week 1 Autos"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

@@ -216,6 +216,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("Intake", intake.setTunableIntake().withTimeout(5));
+    NamedCommands.registerCommand(
+        "SnapMidField", SnapCommands.snapToPosition(drive, 6, 5.5, Degrees.of(0)).withTimeout(5));
+    NamedCommands.registerCommand(
+        "SnapAllianceZone",
+        SnapCommands.snapToPosition(drive, 3.3, 5.5, Degrees.of(0)).withTimeout(5));
 
     // autos wont work till intake out works
 
