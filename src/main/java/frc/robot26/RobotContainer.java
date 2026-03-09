@@ -202,9 +202,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     }
 
     // NamedCommands.registerCommand(
-    //     "IntakeOut", intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+    // "IntakeOut", intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
     // NamedCommands.registerCommand(
-    //     "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
+    // "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
     NamedCommands.registerCommand(
         "IntakeOut", intake.setDeployOpenLoop(Volts.of(3)).withTimeout(2));
     NamedCommands.registerCommand(
@@ -216,11 +216,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("Intake", intake.setTunableIntake().withTimeout(5));
+
+    // Snap Named Commands
     NamedCommands.registerCommand(
-        "SnapMidField", SnapCommands.snapToPosition(drive, 6, 5.5, Degrees.of(0)).withTimeout(5));
+        "SnapToHub", SnapCommands.snapToRadius(drive, Meters.of(1.5)).withTimeout(4));
+    NamedCommands.registerCommand(
+        "SnapMidField", SnapCommands.snapToPosition(drive, 6, 5.5, Degrees.of(0)).withTimeout(3));
     NamedCommands.registerCommand(
         "SnapAllianceZone",
-        SnapCommands.snapToPosition(drive, 3.3, 5.5, Degrees.of(0)).withTimeout(5));
+        SnapCommands.snapToPosition(drive, 3.3, 5.5, Degrees.of(0)).withTimeout(3));
 
     // autos wont work till intake out works
 
@@ -285,17 +289,17 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()));
     // shooter.setDefaultCommand(
-    //     ShooterCommands.shooterDefaultCommand(
-    //         shooter,
-    //         () -> SnapCommands.distanceToHub(drive),
-    //         () -> -driverController.getRightY(),
-    //         Feet.of(5)));
+    // ShooterCommands.shooterDefaultCommand(
+    // shooter,
+    // () -> SnapCommands.distanceToHub(drive),
+    // () -> -driverController.getRightY(),
+    // Feet.of(5)));
     intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
     feeder.setDefaultCommand(
         feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
     // shooter.setDefaultCommand(
-    //     shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
+    // shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
 
     // Driver Controls
 
@@ -331,11 +335,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
     // driverController
-    //     .leftTrigger()
-    //     .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
+    // .leftTrigger()
+    // .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
     // driverController
-    //     .rightTrigger()
-    //     .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
+    // .rightTrigger()
+    // .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
 
     // driverController.a().whileTrue(feeder.setTunableFeeder());
     // driverController.x().whileTrue(SnapCommands.tuneableFlipitySnipitySnap(drive));
@@ -348,16 +352,16 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // 3.5m
     // driverController
-    //     .x()
-    //     .whileTrue(
-    //         Commands.sequence(
-    //             RollerCommands.shootClosedLoop(
-    //                 shooter,
-    //                 floor,
-    //                 feeder,
-    //                 RPM.of(750),
-    //                 RPM.of(1000),
-    //                 RPM.of(1000)))); // shooter then feeder
+    // .x()
+    // .whileTrue(
+    // Commands.sequence(
+    // RollerCommands.shootClosedLoop(
+    // shooter,
+    // floor,
+    // feeder,
+    // RPM.of(750),
+    // RPM.of(1000),
+    // RPM.of(1000)))); // shooter then feeder
 
     // Operator Controls
 
@@ -413,11 +417,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
 
     // operatorController
-    //     .leftTrigger()
-    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
+    // .leftTrigger()
+    // .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
     // operatorController
-    //     .rightTrigger()
-    //     .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
+    // .rightTrigger()
+    // .onTrue(intake.setDeployPosition(IntakeConstants.DeployState.EXTENDED));
 
     // operatorController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(3)));
     // operatorController.rightBumper().whileTrue(floor.setOpenLoop(Volts.of(-3)));

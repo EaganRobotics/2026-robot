@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "p1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "p1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeOut"
+                }
+              }
+            ]
           }
         },
         {
@@ -17,15 +30,59 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "p2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "p2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "SnapAllianceZone"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "p3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SnapToHub"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SnapToHub"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoShootT17"
+                }
+              }
+            ]
           }
         }
       ]
