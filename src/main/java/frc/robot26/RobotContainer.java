@@ -356,6 +356,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // Operator Controls
 
+    // operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
     operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
@@ -368,14 +369,16 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     RollerCommands.shootClosedLoopDangerous(
                         shooter, floor, feeder, RPM.of(525), RPM.of(1000), RPM.of(2000))));
 
-    operatorController
-        .a()
-        .whileTrue(
-            shooter
-                .setHoodPosition(Radians.of(9.2))
-                .andThen(
-                    RollerCommands.shootClosedLoopDangerous(
-                        shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
+    operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+
+    // operatorController
+    //     .a()
+    //     .whileTrue(
+    //         shooter
+    //             .setHoodPosition(Radians.of(9.2))
+    //             .andThen(
+    //                 RollerCommands.shootClosedLoopDangerous(
+    //                     shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(100)));
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-100)));
