@@ -13,12 +13,16 @@
 
 package frc.lib.infrastructure;
 
+import static edu.wpi.first.units.Units.Meters;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.simulation.SimConstants;
+import frc.robot26.commands.SnapCommands;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -227,6 +231,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     robotContainer.teleopPeriodic();
+    System.out.println(
+        SnapCommands.isInCircularZone(
+            robotContainer.getRobotPose(), new Translation2d(4.5, 5.6), Meters.of(0.6)));
+    // System.out.println(robotContainer.getRobotPose());
   }
 
   /** This function is called once when test mode is enabled. */

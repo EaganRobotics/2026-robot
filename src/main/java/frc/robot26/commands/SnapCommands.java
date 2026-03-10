@@ -101,6 +101,11 @@ public class SnapCommands {
         .withName("DriveCommands.snapToRadius");
   }
 
+  public static boolean isInCircularZone(
+      Pose2d robotPose, Translation2d zoneCenter, Distance radius) {
+    return robotPose.getTranslation().getDistance(zoneCenter) <= radius.in(Meters);
+  }
+
   public static Command snapToPosition(Drive drive, double x, double y, Angle angle) {
     // todo: make x and y respect units
     return SnapToPositionTemplate.snapToPosition(

@@ -96,6 +96,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     return true;
   }
 
+  public Pose2d getRobotPose() {
+    return drive.getPose();
+  }
+
   @Override
   public void initialize() {
 
@@ -240,7 +244,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             .withTimeout(5));
 
     // NamedCommands.registerCommand(
-    // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder, intake).withTimeout(3));
+    // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder,
+    // intake).withTimeout(3));
 
     // NamedCommands.registerCommand("SnapToRadius", DriveCommands.snapToRadius(drive,
     // Feet.of(10.0)));
@@ -304,6 +309,19 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // Driver Controls
 
     // Lock to 0° when A button is held
+
+    // Reset gyro to 0° when B button is pressed
+    driverController
+        .start()
+        .or(driverController.back())
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                    drive)
+                .ignoringDisable(true));
+
     driverController
         .a()
         .whileTrue(
@@ -318,37 +336,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   return new Rotation2d(angleToRobot);
                 }));
 
-    // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° when B button is pressed
-    driverController
-        .start()
-        .or(driverController.back())
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
-
-    // driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
-    // driverController
-    // .leftTrigger()
-    // .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
-    // driverController
-    // .rightTrigger()
-    // .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
-
-    // driverController.a().whileTrue(feeder.setTunableFeeder());
-    // driverController.x().whileTrue(SnapCommands.tuneableFlipitySnipitySnap(drive));
-    // driverController.b().whileTrue(shooter.setTunableShooter());
-    // driverController.b().whileTrue(floor.setTunableFloor());
-    // driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
-
     driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
-    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+    driverController
+        .y()
+        .whileTrue(
+            SnapCommands.snapToPosition(
+                drive, drive.getPose().getX(), drive.getPose().getY(), Degrees.of(45)));
 
     // 3.5m
     // driverController
