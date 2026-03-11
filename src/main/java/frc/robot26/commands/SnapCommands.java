@@ -130,6 +130,23 @@ public class SnapCommands {
         .withName("DriveCommands.snapToRadius");
   }
 
+  public static Command snapToAngle(Drive drive, double angleDegrees) {
+    return Commands.defer(
+            () -> {
+              double angleRadians = Math.toRadians(angleDegrees);
+              Pose2d currentPose = drive.getPose();
+              Pose2d targetPose =
+                  new Pose2d(currentPose.getTranslation(), new Rotation2d(angleRadians));
+
+              Logger.recordOutput("SnapToAngle/TargetPose", targetPose);
+              Logger.recordOutput("SnapToAngle/DesiredAngleDegrees", angleDegrees);
+
+              return SnapToPositionTemplate.snapToPosition(drive, targetPose);
+            },
+            Set.of(drive))
+        .withName("DriveCommands.snapToAngle");
+  }
+
   public static Command snapToRadiusInterpolation(Drive drive, Distance radius) {
     return Commands.defer(
             () -> {
