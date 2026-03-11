@@ -58,10 +58,10 @@ public class SnapToPositionTemplate {
   private static final LoggedTunableNumber POSITION_MAX_VELOCITY =
       new LoggedTunableNumber("Tuning/SnapToPosition/POSITION_MAX_VELOCITY", 4.5);
 
-  private static final LoggedTunableNumber ANGLE_MAX_VELOCITY =
+  static final LoggedTunableNumber ANGLE_MAX_VELOCITY =
       new LoggedTunableNumber("Tuning/SnapToPosition/ANGLE_MAX_VELOCITY", 8);
 
-  private static final LoggedTunableNumber ANGLE_MAX_ACCELERATION =
+  static final LoggedTunableNumber ANGLE_MAX_ACCELERATION =
       new LoggedTunableNumber("Tuning/SnapToPosition/ANGLE_MAX_ACCELERATION", 20);
 
   private static final LoggedTunableNumber ANGLE_TOLERANCE =

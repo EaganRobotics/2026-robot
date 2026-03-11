@@ -17,9 +17,12 @@ import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -47,7 +50,6 @@ public class SnapCommands {
       new Translation2d(RED_HUB_CENTER_X, RED_HUB_CENTER_Y);
 
   public static Distance distanceToHub(Drive drive) {
-
     double rx = drive.getPose().getX();
     double ry = drive.getPose().getY();
     double hx = getHubCenter().getX();
@@ -73,9 +75,6 @@ public class SnapCommands {
             new Translation2d(
                 radiusMeters * Math.cos(angleToRobot), radiusMeters * Math.sin(angleToRobot)));
 
-    // Heading: face the hub from the target position on the circle.
-    // Both targetPosition and hubCenter are fixed at defer time so this angle is
-    // perfectly stable — no per-cycle noise.
     double angleToHub =
         Math.atan2(
             hubCenter.getY() - targetPosition.getY(), hubCenter.getX() - targetPosition.getX());
@@ -106,6 +105,10 @@ public class SnapCommands {
     return robotPose.getTranslation().getDistance(zoneCenter) <= radius.in(Meters);
   }
 
+  public static boolean isInHubZone(Drive drive, Distance radius) {
+    return isInCircularZone(drive.getPose(), getHubCenter(), radius);
+  }
+
   public static Command snapToPosition(Drive drive, double x, double y, Angle angle) {
     // todo: make x and y respect units
     return SnapToPositionTemplate.snapToPosition(
@@ -131,20 +134,60 @@ public class SnapCommands {
   }
 
   public static Command snapToAngle(Drive drive, double angleDegrees) {
-    return Commands.defer(
-            () -> {
-              double angleRadians = Math.toRadians(angleDegrees);
-              Pose2d currentPose = drive.getPose();
-              Pose2d targetPose =
-                  new Pose2d(currentPose.getTranslation(), new Rotation2d(angleRadians));
+    ProfiledPIDController headingController =
+        new ProfiledPIDController(
+            SnapToPositionTemplate.ANGLE_KP,
+            SnapToPositionTemplate.ANGLE_KI,
+            SnapToPositionTemplate.ANGLE_KD,
+            new TrapezoidProfile.Constraints(
+                SnapToPositionTemplate.ANGLE_MAX_VELOCITY.get(),
+                SnapToPositionTemplate.ANGLE_MAX_ACCELERATION.get()));
 
-              Logger.recordOutput("SnapToAngle/TargetPose", targetPose);
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+
+    Rotation2d target = new Rotation2d(Math.toRadians(angleDegrees));
+
+    return Commands.run(
+            () -> {
+              double omega =
+                  headingController.calculate(
+                      drive.getRotation().getRadians(), target.getRadians());
+
+              Logger.recordOutput("SnapToAngle/TargetHeading", target);
               Logger.recordOutput("SnapToAngle/DesiredAngleDegrees", angleDegrees);
 
-              return SnapToPositionTemplate.snapToPosition(drive, targetPose);
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      new ChassisSpeeds(0, 0, omega), drive.getRotation()));
             },
-            Set.of(drive))
-        .withName("DriveCommands.snapToAngle");
+            drive)
+        .beforeStarting(
+            () -> {
+              var fieldRelativeSpeeds =
+                  ChassisSpeeds.fromRobotRelativeSpeeds(
+                      drive.getChassisSpeeds(), drive.getPose().getRotation());
+              headingController.reset(
+                  drive.getRotation().getRadians(), fieldRelativeSpeeds.omegaRadiansPerSecond);
+            })
+        .withName("SnapCommands.snapToAngle");
+  }
+
+  public static Command snapToAngleIfInZone(
+      Drive drive,
+      Translation2d zoneCenter,
+      Distance zoneRadius,
+      double inZoneAngleDegrees,
+      double outOfZoneAngleDegrees) {
+    return Commands.defer(
+        () -> {
+          double angleDegrees =
+              isInCircularZone(drive.getPose(), zoneCenter, zoneRadius)
+                  ? inZoneAngleDegrees
+                  : outOfZoneAngleDegrees;
+          Logger.recordOutput("SnapToAngleIfInZone/TargetAngleDegrees", angleDegrees);
+          return snapToAngle(drive, angleDegrees);
+        },
+        Set.of(drive));
   }
 
   public static Command snapToRadiusInterpolation(Drive drive, Distance radius) {

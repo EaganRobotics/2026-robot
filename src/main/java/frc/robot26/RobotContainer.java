@@ -336,7 +336,20 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   return new Rotation2d(angleToRobot);
                 }));
 
-    driverController.y().whileTrue(SnapCommands.snapToAngle(drive, -45));
+    driverController
+        .y()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
+                () ->
+                    new Rotation2d(
+                        Math.toRadians(
+                            SnapCommands.isInCircularZone(
+                                    drive.getPose(), new Translation2d(4.5, 5.6), Meters.of(1.25))
+                                ? 45
+                                : 0))));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
