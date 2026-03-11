@@ -352,7 +352,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                                 : 0))));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
+    // driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
+    driverController.b().whileTrue(SnapCommands.Jiggle(drive));
     // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
 
     // 3.5m

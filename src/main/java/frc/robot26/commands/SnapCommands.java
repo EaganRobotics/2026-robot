@@ -172,6 +172,15 @@ public class SnapCommands {
         .withName("SnapCommands.snapToAngle");
   }
 
+  public static Command Jiggle(Drive drive) {
+    return Commands.repeatingSequence(
+        SnapCommands.snapToAngle(drive, 5).withTimeout(0.2),
+        Commands.waitSeconds(0.1),
+        SnapCommands.snapToAngle(drive, -5).withTimeout(0.2),
+        Commands.waitSeconds(0.1));
+  }
+  ;
+
   public static Command snapToAngleIfInZone(
       Drive drive,
       Translation2d zoneCenter,
