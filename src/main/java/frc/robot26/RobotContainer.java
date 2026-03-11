@@ -77,6 +77,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final CommandXboxController jithinController = new CommandXboxController(2);
 
   // Drive simulation
   private static final SwerveDriveSimulation driveSimulation =
@@ -339,7 +340,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
 
     driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
-    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+    driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
     // 3.5m
     // driverController
@@ -367,9 +370,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .setHoodPosition(Radians.of(0))
                 .andThen(
                     RollerCommands.shootClosedLoopDangerous(
-                        shooter, floor, feeder, RPM.of(525), RPM.of(1000), RPM.of(2000))));
+                        shooter, floor, feeder, RPM.of(500), RPM.of(4000), RPM.of(4000))));
 
-    operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    // operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
     // operatorController
     //     .a()
@@ -430,6 +433,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(2)));
     // operatorController.povDown().whileTrue(shooter.setHoodOpenLoop(Volts.of(-2)));
 
+    jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
+    jithinController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(12)));
+    jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
+    jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
   }
 
   @Override
