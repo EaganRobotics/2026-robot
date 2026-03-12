@@ -238,6 +238,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
             .withTimeout(17));
     NamedCommands.registerCommand(
+        "SuperAutoShootT17",
+        Commands.sequence(
+            SnapCommands.snapToRadius(drive, Meters.of(1.5)),
+            RollerCommands.shootClosedLoop(
+                    shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
+                .withTimeout(17)));
+    NamedCommands.registerCommand(
         "AutoShootT5",
         RollerCommands.shootClosedLoop(
                 shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
