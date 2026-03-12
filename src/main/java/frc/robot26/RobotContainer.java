@@ -308,24 +308,17 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             () -> -driverController.getLeftY(),
             () -> -driverController.getLeftX(),
             () -> -driverController.getRightX()));
-    // shooter.setDefaultCommand(
-    // ShooterCommands.shooterDefaultCommand(
-    // shooter,
-    // () -> SnapCommands.distanceToHub(drive),
-    // () -> -driverController.getRightY(),
-    // Feet.of(5)));
+
     intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
     feeder.setDefaultCommand(
         feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
-    // shooter.setDefaultCommand(
-    // shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
 
-    // Driver Controls
+    // =========================================
+    // =========== Operator Controls ===========
+    // =========================================\
 
-    // Lock to 0° when A button is held
-
-    // Reset gyro to 0° when B button is pressed
+    // zero relative to field
     driverController
         .start()
         .or(driverController.back())
@@ -337,6 +330,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    // auto angle to hub
     driverController
         .a()
         .whileTrue(
@@ -367,24 +361,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                                 : 0))));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    // driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
-    driverController.b().whileTrue(SnapCommands.swerveJiggle(drive));
+    driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
     // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
 
-    // 3.5m
-    // driverController
-    // .x()
-    // .whileTrue(
-    // Commands.sequence(
-    // RollerCommands.shootClosedLoop(
-    // shooter,
-    // floor,
-    // feeder,
-    // RPM.of(750),
-    // RPM.of(1000),
-    // RPM.of(1000)))); // shooter then feeder
-
-    // Operator Controls
+    // =========================================
+    // =========== Operator Controls ===========
+    // =========================================
 
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
@@ -450,7 +432,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(2)));
     // operatorController.povDown().whileTrue(shooter.setHoodOpenLoop(Volts.of(-2)));
-
   }
 
   @Override
