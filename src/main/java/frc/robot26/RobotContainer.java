@@ -2,6 +2,7 @@ package frc.robot26;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -433,10 +434,21 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(2)));
     // operatorController.povDown().whileTrue(shooter.setHoodOpenLoop(Volts.of(-2)));
 
+    // drive.setDefaultCommand(
+    //     DriveCommands.joystickDrive(
+    //         drive,
+    //         () -> -jithinController.getLeftY(),
+    //         () -> -jithinController.getLeftX(),
+    //         () -> -jithinController.getRightX()));
+
     jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
-    jithinController.leftBumper().whileTrue(floor.setOpenLoop(Volts.of(12)));
+    jithinController.leftBumper().whileTrue(floor.setTunableFloor());
     jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
     jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
+
+    jithinController.povUp().whileTrue(intake.setDeployClosedLoop(Inches.of(5)));
+    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-3)));
+    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(3)));
   }
 
   @Override
