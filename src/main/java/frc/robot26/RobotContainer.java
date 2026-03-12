@@ -486,6 +486,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public Command getTestCommand() {
-    return Commands.print("Test command!");
+    return Commands.sequence(
+        shooter.setShooterClosedLoop(RPM.of(500)).withTimeout(3),
+        feeder.setClosedLoop(RPM.of(1000)).withTimeout(2),
+        floor.setClosedLoop(RPM.of(1000)).withTimeout(2),
+        intake.setDeployOpenLoop(Volts.of(2)).withTimeout(1),
+        intake.setIntakeClosedLoop(RPM.of(4000)).withTimeout(2),
+        intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1));
   }
 }
