@@ -11,7 +11,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 
-// shoutout kimi k2
+// shoutout kimi k2 (austraila chatgpt)
+// TODO: how do you spell austraila the country -Griffin
 
 package frc.robot26.commands;
 
@@ -56,7 +57,7 @@ public class SnapCommands {
   private static final Translation2d RED_HUB_CENTER =
       new Translation2d(RED_HUB_CENTER_X, RED_HUB_CENTER_Y);
 
-  // ========== PID Constants (from SnapToPositionTemplate) ==========
+  // ========== PID Constants ==========
   public static final double X_KP = 5.0;
   public static final double X_KI = 0.0;
   public static final double X_KD = 0.0;
@@ -154,8 +155,6 @@ public class SnapCommands {
 
     public static final Pose2dSequence kZero = new Pose2dSequence(Pose2d.kZero, Pose2d.kZero);
   }
-
-  private SnapCommands() {}
 
   // ========== Helper Methods ==========
   private static Optional<Integer> getClosestPositionIndex(
@@ -377,6 +376,47 @@ public class SnapCommands {
         .withName("SnapCommands.snapToRadius");
   }
 
+  public static Command snapToRadiusInterpolation(Drive drive, Distance radius) {
+    return Commands.defer(
+            () -> {
+              Translation2d hubCenter = getHubCenter();
+              double radiusMeters = radius.in(Meters);
+
+              Pose2d currentPose = drive.getPose();
+              Translation2d robotPos = currentPose.getTranslation();
+
+              Translation2d hubToRobot = robotPos.minus(hubCenter);
+              double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+
+              Translation2d targetPosition =
+                  hubCenter.plus(
+                      new Translation2d(
+                          radiusMeters * Math.cos(angleToRobot),
+                          radiusMeters * Math.sin(angleToRobot)));
+
+              double angleToHub =
+                  Math.atan2(
+                      hubCenter.getY() - targetPosition.getY(),
+                      hubCenter.getX() - targetPosition.getX());
+
+              Pose2d outerPose =
+                  new Pose2d(
+                      targetPosition.plus(new Translation2d(-1, -1)), new Rotation2d(angleToHub));
+              Pose2d innerPose = new Pose2d(targetPosition, new Rotation2d(angleToHub));
+
+              double interpolateTime =
+                  robotPos.getDistance(innerPose.getTranslation()) > 1.5 ? 0.75 : 0.35;
+
+              Logger.recordOutput("SnapToRadius/OuterPose", outerPose);
+              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
+              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
+
+              return snapToPositionInterpolation(drive, outerPose, innerPose, interpolateTime);
+            },
+            Set.of(drive))
+        .withName("SnapCommands.snapToRadiusInterpolation");
+  }
+
   public static Command snapToPosition(Drive drive, double x, double y, Angle angle) {
     // TODO: make x and y respect units
     return snapToPosition(drive, new Pose2d(new Translation2d(x, y), new Rotation2d(angle)));
@@ -439,6 +479,7 @@ public class SnapCommands {
         .withName("SnapCommands.snapToAngle");
   }
 
+  // TODO: make this work (prob bette to do manualy using overtuned pids)
   public static Command swerveJiggle(Drive drive) {
     return Commands.repeatingSequence(
         snapToAngle(drive, 5).withTimeout(0.2),
@@ -463,47 +504,5 @@ public class SnapCommands {
           return snapToAngle(drive, angleDegrees);
         },
         Set.of(drive));
-  }
-
-  // TODO: i probably should know what this dose
-  public static Command snapToRadiusInterpolation(Drive drive, Distance radius) {
-    return Commands.defer(
-            () -> {
-              Translation2d hubCenter = getHubCenter();
-              double radiusMeters = radius.in(Meters);
-
-              Pose2d currentPose = drive.getPose();
-              Translation2d robotPos = currentPose.getTranslation();
-
-              Translation2d hubToRobot = robotPos.minus(hubCenter);
-              double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-
-              Translation2d targetPosition =
-                  hubCenter.plus(
-                      new Translation2d(
-                          radiusMeters * Math.cos(angleToRobot),
-                          radiusMeters * Math.sin(angleToRobot)));
-
-              double angleToHub =
-                  Math.atan2(
-                      hubCenter.getY() - targetPosition.getY(),
-                      hubCenter.getX() - targetPosition.getX());
-
-              Pose2d outerPose =
-                  new Pose2d(
-                      targetPosition.plus(new Translation2d(-1, -1)), new Rotation2d(angleToHub));
-              Pose2d innerPose = new Pose2d(targetPosition, new Rotation2d(angleToHub));
-
-              double interpolateTime =
-                  robotPos.getDistance(innerPose.getTranslation()) > 1.5 ? 0.75 : 0.35;
-
-              Logger.recordOutput("SnapToRadius/OuterPose", outerPose);
-              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
-              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
-
-              return snapToPositionInterpolation(drive, outerPose, innerPose, interpolateTime);
-            },
-            Set.of(drive))
-        .withName("SnapCommands.snapToRadiusInterpolation");
   }
 }

@@ -111,6 +111,5 @@ public class ShooterIOSim implements ShooterIO {
     inputs.hoodAppliedVolts = hoodAppliedVoltage;
     inputs.hoodCurrent = Amps.of(hoodSim.getCurrentDrawAmps());
     inputs.hoodVelocity = AngularVelocity.ofBaseUnits(hoodAngularVelocity, RadiansPerSecond);
-    // inputs.hoodPosition = TODO: set hood position
   }
 }

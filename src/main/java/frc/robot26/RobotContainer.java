@@ -410,12 +410,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(100)));
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-100)));
 
-    // operatorController.povUp().onTrue(shooter.setTunableHood());
-    // operatorController.povDown().onTrue(shooter.setTunableHoodBack());
-
-    // operatorController.povUp().onTrue(intake.setTunableIntakeDeploy());
-    // operatorController.povDown().onTrue(intake.setTunableIntakeDeployBack());
-
     operatorController
         .rightBumper()
         .onTrue(
