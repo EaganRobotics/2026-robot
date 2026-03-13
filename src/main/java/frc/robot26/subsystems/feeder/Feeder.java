@@ -58,10 +58,10 @@ public class Feeder extends SubsystemBase {
         () -> this.setClosedLoop(RPM.of(FeederConstants.Real.feederSpeed.get())), Set.of(this));
   }
 
-  public Trigger isAtVelocitySetpoint() {
+  public Trigger isAtVelocitySetpoint(AngularVelocity tolerance) {
     return new Trigger(
         () -> {
-          return inputs.feederVelocity.gte(velocitySetpoint);
+          return inputs.feederVelocity.isNear(velocitySetpoint, tolerance);
         });
   }
 
