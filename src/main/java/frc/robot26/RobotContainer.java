@@ -2,6 +2,7 @@ package frc.robot26;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -77,6 +78,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final CommandXboxController jithinController = new CommandXboxController(2);
 
   // Drive simulation
   private static final SwerveDriveSimulation driveSimulation =
@@ -367,7 +369,25 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // =========================================
     // =========== Operator Controls ===========
     // =========================================
+    driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
+    // 3.5m
+    // driverController
+    //     .x()
+    //     .whileTrue(
+    //         Commands.sequence(
+    //             RollerCommands.shootClosedLoop(
+    //                 shooter,
+    //                 floor,
+    //                 feeder,
+    //                 RPM.of(750),
+    //                 RPM.of(1000),
+    //                 RPM.of(1000)))); // shooter then feeder
+
+    // Operator Controls
+
+    // operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
     operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
@@ -378,16 +398,18 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .setHoodPosition(Radians.of(0))
                 .andThen(
                     RollerCommands.shootClosedLoopDangerous(
-                        shooter, floor, feeder, RPM.of(525), RPM.of(1000), RPM.of(2000))));
+                        shooter, floor, feeder, RPM.of(500), RPM.of(4000), RPM.of(4000))));
 
-    operatorController
-        .a()
-        .whileTrue(
-            shooter
-                .setHoodPosition(Radians.of(9.2))
-                .andThen(
-                    RollerCommands.shootClosedLoopDangerous(
-                        shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
+    // operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+
+    // operatorController
+    //     .a()
+    //     .whileTrue(
+    //         shooter
+    //             .setHoodPosition(Radians.of(9.2))
+    //             .andThen(
+    //                 RollerCommands.shootClosedLoopDangerous(
+    //                     shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(100)));
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-100)));
@@ -432,6 +454,22 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // operatorController.povUp().whileTrue(shooter.setHoodOpenLoop(Volts.of(2)));
     // operatorController.povDown().whileTrue(shooter.setHoodOpenLoop(Volts.of(-2)));
+
+    // drive.setDefaultCommand(
+    //     DriveCommands.joystickDrive(
+    //         drive,
+    //         () -> -jithinController.getLeftY(),
+    //         () -> -jithinController.getLeftX(),
+    //         () -> -jithinController.getRightX()));
+
+    jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
+    jithinController.leftBumper().whileTrue(floor.setTunableFloor());
+    jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
+    jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
+
+    jithinController.povUp().whileTrue(intake.setDeployClosedLoop(Inches.of(5)));
+    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-3)));
+    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(3)));
   }
 
   @Override
