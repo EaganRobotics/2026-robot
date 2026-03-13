@@ -41,10 +41,10 @@ public class FloorIOTalonFX implements FloorIO {
     leadConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leadConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leadConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
-    leadConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    leadConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
     leadConfig.Feedback.SensorToMechanismRatio = GEARING;
-    leadConfig.Voltage.PeakForwardVoltage = 10;
-    leadConfig.Voltage.PeakReverseVoltage = -10;
+    leadConfig.Voltage.PeakForwardVoltage = 12;
+    leadConfig.Voltage.PeakReverseVoltage = -12;
     leadConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     FloorConstants.floorPIDs.applyToTalonFXConfig(lead, leadConfig);

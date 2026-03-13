@@ -12,8 +12,8 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.lib.tunables.*;
 
 public class ShooterConstants {
-  public static final double joystickSpeedMultiplier = 0.85; // TODO: change
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // TODO: change
+  public static final double joystickSpeedMultiplier = 1; // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(1000); // TODO: change
   public static final double GEARING_SHOOTER = 5.0; // TODO: adjust
   public static final double GEARING_HOOD = 1.0; // TODO: adjust
 
