@@ -225,10 +225,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Meters.of(1.5)).withTimeout(4));
     NamedCommands.registerCommand(
-        "SnapMidField", SnapCommands.snapToPosition(drive, 6, 5.5, Degrees.of(0)).withTimeout(3));
+        "SnapMidField",
+        SnapCommands.snapToPosition(drive, Meters.of(6), Meters.of(5.5), Degrees.of(0))
+            .withTimeout(3));
     NamedCommands.registerCommand(
         "SnapAllianceZone",
-        SnapCommands.snapToPosition(drive, 3.3, 5.5, Degrees.of(0)).withTimeout(3));
+        SnapCommands.snapToPosition(drive, Meters.of(3.3), Meters.of(5.5), Degrees.of(0))
+            .withTimeout(3));
 
     // autos wont work till intake out works
 
@@ -316,7 +319,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // =========================================
     // =========== Operator Controls ===========
-    // =========================================\
+    // =========================================
 
     // zero relative to field
     driverController

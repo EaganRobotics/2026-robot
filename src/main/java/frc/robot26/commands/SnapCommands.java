@@ -17,7 +17,6 @@
 package frc.robot26.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
@@ -190,7 +189,9 @@ public class SnapCommands {
         index -> new Pose2dSequence(innerPositions[index], outerPositions[index]));
   }
 
-  // -------------------- get data commands --------------------
+  // =========================================
+  // =========== Get data commands ===========
+  // =========================================
 
   public static Distance distanceToHub(Drive drive) {
     double rx = drive.getPose().getX();
@@ -241,7 +242,9 @@ public class SnapCommands {
         : BLUE_HUB_CENTER;
   }
 
-  // -------------------- actual snap commands --------------------
+  // ============================================
+  // =========== Actual snap commands ===========
+  // ============================================
   public static Command snapToClosestPosition(
       Drive drive, Pose2d[] outerPositions, Pose2d[] innerPositions, Distance maxRadius) {
     return Commands.defer(
@@ -417,28 +420,9 @@ public class SnapCommands {
         .withName("SnapCommands.snapToRadiusInterpolation");
   }
 
-  public static Command snapToPosition(Drive drive, double x, double y, Angle angle) {
-    // TODO: make x and y respect units
-    return snapToPosition(drive, new Pose2d(new Translation2d(x, y), new Rotation2d(angle)));
-  }
-
-  // what did i make this do? TODO figure out purpose
-  public static Command tuneableFlipitySnipitySnap(Drive drive) {
-    return Commands.defer(
-            () -> {
-              Translation2d hubCenter = getHubCenter();
-              double radiusMeters = Feet.of(TUNEABLE_SNAP_DISTANCE.get()).in(Meters);
-              Translation2d robotPos = drive.getPose().getTranslation();
-
-              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
-
-              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
-              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
-
-              return snapToPosition(drive, innerPose);
-            },
-            Set.of(drive))
-        .withName("SnapCommands.tuneableFlipitySnipitySnap");
+  public static Command snapToPosition(Drive drive, Distance x, Distance y, Angle angle) {
+    return snapToPosition(
+        drive, new Pose2d(new Translation2d(x.in(Meters), y.in(Meters)), new Rotation2d(angle)));
   }
 
   public static Command snapToAngle(Drive drive, double angleDegrees) {
@@ -479,7 +463,7 @@ public class SnapCommands {
         .withName("SnapCommands.snapToAngle");
   }
 
-  // TODO: make this work (prob bette to do manualy using overtuned pids)
+  // TODO: make this work (prob better to do manualy using overtuned pids)
   public static Command swerveJiggle(Drive drive) {
     return Commands.repeatingSequence(
         snapToAngle(drive, 5).withTimeout(0.2),
