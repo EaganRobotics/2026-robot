@@ -33,8 +33,7 @@ import frc.robot26.subsystems.intake.IntakeConstants.Real;
 
 public class IntakeIOTalonFX implements IntakeIO {
   private final DigitalInputWrapper limitSwitch =
-      new DigitalInputWrapper(Real.limitSwitchChannel, "limitSwitch", true); // TODO:
-  // adjust
+      new DigitalInputWrapper(Real.limitSwitchChannel, "limitSwitch", true);
   private final TalonFX lead, follower, deploy;
   private final StatusSignal<Angle> leadPosition, deployPosition;
   private final StatusSignal<AngularVelocity> leadVelocity, deployVelocity;

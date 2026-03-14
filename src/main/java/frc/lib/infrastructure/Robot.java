@@ -160,7 +160,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     // Switch thread to high priority to improve loop timing
-    // TODO: AKit recommends you remove this unless you know your loop times are
+    // AKit recommends you remove this unless you know your loop times are
     // <0.02s
     Threads.setCurrentThreadPriority(true, 99);
 
@@ -172,7 +172,7 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
 
     // Return to normal thread priority
-    // TODO: This too (AKit)
+    // This too (AKit)
     Threads.setCurrentThreadPriority(false, 10);
 
     robotContainer.robotPeriodic();

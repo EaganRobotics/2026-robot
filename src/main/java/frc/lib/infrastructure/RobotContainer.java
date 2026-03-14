@@ -27,50 +27,30 @@ public abstract class RobotContainer {
 
   public abstract Command getTestCommand();
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
   public abstract Command getAutonomousCommand();
 
-  /**
-   * This function is called once when the robot is first started up. All robot-wide initialization
-   * goes here.
-   */
   public void robotInit() {}
 
-  /** This function is called periodically during all modes. */
   public void robotPeriodic() {}
 
-  /** This function is called once when the robot is disabled. */
   public void disabledInit() {}
 
-  /** This function is called periodically when disabled. */
   public void disabledPeriodic() {}
 
-  /** This function is called once when autonomous is enabled. */
   public void autonomousInit() {}
 
-  /** This function is called periodically during autonomous. */
   public void autonomousPeriodic() {}
 
-  /** This function is called once when teleop is enabled. */
   public void teleopInit() {}
 
-  /** This function is called periodically during operator control. */
   public void teleopPeriodic() {}
 
-  /** This function is called once when test mode is enabled. */
   public void testInit() {}
 
-  /** This function is called periodically during test mode. */
   public void testPeriodic() {}
 
-  /** This function is called once when the robot is first started up. */
   public void simulationInit() {}
 
-  /** This function is called periodically whilst in simulation. */
   public void simulationPeriodic() {}
 
   public void resetSimulation() {
