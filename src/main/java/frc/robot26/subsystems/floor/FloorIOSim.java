@@ -1,6 +1,7 @@
 package frc.robot26.subsystems.floor;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -14,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot26.subsystems.floor.FloorConstants.Sim;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
@@ -41,6 +43,12 @@ public class FloorIOSim implements FloorIO {
   @Override
   public void setFloorOpenLoop(Voltage output) {
     floorAppliedVoltage = output;
+  }
+
+  @Override
+  public void setFloorClosedLoop(AngularVelocity velocity) {
+    floorAppliedVoltage = Volts.of(velocity.in(RPM) * 0.01); // Convert RPM to voltage (simplified)
+    setFloorOpenLoop(floorAppliedVoltage);
   }
 
   @Override
