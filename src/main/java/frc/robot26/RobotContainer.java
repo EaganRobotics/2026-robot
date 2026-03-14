@@ -98,10 +98,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     return true;
   }
 
-  public Pose2d getRobotPose() {
-    return drive.getPose();
-  }
-
   @Override
   public void initialize() {
 

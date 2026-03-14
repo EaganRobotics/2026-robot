@@ -227,10 +227,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     robotContainer.teleopPeriodic();
-    // System.out.println(
-    //     SnapCommands.isInCircularZone(
-    //         robotContainer.getRobotPose(), new Translation2d(4.5, 5.6), Meters.of(0.6)));
-    // System.out.println(robotContainer.getRobotPose());
   }
 
   /** This function is called once when test mode is enabled. */
