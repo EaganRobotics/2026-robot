@@ -31,24 +31,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-spotless-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: ${{ runner.os }}-gradle-spotless-
-
       - name: Run Spotless Check
         id: spotless
         # We continue on error so we can fix it in the next step
         continue-on-error: true 
-        run: ./gradlew spotlessCheck --no-daemon
+        run: ./gradlew spotlessCheck
 
       - name: Run Spotless Apply (Fix)
         if: steps.spotless.outcome == 'failure'
-        run: ./gradlew spotlessApply --no-daemon
+        run: ./gradlew spotlessApply
 
       - name: Commit and Push Fixes
         if: steps.spotless.outcome == 'failure'
@@ -95,4 +86,52 @@ jobs:
 
       - name: Compile robot code
         if: steps.filter.outputs.java == 'true'
-        run: ./gradlew build -PrunSpotBugs --no-daemon --parallel
+        run: ./gradlew build -PrunSpotBugs --no-daemon
+
+      - name: Upload build artifacts
+        if: steps.filter.outputs.java == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+
+  test:
+    needs: build
+    name: Test
+    runs-on: ubuntu-22.04
+    container: wpilib/roborio-cross-ubuntu:2025-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add repository to git safe directories
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Filter changes for relevant files
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            java:
+              - 'src/main/java/**'
+              - 'build.gradle'
+
+      - name: Grant execute permission for gradlew
+        if: steps.filter.outputs.java == 'true'
+        run: chmod +x gradlew
+
+      - name: Download build artifacts
+        if: steps.filter.outputs.java == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build/
+
+      - name: Setup Gradle
+        if: steps.filter.outputs.java == 'true'
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Run tests on robot code
+        if: steps.filter.outputs.java == 'true'
+        run: ./gradlew test --no-daemon
