@@ -2,7 +2,7 @@ package frc.robot26.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.KilogramSquareMeters;
-import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.Angle;
@@ -12,13 +12,13 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.lib.tunables.*;
 
 public class ShooterConstants {
-  public static final double joystickSpeedMultiplier = 0.85; // TODO: change
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // TODO: change
+  public static final double joystickSpeedMultiplier = 1; // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(1000); // TODO: change
   public static final double GEARING_SHOOTER = 5.0; // TODO: adjust
-  public static final double GEARING_HOOD = 5.0; // TODO: adjust
+  public static final double GEARING_HOOD = 1.0; // TODO: adjust
 
-  public static final Angle hoodRotationStartLimit = Rotations.of(0.0); // TODO: adjust
-  public static final Angle hoodRotationEndLimit = Rotations.of(5.67); // TODO: adjust
+  public static final Angle hoodRotationStartLimit = Radians.of(0.0); // TODO: adjust
+  public static final Angle hoodRotationEndLimit = Radians.of(9.68); // TODO: adjust
 
   public static final class Real {
     public static final int followerLeftMotorID = 13;
@@ -28,12 +28,20 @@ public class ShooterConstants {
     public static final int hoodMotorID = 16;
 
     public static final LoggedTunablePIDs shooterPIDs =
-        new LoggedTunablePIDs("Shooter", 2.0, 0.0, 0.01); // TODO: change
-    public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 0.1, 0.1, 0.0);
+        new LoggedTunablePIDs("Shooter", 2.0, 0.0, 0.001);
+    public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 5.0, 0.0, 0.0);
     public static final LoggedTunableNumber shooterSpeed =
-        new LoggedTunableNumber("Tuning/ShooterSpeed", 2500);
+        new LoggedTunableNumber("Tuning/ShooterSpeed", 550);
     public static final LoggedTunableNumber hoodAngle =
-        new LoggedTunableNumber("Tuning/HoodAngle", 45); // TODO: change
+        new LoggedTunableNumber("Tuning/HoodAngle", 550); // TODO: change
+    public static final LoggedTunableNumber hoodAngleBack =
+        new LoggedTunableNumber("Tuning/hoodAngleBack", 0); // TODO: change
+    public static final LoggedTunableNumber shooterAcceleration =
+        new LoggedTunableNumber("Tuning/ShooterAcceleration", 1000);
+    public static final LoggedTunableNumber hoodCruiseVelocity =
+        new LoggedTunableNumber("Tuning/hoodCruiseVelocity", 1000);
+    public static final LoggedTunableNumber hoodAcceleration =
+        new LoggedTunableNumber("Tuning/hoodAcceleration", 1000);
   }
 
   public static final class Sim {

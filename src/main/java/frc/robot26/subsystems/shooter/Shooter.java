@@ -1,7 +1,10 @@
 package frc.robot26.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngle;
+import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngleBack;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -49,7 +52,8 @@ public class Shooter extends SubsystemBase {
               velocitySetpoint = velocity;
             },
             () -> {
-              io.setShooterClosedLoop(RPM.of(0));
+              io.setShooterOpenLoop(Volts.of(0));
+              // io.setShooterClosedLoop(RPM.of(0));
               velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");
@@ -62,7 +66,8 @@ public class Shooter extends SubsystemBase {
               velocitySetpoint = velocity.get();
             },
             () -> {
-              io.setShooterClosedLoop(RPM.of(0));
+              io.setShooterOpenLoop(Volts.of(0));
+              // io.setShooterClosedLoop(RPM.of(0));
               velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");
@@ -74,10 +79,10 @@ public class Shooter extends SubsystemBase {
         Set.of(this));
   }
 
-  public Trigger isAtVelocitySetpoint() {
+  public Trigger isAtVelocitySetpoint(AngularVelocity tolerance) {
     return new Trigger(
         () -> {
-          return inputs.shooterVelocity.gte(velocitySetpoint);
+          return inputs.shooterVelocity.isNear(velocitySetpoint, tolerance);
         });
   }
 
@@ -85,6 +90,31 @@ public class Shooter extends SubsystemBase {
     return this.runOnce(
             () -> {
               io.setHoodPosition(angle);
+            })
+        .withName("Shooter.setHoodPosition");
+  }
+
+  public Command incrementSetHoodPosition(Angle angle) {
+    return this.runOnce(
+            () -> {
+              Angle incrementedangle = inputs.hoodPosition.plus(angle);
+              io.setHoodPosition(incrementedangle);
+            })
+        .withName("Shooter.incrementSetHoodPosition");
+  }
+
+  public Command setTunableHood() {
+    return this.runOnce(
+            () -> {
+              io.setHoodPosition(Degrees.of(hoodAngle.get()));
+            })
+        .withName("Shooter.setHoodPosition");
+  }
+
+  public Command setTunableHoodBack() {
+    return this.runOnce(
+            () -> {
+              io.setHoodPosition(Degrees.of(hoodAngleBack.get()));
             })
         .withName("Shooter.setHoodPosition");
   }

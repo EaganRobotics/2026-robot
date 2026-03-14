@@ -4,11 +4,13 @@
   "holonomicMode": true,
   "pathFolders": [
     "Winona Paths",
+    "week 1 paths",
     "Practice Path",
     "Test Paths",
     "Week 0 Paths"
   ],
   "autoFolders": [
+    "Week 1 Autos",
     "Practice Autos",
     "Test Autos",
     "Week 0 Autos"

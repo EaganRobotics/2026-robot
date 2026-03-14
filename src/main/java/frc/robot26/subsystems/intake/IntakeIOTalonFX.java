@@ -1,7 +1,11 @@
 package frc.robot26.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_DEPLOY;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_INTAKE;
@@ -73,15 +77,27 @@ public class IntakeIOTalonFX implements IntakeIO {
     deployConfig.Feedback.SensorToMechanismRatio = GEARING_DEPLOY;
     deployConfig.Voltage.PeakForwardVoltage = 10;
     deployConfig.Voltage.PeakReverseVoltage = -10;
-    deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    deployConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    deployConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    deployConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
     deployConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold =
         deployRotationsFrom(IntakeConstants.deployLimit).in(Rotations);
-    deployConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    deployConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     deployConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold =
         deployRotationsFrom(IntakeConstants.retractLimit).in(Rotations);
-    ;
+
+    Real.deployAcceleration.addListener(
+        (acceleration) -> {
+          deployConfig.MotionMagic.MotionMagicAcceleration =
+              DegreesPerSecondPerSecond.of(acceleration).in(RotationsPerSecondPerSecond);
+          deploy.getConfigurator().apply(deployConfig);
+        });
+    Real.deployCruiseVelocity.addListener(
+        (velocity) -> {
+          deployConfig.MotionMagic.MotionMagicCruiseVelocity =
+              DegreesPerSecond.of(velocity).in(RotationsPerSecond);
+          deploy.getConfigurator().apply(deployConfig);
+        });
 
     Real.deployPIDs.applyToTalonFXConfig(deploy, deployConfig);
     Real.intakePIDs.applyToTalonFXConfig(lead, leadConfig);

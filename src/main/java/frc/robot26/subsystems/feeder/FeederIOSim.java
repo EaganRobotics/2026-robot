@@ -1,6 +1,7 @@
 package frc.robot26.subsystems.feeder;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -47,7 +48,8 @@ public class FeederIOSim implements FeederIO {
 
   @Override
   public void setFeederClosedLoop(AngularVelocity velocity) {
-    feederAppliedVoltage = Volts.of(0); // TODO: Implement closed-loop control
+    feederAppliedVoltage = Volts.of(velocity.in(RPM) * 0.01); // Convert RPM to voltage (simplified)
+    setFeederOpenLoop(feederAppliedVoltage);
   }
 
   @Override

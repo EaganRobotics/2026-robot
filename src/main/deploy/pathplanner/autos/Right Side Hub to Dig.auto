@@ -1,0 +1,50 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShootT5"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Hub to Dig"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeOut"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Dig to Right Hub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoShootT17"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Week 1 Autos",
+  "choreoAuto": false
+}

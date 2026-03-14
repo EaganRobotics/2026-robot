@@ -52,13 +52,19 @@ public class IntakeConstants {
     public static final int limitSwitchChannel = 0;
 
     public static final LoggedTunablePIDs intakePIDs =
-        new LoggedTunablePIDs("Intake", 2.5, 0.0, 0.25); // TODO: change
+        new LoggedTunablePIDs("Intake", 0.1, 0.0, 0.0001); // TODO: change
     public static final LoggedTunablePIDs deployPIDs =
-        new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1); // TODO: change
+        new LoggedTunablePIDs("Deploy", 5.0, 0.0, 0.0); // TODO: change
     public static final LoggedTunableNumber intakeSpeed =
-        new LoggedTunableNumber("Tuning/IntakeSpeed", 4000);
+        new LoggedTunableNumber("Tuning/IntakeSpeed", 8000);
     public static final LoggedTunableNumber deployPosition =
         new LoggedTunableNumber("Tuning/DeployPosition", 4000);
+    public static final LoggedTunableNumber deployPositionBack =
+        new LoggedTunableNumber("Tuning/DeployPosition", 4000);
+    public static final LoggedTunableNumber deployCruiseVelocity =
+        new LoggedTunableNumber("Tuning/deployCruiseVelocity", 1000);
+    public static final LoggedTunableNumber deployAcceleration =
+        new LoggedTunableNumber("Tuning/deployAcceleration", 1000);
   }
 
   public static final class Sim {

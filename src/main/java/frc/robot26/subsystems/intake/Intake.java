@@ -93,6 +93,22 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setDeployClosedLoop");
   }
 
+  public Command setTunableIntakeDeploy() {
+    return Commands.defer(
+        () -> {
+          return setDeployClosedLoop(Inches.of(IntakeConstants.Real.deployPosition.get()));
+        },
+        Set.of(this));
+  }
+
+  public Command setTunableIntakeDeployBack() {
+    return Commands.defer(
+        () -> {
+          return setDeployClosedLoop(Inches.of(IntakeConstants.Real.deployPositionBack.get()));
+        },
+        Set.of(this));
+  }
+
   public Command setTunableIntake() {
     return Commands.defer(
         () -> this.setIntakeClosedLoop(RPM.of(IntakeConstants.Real.intakeSpeed.get())),
