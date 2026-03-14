@@ -365,9 +365,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
 
     driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
-    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
-    driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
-    driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    jithinController
+        .a()
+        .whileTrue(ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive));
+    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+
+    // driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    // driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
     // 3.5m
     // driverController
