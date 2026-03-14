@@ -372,8 +372,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // =========================================
     // =========== Operator Controls ===========
     // =========================================
-    driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
-    driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    // driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    // driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
     // 3.5m
     // driverController
@@ -402,6 +402,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .andThen(
                     RollerCommands.shootClosedLoopDangerous(
                         shooter, floor, feeder, RPM.of(500), RPM.of(4000), RPM.of(4000))));
+    operatorController.rightTrigger().whileTrue(shooter.setShooterClosedLoop(RPM.of(650)));
 
     // operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 

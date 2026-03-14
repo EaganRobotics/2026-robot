@@ -35,9 +35,9 @@ public final class ShooterCommands {
                   shooter
                       .setShooterClosedLoop(setpoint.shooterSpeed)
                       .alongWith(
-                          feeder
-                              .setClosedLoop(setpoint.feederSpeed)
-                              .alongWith(floor.setClosedLoop(RPM.of(6000)))));
+                          Commands.waitSeconds(0.6)
+                              .andThen(feeder.setClosedLoop(setpoint.feederSpeed)))
+                      .alongWith(floor.setClosedLoop(RPM.of(6000))));
         },
         Set.of(shooter, feeder, floor));
   }
