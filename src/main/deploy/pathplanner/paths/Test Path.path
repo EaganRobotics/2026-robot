@@ -8,23 +8,23 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5055180722891572,
-        "y": 6.056626506024097
+        "x": 3.9054080023249638,
+        "y": 5.728795180722891
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6315301204819277,
+        "x": 0.839156626506024,
         "y": 5.9473493975903615
       },
       "prevControl": {
-        "x": 1.2681279292287277,
+        "x": 1.475754435252824,
         "y": 6.567495526994743
       },
       "nextControl": {
-        "x": -0.005067688264871806,
+        "x": 0.20255881775922446,
         "y": 5.32720326818598
       },
       "isLocked": false,
@@ -36,12 +36,12 @@
         "y": 6.603012048192771
       },
       "prevControl": {
-        "x": 6.543421686746988,
-        "y": 5.138698795180724
+        "x": 6.456,
+        "y": 5.44467469879518
       },
       "nextControl": {
-        "x": 8.116384435302182,
-        "y": 7.289484594225578
+        "x": 8.215709045157402,
+        "y": 7.204383743952582
       },
       "isLocked": false,
       "linkedName": null
@@ -52,12 +52,12 @@
         "y": 1.5981204819277117
       },
       "prevControl": {
-        "x": 7.507425222384088,
-        "y": 0.0632321649560399
+        "x": 7.642463477415682,
+        "y": 1.3586639106224239
       },
       "nextControl": {
-        "x": 7.647120481927709,
-        "y": 3.4558313253012054
+        "x": 7.036364877562747,
+        "y": 3.378992576798884
       },
       "isLocked": false,
       "linkedName": null
@@ -68,8 +68,8 @@
         "y": 2.898518072289156
       },
       "prevControl": {
-        "x": 0.5996720141119312,
-        "y": 1.8832843320669708
+        "x": 0.8610120481927708,
+        "y": 2.1335783132530115
       },
       "nextControl": null,
       "isLocked": false,
@@ -102,15 +102,15 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
+      "name": "IntakeOut",
       "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 1.2462222222222115,
+      "endWaypointRelativePos": null,
       "command": null
     },
     {
-      "name": "AutoShoot",
-      "waypointRelativePos": 1.0186666666666488,
-      "endWaypointRelativePos": 1.5235555555555502,
+      "name": "Intake",
+      "waypointRelativePos": 0.7911111111111039,
+      "endWaypointRelativePos": 1.2675555555555442,
       "command": null
     },
     {
@@ -120,7 +120,7 @@
       "command": null
     },
     {
-      "name": "AutoShoot",
+      "name": "AutoShootT17",
       "waypointRelativePos": 4.0,
       "endWaypointRelativePos": null,
       "command": null
@@ -136,13 +136,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 42.137594773888246
+    "rotation": 29.999999999999996
   },
   "reversed": false,
   "folder": "Week 5 Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 178.40885972880534
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
