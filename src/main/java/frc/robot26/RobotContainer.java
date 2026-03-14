@@ -403,6 +403,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .andThen(
                     RollerCommands.shootClosedLoopDangerous(
                         shooter, floor, feeder, RPM.of(500), RPM.of(4000), RPM.of(4000))));
+    operatorController.a().whileTrue(shooter.setTunableShooter());
 
     // operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
