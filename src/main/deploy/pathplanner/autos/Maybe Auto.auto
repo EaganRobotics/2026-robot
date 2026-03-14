@@ -42,6 +42,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "IntakeIn"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "New New New New Path"
@@ -50,13 +56,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SnapToHub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoShootT17"
+            "name": "SuperAutoShootT17"
           }
         }
       ]
