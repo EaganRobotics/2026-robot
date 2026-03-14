@@ -79,10 +79,10 @@ public class Shooter extends SubsystemBase {
         Set.of(this));
   }
 
-  public Trigger isAtVelocitySetpoint() {
+  public Trigger isAtVelocitySetpoint(AngularVelocity tolerance) {
     return new Trigger(
         () -> {
-          return inputs.shooterVelocity.gte(velocitySetpoint);
+          return inputs.shooterVelocity.isNear(velocitySetpoint, tolerance);
         });
   }
 

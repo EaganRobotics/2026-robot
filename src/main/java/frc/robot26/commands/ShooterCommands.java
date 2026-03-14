@@ -9,12 +9,14 @@ import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterSpeed;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.floor.Floor;
 import frc.robot26.subsystems.shooter.Shooter;
 import frc.robot26.subsystems.shooter.setpoint.ShooterDistanceTable;
 import frc.robot26.subsystems.shooter.setpoint.ShooterSetpoint;
+import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -22,15 +24,22 @@ public final class ShooterCommands {
   private static final double DEADBAND = 0.1;
 
   public static Command shootAutoAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
-    Distance distance = SnapCommands.distanceToHub(drive);
-    ShooterSetpoint setpoint = ShooterDistanceTable.getShooterSetpoint(distance);
+    return Commands.defer(
+        () -> {
+          Distance distance = SnapCommands.distanceToHub(drive);
+          ShooterSetpoint setpoint = ShooterDistanceTable.getShooterSetpoint(distance);
 
-    return shooter
-        .setShooterClosedLoop(setpoint.shooterSpeed)
-        .andThen(
-            feeder
-                .setClosedLoop(setpoint.feederSpeed)
-                .andThen(shooter.setHoodPosition(setpoint.hoodAngle)));
+          return shooter
+              .setHoodPosition(setpoint.hoodAngle)
+              .andThen(
+                  shooter
+                      .setShooterClosedLoop(setpoint.shooterSpeed)
+                      .alongWith(
+                          feeder
+                              .setClosedLoop(setpoint.feederSpeed)
+                              .alongWith(floor.setClosedLoop(RPM.of(6000)))));
+        },
+        Set.of(shooter, feeder, floor));
   }
 
   public static Command shootManualAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {

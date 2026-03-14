@@ -162,7 +162,7 @@ public class TunerConstants {
   private static final boolean kFrontLeftSteerMotorInverted = false;
   private static final boolean kFrontLeftEncoderInverted = false;
 
-  private static final Distance kFrontLeftXPos = Inches.of(10); // TODO: update
+  private static final Distance kFrontLeftXPos = Inches.of(10);
   private static final Distance kFrontLeftYPos = Inches.of(10);
 
   // Front Right = Module 1
