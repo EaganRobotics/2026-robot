@@ -220,7 +220,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
-    NamedCommands.registerCommand("Intake", intake.setTunableIntake().withTimeout(5));
+    NamedCommands.registerCommand(
+        "Intake", intake.setIntakeClosedLoop(RPM.of(3000)).withTimeout(10));
 
     // Snap Named Commands
     NamedCommands.registerCommand(
@@ -246,7 +247,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         Commands.sequence(
             SnapCommands.snapToRadius(drive, Meters.of(1.5)),
             RollerCommands.shootClosedLoop(
-                    shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
+                    shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(1000))
                 .withTimeout(17)));
     NamedCommands.registerCommand(
         "AutoShootT5",

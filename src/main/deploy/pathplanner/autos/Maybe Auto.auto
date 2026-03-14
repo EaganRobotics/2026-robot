@@ -42,12 +42,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "IntakeIn"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New New New New Path"

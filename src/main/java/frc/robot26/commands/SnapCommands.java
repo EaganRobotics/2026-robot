@@ -362,7 +362,11 @@ public class SnapCommands {
               yController.reset(drive.getPose().getY(), fieldRelativeSpeeds.vyMetersPerSecond);
             })
         .until(() -> angleController.atGoal() && xController.atGoal() && yController.atGoal())
-        .withName("SnapCommands.snapToPosition.single");
+        .withName("SnapCommands.snapToPosition.single")
+        .finallyDo(
+            () -> {
+              drive.runVelocity(new ChassisSpeeds());
+            });
   }
 
   public static Command snapToRadius(Drive drive, Distance radius) {

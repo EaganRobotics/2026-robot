@@ -27,18 +27,18 @@ public class RollerCommands {
       AngularVelocity shooterSetpoint,
       AngularVelocity feederSetpoint,
       AngularVelocity floorSetpoint) {
-    // return shootClosedLoopDangerous(
-    //     shooter, floor, feeder, shooterSetpoint, feederSetpoint, floorSetpoint);
-    return shooter
-        .setShooterClosedLoop(shooterSetpoint)
-        .alongWith(feeder.setClosedLoop(feederSetpoint))
-        .alongWith(
-            Commands.waitUntil(
-                    shooter
-                        .isAtVelocitySetpoint(shooterSetpoint.times(0.1))
-                        .and(feeder.isAtVelocitySetpoint(feederSetpoint.times(0.1))))
-                .andThen(floor.setClosedLoop(floorSetpoint)))
-        .withName("RollerCommands.shootClosedLoop");
+    return shootClosedLoopDangerous(
+        shooter, floor, feeder, shooterSetpoint, feederSetpoint, floorSetpoint);
+    // return shooter
+    //     .setShooterClosedLoop(shooterSetpoint)
+    //     .alongWith(feeder.setClosedLoop(feederSetpoint))
+    //     .alongWith(
+    //         Commands.waitUntil(
+    //                 shooter
+    //                     .isAtVelocitySetpoint(shooterSetpoint.times(0.1))
+    //                     .and(feeder.isAtVelocitySetpoint(feederSetpoint.times(0.1))))
+    //             .andThen(floor.setClosedLoop(floorSetpoint)))
+    //     .withName("RollerCommands.shootClosedLoop");
   }
 
   public static Command scoreOpenCommand(
