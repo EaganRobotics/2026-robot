@@ -526,4 +526,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         intake.setIntakeClosedLoop(RPM.of(4000)).withTimeout(2),
         intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1));
   }
+
+  @Override
+  public Pose2d getRobotPose() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getRobotPose'");
+  }
 }
