@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_DEPLOY;
 import static frc.robot26.subsystems.intake.IntakeConstants.GEARING_INTAKE;
 import static frc.robot26.subsystems.intake.IntakeConstants.SUPPLY_CURRENT_LIMIT;
-import static frc.robot26.subsystems.intake.IntakeConstants.Sim;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
