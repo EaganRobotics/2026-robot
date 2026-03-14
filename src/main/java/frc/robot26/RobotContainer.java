@@ -220,12 +220,23 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("Intake", intake.setIntakeClosedLoop(RPM.of(0)).withTimeout(10));
 
+    // NamedCommands.registerCommand(
+    //     "AutoScore",
+    //     ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
     NamedCommands.registerCommand(
         "AutoScore",
-        ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
-            .alongWith(RollerCommands.intakeJiggleOpenLoop(intake))
-            .withTimeout(10));
-    NamedCommands.registerCommand("AngleToHub", SnapCommands.snapToRadius(drive, Feet.of(5)));
+        ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive).withTimeout(5));
+    NamedCommands.registerCommand(
+        "AngleToHub",
+        SnapCommands.snapToAngle(
+                drive,
+                () -> {
+                  Translation2d hubToRobot =
+                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+                  return new Rotation2d(angleToRobot);
+                })
+            .withTimeout(.75));
 
     // autos wont work till intake out works
 
