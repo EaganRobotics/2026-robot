@@ -54,7 +54,7 @@ public class IntakeConstants {
     public static final LoggedTunablePIDs intakePIDs =
         new LoggedTunablePIDs("Intake", 0.1, 0.0, 0.0001); // TODO: change
     public static final LoggedTunablePIDs deployPIDs =
-        new LoggedTunablePIDs("Deploy", 1.0, 0.1, 0.1); // TODO: change
+        new LoggedTunablePIDs("Deploy", 5.0, 0.0, 0.0); // TODO: change
     public static final LoggedTunableNumber intakeSpeed =
         new LoggedTunableNumber("Tuning/IntakeSpeed", 8000);
     public static final LoggedTunableNumber deployPosition =
@@ -75,8 +75,8 @@ public class IntakeConstants {
     public static final double kG = 0.43; // 0.37
     public static final double kV = 0.10146; // 2.67
     public static final double kA = 0.002; // * DRUM_RADIUS.in(Meters); // 0.05
-    public static final MomentOfInertia MOTOR_LOAD_MOI = KilogramSquareMeters.of(0.04); // TODO
-    // estimate
+    public static final MomentOfInertia MOTOR_LOAD_MOI =
+        KilogramSquareMeters.of(0.04); // TODO estimate
     public static final Voltage FRICTION_VOLTAGE = Volts.of(0.5);
   }
 }
