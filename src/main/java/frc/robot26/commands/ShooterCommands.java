@@ -26,11 +26,14 @@ public final class ShooterCommands {
     ShooterSetpoint setpoint = ShooterDistanceTable.getShooterSetpoint(distance);
 
     return shooter
-        .setShooterClosedLoop(setpoint.shooterSpeed)
+        .setHoodPosition(setpoint.hoodAngle)
         .andThen(
-            feeder
-                .setClosedLoop(setpoint.feederSpeed)
-                .andThen(shooter.setHoodPosition(setpoint.hoodAngle)));
+            shooter
+                .setShooterClosedLoop(setpoint.shooterSpeed)
+                .alongWith(
+                    feeder
+                        .setClosedLoop(setpoint.feederSpeed)
+                        .alongWith(floor.setClosedLoop(RPM.of(6000)))));
   }
 
   public static Command shootManualAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {

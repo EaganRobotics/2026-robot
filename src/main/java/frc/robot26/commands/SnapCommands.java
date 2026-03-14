@@ -17,6 +17,7 @@
 package frc.robot26.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
@@ -75,6 +76,9 @@ public class SnapCommands {
       new LoggedTunablePIDs("SnapToPosition/Y", Y_KP, Y_KI, Y_KD);
   private static final LoggedTunablePIDs anglePIDs =
       new LoggedTunablePIDs("SnapToPosition/Angle", ANGLE_KP, ANGLE_KI, ANGLE_KD);
+
+  private static final LoggedTunableNumber TueableSnapToRadiusFeet =
+      new LoggedTunableNumber("Tuning/SnapToPosition/TueableSnapToRadiusFeet", 5);
 
   private static final LoggedTunableNumber POSITION_MAX_VELOCITY =
       new LoggedTunableNumber("Tuning/SnapToPosition/POSITION_MAX_VELOCITY", 4.5);
@@ -374,6 +378,15 @@ public class SnapCommands {
               Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
 
               return snapToPosition(drive, innerPose);
+            },
+            Set.of(drive))
+        .withName("SnapCommands.snapToRadius");
+  }
+
+  public static Command tuneableSnapToRadius(Drive drive) {
+    return Commands.defer(
+            () -> {
+              return snapToRadius(drive, Feet.of(TueableSnapToRadiusFeet.get()));
             },
             Set.of(drive))
         .withName("SnapCommands.snapToRadius");

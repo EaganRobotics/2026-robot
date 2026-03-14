@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
+import frc.robot26.commands.ShooterCommands;
 import frc.robot26.commands.SnapCommands;
 import frc.robot26.generated.TunerConstants;
 import frc.robot26.subsystems.drive.Drive;
@@ -51,6 +53,7 @@ import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
+import frc.robot26.subsystems.shooter.setpoint.ShooterDistanceTable;
 import frc.robot26.subsystems.vision.Vision;
 import frc.robot26.subsystems.vision.Vision.VisionConsumer;
 import frc.robot26.subsystems.vision.VisionConstants;
@@ -363,6 +366,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
+    // driverController.b().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
     // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
 
     // =========================================
@@ -469,6 +473,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.povUp().whileTrue(intake.setDeployClosedLoop(Inches.of(5)));
     jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-3)));
     jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(3)));
+    jithinController.b().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
+
+    jithinController.a().whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
+    // jithinController.y().whileTrue(RollerCommands.shootClosedLoop(shooter, floor, feeder,
+    // RPM.of(500), RPM.of(4000), RPM.of(4000)));
   }
 
   @Override
@@ -495,8 +504,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void robotPeriodic() {
+    Distance distance = SnapCommands.distanceToHub(drive);
+    Logger.recordOutput("Drive/DistanceToHubCenterFeet", distance.in(Feet));
     Logger.recordOutput(
-        "Drive/DistanceToHubCenterFeet", SnapCommands.distanceToHub(drive).in(Feet));
+        "Drive/ShooterSpeedFromDistance",
+        ShooterDistanceTable.getShooterSetpoint(distance).shooterSpeed);
   }
 
   @Override
