@@ -41,6 +41,19 @@ public class RollerCommands {
         .withName("RollerCommands.shootClosedLoop");
   }
 
+  public static Command scoreOpenCommand(
+      Shooter shooter, Feeder feeder, Floor floor, Intake intake) {
+    return shooter
+        .setTunableShooter()
+        .raceWith(
+            Commands.waitSeconds(2)
+                .andThen(
+                    floor
+                        .setTunableFloor()
+                        .alongWith(
+                            feeder.setTunableFeeder().alongWith(intake.setTunableIntake()))));
+  }
+
   public static Command tuneableShootClosedLoop(
       Shooter shooter,
       Floor floor,
