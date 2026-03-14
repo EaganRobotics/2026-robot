@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5721925133689847,
+      "waypointRelativePos": 0.7356076759061736,
       "rotationDegrees": -45.0
     }
   ],
@@ -47,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -34.460237354415995
+    "rotation": -45.75958403686529
   },
   "reversed": false,
   "folder": "Jithin",

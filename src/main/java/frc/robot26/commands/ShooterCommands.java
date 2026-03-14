@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.floor.Floor;
-import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.shooter.Shooter;
 import frc.robot26.subsystems.shooter.setpoint.ShooterDistanceTable;
 import frc.robot26.subsystems.shooter.setpoint.ShooterSetpoint;
@@ -24,8 +23,7 @@ import java.util.function.Supplier;
 public final class ShooterCommands {
   private static final double DEADBAND = 0.1;
 
-  public static Command shootAutoAim(
-      Shooter shooter, Intake intake, Floor floor, Feeder feeder, Drive drive) {
+  public static Command shootAutoAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
     return Commands.defer(
         () -> {
           Distance distance = SnapCommands.distanceToHub(drive);
@@ -35,14 +33,13 @@ public final class ShooterCommands {
               .setHoodPosition(setpoint.hoodAngle)
               .andThen(
                   shooter
-                      .setShooterClosedLoop(setpoint.shooterSpeed)
+                      .setShooterClosedLoop(RPM.of(550))
                       .alongWith(
                           Commands.waitSeconds(0.6)
                               .andThen(feeder.setClosedLoop(setpoint.feederSpeed)))
-                      .alongWith(floor.setClosedLoop(RPM.of(6000)))
-                      .alongWith(intake.setIntakeClosedLoop(RPM.of(6000))));
+                      .alongWith(floor.setClosedLoop(RPM.of(6000))));
         },
-        Set.of(shooter, intake, feeder, floor));
+        Set.of(shooter, feeder, floor));
   }
 
   public static Command shootManualAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {

@@ -218,23 +218,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
-    NamedCommands.registerCommand(
-        "Intake", intake.setIntakeClosedLoop(RPM.of(3000)).withTimeout(10));
+    NamedCommands.registerCommand("Intake", intake.setIntakeClosedLoop(RPM.of(0)).withTimeout(10));
 
     NamedCommands.registerCommand(
         "AutoScore",
-        ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
-    NamedCommands.registerCommand(
-        "AngleToHub",
-        SnapCommands.snapToAngle(
-                drive,
-                () -> {
-                  Translation2d hubToRobot =
-                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-                  return new Rotation2d(angleToRobot);
-                })
-            .withTimeout(.75));
+        ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
+            .alongWith(RollerCommands.intakeJiggleOpenLoop(intake))
+            .withTimeout(10));
+    NamedCommands.registerCommand("AngleToHub", SnapCommands.snapToRadius(drive, Feet.of(5)));
 
     // autos wont work till intake out works
 
@@ -365,9 +356,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
 
     driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
-    jithinController
-        .a()
-        .whileTrue(ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive));
     driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
 
     // driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
@@ -391,7 +379,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
-    operatorController.leftTrigger().whileTrue(intake.setTunableIntake());
+    operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
     operatorController
         .y()
         .whileTrue(
@@ -476,12 +464,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
 
     jithinController.povUp().whileTrue(intake.setDeployClosedLoop(Inches.of(15)));
-    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-3)));
-    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(3)));
+    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-5)));
+    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(5)));
 
     jithinController
         .a()
-        .whileTrue(ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive));
+        .whileTrue(
+            ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
+                .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
 
     jithinController
         .b()

@@ -38,12 +38,6 @@
         {
           "type": "named",
           "data": {
-            "name": "AngleToHub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "AutoScore"
           }
         }
