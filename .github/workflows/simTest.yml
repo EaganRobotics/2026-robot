@@ -1,4 +1,4 @@
-name: Simulation Smoke Test
+name: Code Simulation Test
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   simulate:
-    name: 5-Second Robot Simulation
+    name: Simulation
     runs-on: ubuntu-22.04
     container: wpilib/roborio-cross-ubuntu:2025-22.04
 
