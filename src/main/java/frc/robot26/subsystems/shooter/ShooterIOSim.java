@@ -36,6 +36,27 @@ import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOSim implements ShooterIO {
+
+  // ── Projectile tuning ─────────────────────────────────────────────────────
+  /** Minimum voltage to trigger shooting. */
+  private static final double LAUNCH_VOLTAGE_THRESHOLD = 1.0; // volts
+
+  /** How many seconds between each projectile launch while voltage is applied. */
+  private static final double FIRE_RATE_SECONDS = 0.1;
+
+  /** Launch speed at full (12V) voltage in m/s. */
+  private static final double MAX_LAUNCH_SPEED_MPS = 20.0;
+
+  /** Launch angle in degrees. */
+  private static final double LAUNCH_ANGLE_DEGREES = 55.0;
+
+  /** Launch height off the ground in meters. */
+  private static final double LAUNCH_HEIGHT_METERS = 0.45;
+
+  /** Shooter offset from robot center in meters. */
+  private static final Translation2d SHOOTER_OFFSET = new Translation2d(0.2, 0);
+
+  // ── Motor setup ───────────────────────────────────────────────────────────
   private static final DCMotor shooterGearbox = DCMotor.getKrakenX60(4);
   private final SimulatedMotorController.GenericMotorController shooterMotorController;
   private final MapleMotorSim shooterMotor;
@@ -46,11 +67,11 @@ public class ShooterIOSim implements ShooterIO {
   private final MapleMotorSim hoodMotor;
   private Voltage hoodAppliedVoltage = Volts.of(0);
 
-  private static final double LAUNCH_VOLTAGE_THRESHOLD = 1.0; // volts
-  private boolean wasAboveThreshold = false;
-
   /** Stored each updateInputs so simulateProjectile can read current RPM. */
   private double currentShooterRPM = 0.0;
+
+  /** Accumulates time since last projectile launch. */
+  private double timeSinceLastShot = 0.0;
 
   public double getCurrentShooterRPM() {
     return currentShooterRPM;
@@ -131,45 +152,50 @@ public class ShooterIOSim implements ShooterIO {
     inputs.hoodCurrent = Amps.of(hoodSim.getCurrentDrawAmps());
     inputs.hoodVelocity = AngularVelocity.ofBaseUnits(hoodAngularVelocity, RadiansPerSecond);
 
-    // Store RPM for use in simulateProjectile
     currentShooterRPM =
         AngularVelocity.ofBaseUnits(shooterAngularVelocity, RadiansPerSecond).in(RPM);
   }
 
   /**
-   * Call this from RobotContainer.simulationPeriodic() to launch a fuel projectile when the shooter
-   * spins up past the threshold.
+   * Call this from RobotContainer.simulationPeriodic() to launch fuel projectiles at a constant
+   * rate while voltage is applied to the shooter.
    */
   public void simulateProjectile(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds) {
-    boolean aboveThreshold = Math.abs(shooterAppliedVoltage.in(Volts)) > LAUNCH_VOLTAGE_THRESHOLD;
+    boolean shooting = Math.abs(shooterAppliedVoltage.in(Volts)) > LAUNCH_VOLTAGE_THRESHOLD;
 
-    // Launch on rising edge only (once per spin-up)
-    if (aboveThreshold && !wasAboveThreshold) {
-      RebuiltFuelOnFly fuel =
-          new RebuiltFuelOnFly(
-              robotPose.getTranslation(),
-              new Translation2d(0.2, 0),
-              fieldRelativeSpeeds,
-              robotPose.getRotation(),
-              Meters.of(0.45),
-              MetersPerSecond.of(Math.abs(shooterAppliedVoltage.in(Volts)) / 12.0 * 20.0),
-              Radians.of(Math.toRadians(55)));
+    if (shooting) {
+      timeSinceLastShot += TimedRobot.kDefaultPeriod;
 
-      // All chained methods return GamePieceProjectile, so configure on the base type
-      GamePieceProjectile projectile = fuel;
-      projectile
-          .withTargetPosition(() -> new Translation3d(0.25, 5.56, 2.3))
-          .withTargetTolerance(new Translation3d(0.5, 1.2, 0.3))
-          .withHitTargetCallBack(() -> System.out.println("Fuel hit hub!"))
-          .withProjectileTrajectoryDisplayCallBack(
-              (List<Pose3d> poses) ->
-                  Logger.recordOutput("Shooter/ProjectileHit", poses.toArray(new Pose3d[0])),
-              (List<Pose3d> poses) ->
-                  Logger.recordOutput("Shooter/ProjectileMiss", poses.toArray(new Pose3d[0])));
+      if (timeSinceLastShot >= FIRE_RATE_SECONDS) {
+        timeSinceLastShot = 0.0;
 
-      SimulatedArena.getInstance().addGamePieceProjectile(projectile);
+        RebuiltFuelOnFly fuel =
+            new RebuiltFuelOnFly(
+                robotPose.getTranslation(),
+                SHOOTER_OFFSET,
+                fieldRelativeSpeeds,
+                robotPose.getRotation(),
+                Meters.of(LAUNCH_HEIGHT_METERS),
+                MetersPerSecond.of(
+                    Math.abs(shooterAppliedVoltage.in(Volts)) / 12.0 * MAX_LAUNCH_SPEED_MPS),
+                Radians.of(Math.toRadians(LAUNCH_ANGLE_DEGREES)));
+
+        GamePieceProjectile projectile = fuel;
+        projectile
+            .withTargetPosition(() -> new Translation3d(0.25, 5.56, 2.3))
+            .withTargetTolerance(new Translation3d(0.5, 1.2, 0.3))
+            .withHitTargetCallBack(() -> System.out.println("Fuel hit hub!"))
+            .withProjectileTrajectoryDisplayCallBack(
+                (List<Pose3d> poses) ->
+                    Logger.recordOutput("Shooter/ProjectileHit", poses.toArray(new Pose3d[0])),
+                (List<Pose3d> poses) ->
+                    Logger.recordOutput("Shooter/ProjectileMiss", poses.toArray(new Pose3d[0])));
+
+        SimulatedArena.getInstance().addGamePieceProjectile(projectile);
+      }
+    } else {
+      // Reset timer when not shooting so first shot fires immediately next time
+      timeSinceLastShot = FIRE_RATE_SECONDS;
     }
-
-    wasAboveThreshold = aboveThreshold;
   }
 }

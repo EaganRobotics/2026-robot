@@ -528,12 +528,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   public void simulationPeriodic() {
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
-    // ── CHANGE 3: update AI brain + simulate shooter projectiles ─────────────
     AIBrain.update(drive.getPose());
-
-    if (shooterIOSim != null) {
-      System.out.println("ShooterRPM: " + shooterIOSim.getCurrentShooterRPM());
-    }
 
     if (shooterIOSim != null) {
       shooterIOSim.simulateProjectile(
