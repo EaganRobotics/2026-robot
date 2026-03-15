@@ -33,7 +33,7 @@ public final class ShooterCommands {
               .setHoodPosition(setpoint.hoodAngle)
               .andThen(
                   shooter
-                      .setShooterClosedLoop(RPM.of(550))
+                      .setShooterClosedLoop(setpoint.shooterSpeed)
                       .alongWith(
                           Commands.waitSeconds(0.6)
                               .andThen(feeder.setClosedLoop(setpoint.feederSpeed)))
