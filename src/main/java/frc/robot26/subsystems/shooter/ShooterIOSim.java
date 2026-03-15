@@ -2,7 +2,10 @@ package frc.robot26.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -10,6 +13,11 @@ import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_SHOOTER;
 import static frc.robot26.subsystems.shooter.ShooterConstants.SUPPLY_CURRENT_LIMIT;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
@@ -18,9 +26,14 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot26.subsystems.shooter.ShooterConstants.Sim;
+import java.util.List;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.gamepieces.GamePieceProjectile;
 import org.ironmaple.simulation.motorsims.MapleMotorSim;
 import org.ironmaple.simulation.motorsims.SimMotorConfigs;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
+import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOSim implements ShooterIO {
   private static final DCMotor shooterGearbox = DCMotor.getKrakenX60(4);
@@ -33,8 +46,16 @@ public class ShooterIOSim implements ShooterIO {
   private final MapleMotorSim hoodMotor;
   private Voltage hoodAppliedVoltage = Volts.of(0);
 
-  // one is the actual simulator and one is like the which model is used and its
-  // gearbox configuration, using both flywheelsim and maple motor sim is good
+  private static final double LAUNCH_VOLTAGE_THRESHOLD = 1.0; // volts
+  private boolean wasAboveThreshold = false;
+
+  /** Stored each updateInputs so simulateProjectile can read current RPM. */
+  private double currentShooterRPM = 0.0;
+
+  public double getCurrentShooterRPM() {
+    return currentShooterRPM;
+  }
+
   private final FlywheelSim shooterSim =
       new FlywheelSim(
           LinearSystemId.createFlywheelSystem(shooterGearbox, 0.1, GEARING_SHOOTER),
@@ -75,9 +96,8 @@ public class ShooterIOSim implements ShooterIO {
 
   @Override
   public void setShooterClosedLoop(AngularVelocity velocity) {
-    shooterAppliedVoltage =
-        Volts.of(velocity.in(RPM) * 0.01); // Convert RPM to voltage (simplified)
-    setShooterOpenLoop(shooterAppliedVoltage); // Use the open loop method to set the voltage
+    shooterAppliedVoltage = Volts.of(velocity.in(RPM) * 0.01);
+    setShooterOpenLoop(shooterAppliedVoltage);
   }
 
   @Override
@@ -101,7 +121,6 @@ public class ShooterIOSim implements ShooterIO {
     var shooterAngularVelocity = shooterSim.getAngularVelocityRadPerSec();
     var hoodAngularVelocity = hoodSim.getAngularVelocityRadPerSec();
 
-    // Update motor inputs
     inputs.shooterConnected = true;
     inputs.shooterAppliedVolts = shooterAppliedVoltage;
     inputs.shooterCurrent = Amps.of(shooterSim.getCurrentDrawAmps());
@@ -111,5 +130,46 @@ public class ShooterIOSim implements ShooterIO {
     inputs.hoodAppliedVolts = hoodAppliedVoltage;
     inputs.hoodCurrent = Amps.of(hoodSim.getCurrentDrawAmps());
     inputs.hoodVelocity = AngularVelocity.ofBaseUnits(hoodAngularVelocity, RadiansPerSecond);
+
+    // Store RPM for use in simulateProjectile
+    currentShooterRPM =
+        AngularVelocity.ofBaseUnits(shooterAngularVelocity, RadiansPerSecond).in(RPM);
+  }
+
+  /**
+   * Call this from RobotContainer.simulationPeriodic() to launch a fuel projectile when the shooter
+   * spins up past the threshold.
+   */
+  public void simulateProjectile(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds) {
+    boolean aboveThreshold = Math.abs(shooterAppliedVoltage.in(Volts)) > LAUNCH_VOLTAGE_THRESHOLD;
+
+    // Launch on rising edge only (once per spin-up)
+    if (aboveThreshold && !wasAboveThreshold) {
+      RebuiltFuelOnFly fuel =
+          new RebuiltFuelOnFly(
+              robotPose.getTranslation(),
+              new Translation2d(0.2, 0),
+              fieldRelativeSpeeds,
+              robotPose.getRotation(),
+              Meters.of(0.45),
+              MetersPerSecond.of(Math.abs(shooterAppliedVoltage.in(Volts)) / 12.0 * 20.0),
+              Radians.of(Math.toRadians(55)));
+
+      // All chained methods return GamePieceProjectile, so configure on the base type
+      GamePieceProjectile projectile = fuel;
+      projectile
+          .withTargetPosition(() -> new Translation3d(0.25, 5.56, 2.3))
+          .withTargetTolerance(new Translation3d(0.5, 1.2, 0.3))
+          .withHitTargetCallBack(() -> System.out.println("Fuel hit hub!"))
+          .withProjectileTrajectoryDisplayCallBack(
+              (List<Pose3d> poses) ->
+                  Logger.recordOutput("Shooter/ProjectileHit", poses.toArray(new Pose3d[0])),
+              (List<Pose3d> poses) ->
+                  Logger.recordOutput("Shooter/ProjectileMiss", poses.toArray(new Pose3d[0])));
+
+      SimulatedArena.getInstance().addGamePieceProjectile(projectile);
+    }
+
+    wasAboveThreshold = aboveThreshold;
   }
 }

@@ -57,6 +57,7 @@ import frc.robot26.subsystems.vision.Vision.VisionConsumer;
 import frc.robot26.subsystems.vision.VisionConstants;
 import frc.robot26.subsystems.vision.VisionIOLimelight;
 import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot26.util.Ai.AIBrain;
 import frc.robot26.util.Ai.AIRobotInSimulation;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -86,6 +87,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private static final SwerveDriveSimulation driveSimulation =
       new SwerveDriveSimulation(
           DriveSimConfig.MAPLE_SIM_CONFIG, SimConstants.SIM_INITIAL_FIELD_POSE);
+
+  // ── CHANGE 1: store ShooterIOSim reference for projectile simulation ──────
+  private ShooterIOSim shooterIOSim = null;
 
   private LoggedDashboardChooser<Command> autoChooser;
 
@@ -170,7 +174,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         intake = new Intake(new IntakeIOSim(RobotContainer.driveSimulation));
         feeder = new Feeder(new FeederIOSim());
         floor = new Floor(new FloorIOSim());
-        shooter = new Shooter(new ShooterIOSim());
+        // ── CHANGE 2: store shooterIOSim so simulationPeriodic can use it ────
+        shooterIOSim = new ShooterIOSim();
+        shooter = new Shooter(shooterIOSim);
         break;
       case REPLAY:
         drive =
@@ -340,7 +346,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // Switch to X pattern when X button is pressed
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
-    // Reset gyro to 0° when B button is pressed
+    // Reset gyro to 0° when B button is pressed
     driverController
         .start()
         .or(driverController.back())
@@ -521,6 +527,19 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   @Override
   public void simulationPeriodic() {
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
+
+    // ── CHANGE 3: update AI brain + simulate shooter projectiles ─────────────
+    AIBrain.update(drive.getPose());
+
+    if (shooterIOSim != null) {
+      System.out.println("ShooterRPM: " + shooterIOSim.getCurrentShooterRPM());
+    }
+
+    if (shooterIOSim != null) {
+      shooterIOSim.simulateProjectile(
+          driveSimulation.getSimulatedDriveTrainPose(),
+          driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative());
+    }
 
     Logger.recordOutput(
         "FieldSimulation/FuelPositions", arena.getGamePieceManager().getPosesArrayByType("Fuel"));
