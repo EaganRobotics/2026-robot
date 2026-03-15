@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.46557119205298003,
-        "y": 6.0
+        "x": 7.784,
+        "y": 7.031
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.930206953642384,
-        "y": 5.799163907284769
+        "x": 7.719321428571428,
+        "y": 6.675017857142857
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.434884105960265,
-        "y": 4.7900331125827815
+        "x": 7.784,
+        "y": 5.298
       },
       "prevControl": {
-        "x": 2.434884105960265,
-        "y": 4.7900331125827815
+        "x": 7.767910714285714,
+        "y": 5.864875
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -33.35402575151676
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Week 1 Paths",
+  "folder": "Jithin",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.81473918137763
+    "rotation": -90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
