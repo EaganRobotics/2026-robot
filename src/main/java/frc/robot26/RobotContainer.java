@@ -218,14 +218,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
-    NamedCommands.registerCommand("Intake", intake.setIntakeClosedLoop(RPM.of(0)).withTimeout(10));
+    NamedCommands.registerCommand("Intake", intake.setIntakeClosedLoop(RPM.of(0)).withTimeout(3));
 
     // NamedCommands.registerCommand(
     //     "AutoScore",
     //     ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
     NamedCommands.registerCommand(
-        "AutoScore",
-        ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive).withTimeout(5));
+        "AutoScore", ShooterCommands.shootAutoAim(shooter, floor, feeder, drive).withTimeout(10));
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(
@@ -483,6 +482,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .whileTrue(
             ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
                 .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
+
+    jithinController
+        .y()
+        .whileTrue(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive));
 
     jithinController
         .b()
