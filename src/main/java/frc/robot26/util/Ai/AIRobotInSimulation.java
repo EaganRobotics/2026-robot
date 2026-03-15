@@ -1,4 +1,4 @@
-package frc.robot26.util;
+package frc.robot26.util.Ai;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -48,42 +48,46 @@ public class AIRobotInSimulation extends SubsystemBase {
 
   // ── Tuning ────────────────────────────────────────────────────────────────
   private static final double MAX_DRIVE_SPEED = 3.0;
-
-  /** Loops between stuck checks (~50 = 1 second at 50hz). */
-  private static final int STUCK_CHECK_INTERVAL = 50;
-
-  /** Movement threshold to be considered stuck (meters). */
-  private static final double STUCK_THRESHOLD_METERS = 0.1;
+  private static final double STUCK_VELOCITY_THRESHOLD = 0.2; // m/s
+  private static final int STUCK_CONFIRM_LOOPS = 25; // ~0.5s at 50hz
+  private static final int ESCAPE_HOLD_LOOPS = 60; // ~1.2s at 50hz
+  private static final int STARTUP_GRACE_LOOPS = 100; // ~2s at 50hz
+  public static final double WAYPOINT_ARRIVAL_THRESHOLD = 0.4; // meters
 
   // ── Static instances ──────────────────────────────────────────────────────
   public static final AIRobotInSimulation[] instances = new AIRobotInSimulation[3];
   private static final Random random = new Random();
 
+  /**
+   * Start all opponent robot simulations. Each bot gets its own pathfinder — swap them out here to
+   * change behavior.
+   */
   public static void startOpponentRobotSimulations() {
     System.out.println("Starting opponent robot simulations...");
-    instances[0] = new AIRobotInSimulation(0);
-    instances[1] = new AIRobotInSimulation(1);
-    instances[2] = new AIRobotInSimulation(2);
+    instances[0] = new AIRobotInSimulation(0, new ACOPathfinder());
+    instances[1] = new AIRobotInSimulation(1, new SpinPathfinder());
+    instances[2] = new AIRobotInSimulation(2, new RandomPathfinder());
   }
 
   // ── Instance fields ───────────────────────────────────────────────────────
   private final SwerveDriveSimulation driveSimulation;
+  private final AIPathfinder pathfinder;
   private final Pose2d spawnPose;
   private final int id;
 
   private Translation2d currentWaypoint;
-  private Translation2d lastCheckedPosition;
-  private int stuckCheckCounter = 0;
-
-  /** Random escape direction when stuck, null when not stuck. */
   private Translation2d escapeDirection = null;
 
-  public AIRobotInSimulation(int id) {
+  private int loopCount = 0;
+  private int slowLoopCount = 0;
+  private int escapeLoopCount = 0;
+
+  public AIRobotInSimulation(int id, AIPathfinder pathfinder) {
     this.id = id;
+    this.pathfinder = pathfinder;
     this.spawnPose = ROBOT_QUEENING_POSITIONS[id];
     this.driveSimulation = new SwerveDriveSimulation(DRIVETRAIN_CONFIG, spawnPose);
     this.currentWaypoint = spawnPose.getTranslation();
-    this.lastCheckedPosition = spawnPose.getTranslation();
 
     SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
   }
@@ -92,47 +96,56 @@ public class AIRobotInSimulation extends SubsystemBase {
 
   @Override
   public void periodic() {
+    loopCount++;
     Pose2d currentPose = driveSimulation.getSimulatedDriveTrainPose();
+    Pose2d targetPose = AIBrain.getTargetPose();
 
-    // ── Stuck detection ───────────────────────────────────────────────────
-    stuckCheckCounter++;
-    if (stuckCheckCounter >= STUCK_CHECK_INTERVAL) {
-      stuckCheckCounter = 0;
-      double moved = currentPose.getTranslation().getDistance(lastCheckedPosition);
-
-      if (moved < STUCK_THRESHOLD_METERS) {
-        // Pick a new random escape direction if we don't already have one
-        if (escapeDirection == null) {
-          double angle = random.nextDouble() * 2.0 * Math.PI;
-          escapeDirection = new Translation2d(Math.cos(angle), Math.sin(angle));
+    // ── Stuck detection (skip during startup grace period) ────────────────
+    if (loopCount > STARTUP_GRACE_LOOPS) {
+      if (escapeDirection != null) {
+        escapeLoopCount++;
+        if (escapeLoopCount >= ESCAPE_HOLD_LOOPS) {
+          escapeDirection = null;
+          escapeLoopCount = 0;
+          slowLoopCount = 0;
         }
-        Logger.recordOutput("AIRobots/Robot" + id + "/Stuck", true);
       } else {
-        // We've moved — clear escape mode and resume ACO
-        escapeDirection = null;
-        Logger.recordOutput("AIRobots/Robot" + id + "/Stuck", false);
-      }
+        ChassisSpeeds fieldSpeeds =
+            driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative();
+        double speed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
 
-      lastCheckedPosition = currentPose.getTranslation();
+        if (speed < STUCK_VELOCITY_THRESHOLD) {
+          slowLoopCount++;
+          if (slowLoopCount >= STUCK_CONFIRM_LOOPS) {
+            double angle = random.nextDouble() * 2.0 * Math.PI;
+            escapeDirection = new Translation2d(Math.cos(angle), Math.sin(angle));
+            escapeLoopCount = 0;
+            slowLoopCount = 0;
+            pathfinder.onStuck();
+          }
+        } else {
+          slowLoopCount = 0;
+        }
+      }
     }
 
     // ── Drive logic ───────────────────────────────────────────────────────
     if (escapeDirection != null) {
-      // Drive in the random escape direction until we're unstuck
       driveSimulation.setRobotSpeeds(
           ChassisSpeeds.fromFieldRelativeSpeeds(
               escapeDirection.getX() * MAX_DRIVE_SPEED,
               escapeDirection.getY() * MAX_DRIVE_SPEED,
               0.0,
               currentPose.getRotation()));
+      Logger.recordOutput("AIRobots/Robot" + id + "/Stuck", true);
     } else {
-      // Normal ACO pathfinding
       double distToWaypoint = currentPose.getTranslation().getDistance(currentWaypoint);
-      if (distToWaypoint < AIBrain.WAYPOINT_ARRIVAL_THRESHOLD) {
-        AIBrain.reinforce(currentPose.getTranslation());
-        currentWaypoint = AIBrain.nextWaypoint(currentPose);
+      if (distToWaypoint < WAYPOINT_ARRIVAL_THRESHOLD) {
+        pathfinder.onArrival(currentPose.getTranslation());
+        currentWaypoint = pathfinder.nextWaypoint(currentPose, targetPose);
       }
       driveToward(currentPose, currentWaypoint);
+      Logger.recordOutput("AIRobots/Robot" + id + "/Stuck", false);
     }
 
     Logger.recordOutput("AIRobots/Robot" + id + "/Pose", currentPose);
@@ -147,7 +160,7 @@ public class AIRobotInSimulation extends SubsystemBase {
     double distance = delta.getNorm();
 
     if (distance < 0.05) {
-      driveSimulation.setRobotSpeeds(new ChassisSpeeds());
+      driveSimulation.setRobotSpeeds(new ChassisSpeeds(0, 0, pathfinder.omegaRadiansPerSecond()));
       return;
     }
 
@@ -156,6 +169,7 @@ public class AIRobotInSimulation extends SubsystemBase {
     double vy = (delta.getY() / distance) * speed;
 
     driveSimulation.setRobotSpeeds(
-        ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, 0.0, currentPose.getRotation()));
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            vx, vy, pathfinder.omegaRadiansPerSecond(), currentPose.getRotation()));
   }
 }

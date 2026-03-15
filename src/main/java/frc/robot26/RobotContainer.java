@@ -57,7 +57,7 @@ import frc.robot26.subsystems.vision.Vision.VisionConsumer;
 import frc.robot26.subsystems.vision.VisionConstants;
 import frc.robot26.subsystems.vision.VisionIOLimelight;
 import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
-import frc.robot26.util.AIRobotInSimulation;
+import frc.robot26.util.Ai.AIRobotInSimulation;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
@@ -511,7 +511,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   @Override
   public void simulationInit() {
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
-    AIRobotInSimulation.startOpponentRobotSimulations();
+    AIRobotInSimulation
+        .startOpponentRobotSimulations(); // If you want to remove the ais comment out this line
     arena.getBlueHub().setOnScoredCallback((gp) -> System.out.println("Blue Hub Scored!"));
     arena.getRedHub().setOnScoredCallback((gp) -> System.out.println("Red Hub Scored!"));
     arena.setNeutralFuelCount(80); // for performance
