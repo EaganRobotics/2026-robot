@@ -94,6 +94,14 @@ public class Shooter extends SubsystemBase {
         .withName("Shooter.setHoodPosition");
   }
 
+  public Command setHoodPosition(Supplier<Angle> angle) {
+    return this.run(
+            () -> {
+              io.setHoodPosition(angle.get());
+            })
+        .withName("Shooter.setHoodPosition");
+  }
+
   public Command incrementSetHoodPosition(Angle angle) {
     return this.runOnce(
             () -> {

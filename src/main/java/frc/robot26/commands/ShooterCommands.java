@@ -42,6 +42,29 @@ public final class ShooterCommands {
         Set.of(shooter, feeder, floor));
   }
 
+  public static Command shootAutoAimContinuous(
+      Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
+    return Commands.defer(
+        () -> {
+          return shooter
+              .setHoodPosition(() -> getSetpoint(drive).hoodAngle)
+              .andThen(
+                  shooter
+                      .setShooterClosedLoop(() -> getSetpoint(drive).shooterSpeed)
+                      .alongWith(
+                          Commands.waitSeconds(0.6)
+                              .andThen(feeder.setClosedLoop(() -> getSetpoint(drive).feederSpeed)))
+                      .alongWith(floor.setClosedLoop(RPM.of(6000))));
+        },
+        Set.of(shooter, feeder, floor));
+  }
+
+  private static ShooterSetpoint getSetpoint(Drive drive) {
+    Distance distance = SnapCommands.distanceToHub(drive);
+    ShooterSetpoint setpoint = ShooterDistanceTable.getShooterSetpoint(distance);
+    return setpoint;
+  }
+
   public static Command shootManualAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
 
     return shooter

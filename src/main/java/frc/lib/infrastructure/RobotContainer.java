@@ -1,5 +1,6 @@
 package frc.lib.infrastructure;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.lib.simulation.SimConstants;
 import org.ironmaple.simulation.SimulatedArena;
@@ -17,6 +18,8 @@ public abstract class RobotContainer {
   public abstract boolean matchesMacAddress(String macAddress);
 
   public abstract void initialize();
+
+  public abstract Pose2d getRobotPose();
 
   public void configureDriveSimulation(AbstractDriveTrainSimulation driveSimulation) {
     this.driveSimulation = driveSimulation;

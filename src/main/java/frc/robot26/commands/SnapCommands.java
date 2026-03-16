@@ -40,6 +40,7 @@ import frc.lib.tunables.LoggedTunablePIDs;
 import frc.robot26.subsystems.drive.Drive;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class SnapCommands {
@@ -362,7 +363,11 @@ public class SnapCommands {
               yController.reset(drive.getPose().getY(), fieldRelativeSpeeds.vyMetersPerSecond);
             })
         .until(() -> angleController.atGoal() && xController.atGoal() && yController.atGoal())
-        .withName("SnapCommands.snapToPosition.single");
+        .withName("SnapCommands.snapToPosition.single")
+        .finallyDo(
+            () -> {
+              drive.runVelocity(new ChassisSpeeds());
+            });
   }
 
   public static Command snapToRadius(Drive drive, Distance radius) {
@@ -439,6 +444,10 @@ public class SnapCommands {
   }
 
   public static Command snapToAngle(Drive drive, double angleDegrees) {
+    return snapToAngle(drive, () -> Rotation2d.fromDegrees(angleDegrees));
+  }
+
+  public static Command snapToAngle(Drive drive, Supplier<Rotation2d> angleDegrees) {
     ProfiledPIDController headingController =
         new ProfiledPIDController(
             ANGLE_KP,
@@ -449,16 +458,14 @@ public class SnapCommands {
 
     headingController.enableContinuousInput(-Math.PI, Math.PI);
 
-    Rotation2d target = new Rotation2d(Math.toRadians(angleDegrees));
-
     return Commands.run(
             () -> {
+              Rotation2d target = angleDegrees.get();
               double omega =
                   headingController.calculate(
                       drive.getRotation().getRadians(), target.getRadians());
 
               Logger.recordOutput("SnapToAngle/TargetHeading", target);
-              Logger.recordOutput("SnapToAngle/DesiredAngleDegrees", angleDegrees);
 
               drive.runVelocity(
                   ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -477,13 +484,13 @@ public class SnapCommands {
   }
 
   // TODO: make this work (prob better to do manualy using overtuned pids)
-  public static Command swerveJiggle(Drive drive) {
-    return Commands.repeatingSequence(
-        snapToAngle(drive, 5).withTimeout(0.2),
-        Commands.waitSeconds(0.1),
-        snapToAngle(drive, -5).withTimeout(0.2),
-        Commands.waitSeconds(0.1));
-  }
+  //   public static Command swerveJiggle(Drive drive) {
+  //     return Commands.repeatingSequence(
+  //         snapToAngle(drive, 5).withTimeout(0.2),
+  //         Commands.waitSeconds(0.1),
+  //         snapToAngle(drive, -5).withTimeout(0.2),
+  //         Commands.waitSeconds(0.1));
+  //   }
 
   public static Command snapToAngleIfInZone(
       Drive drive,

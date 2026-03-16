@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.46557119205298003,
-        "y": 6.0
+        "x": 3.592004504504505,
+        "y": 4.2290653153153155
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.930206953642384,
-        "y": 5.799163907284769
+        "x": 3.1119481981981987,
+        "y": 4.770405405405406
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.434884105960265,
-        "y": 4.7900331125827815
+        "x": 0.6912387387387393,
+        "y": 5.955225225225226
       },
       "prevControl": {
-        "x": 2.434884105960265,
-        "y": 4.7900331125827815
+        "x": 2.1109797297297304,
+        "y": 5.812229729729729
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -33.35402575151676
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Week 1 Paths",
+  "folder": "Winona Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.81473918137763
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

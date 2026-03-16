@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class Feeder extends SubsystemBase {
@@ -45,6 +46,19 @@ public class Feeder extends SubsystemBase {
             () -> {
               io.setFeederClosedLoop(velocity);
               velocitySetpoint = velocity;
+            },
+            () -> {
+              io.setFeederClosedLoop(RPM.of(0));
+              velocitySetpoint = RPM.of(0);
+            })
+        .withName("Feeder.setClosedLoop");
+  }
+
+  public Command setClosedLoop(Supplier<AngularVelocity> velocity) {
+    return this.runEnd(
+            () -> {
+              io.setFeederClosedLoop(velocity.get());
+              velocitySetpoint = velocity.get();
             },
             () -> {
               io.setFeederClosedLoop(RPM.of(0));
