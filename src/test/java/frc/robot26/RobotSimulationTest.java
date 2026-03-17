@@ -13,7 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 // Boots the robot in simulation and runs 5 seconds of real-time Sim before passing if it has not
-// caught fatal erros
+// caught fatal errors
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RobotSimulationTest {
@@ -42,7 +42,7 @@ class RobotSimulationTest {
     assertDoesNotThrow(
         () -> {
           final int iterations =
-              150; // 150 x 20ms = 3 seconds this feels like a bad way to do it but this is what you
+              250; // 250 x 20ms = 5 seconds; this feels like a bad way to do it but this is what you
           // get
 
           DriverStationSim.setAutonomous(isAuto);
