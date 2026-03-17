@@ -33,6 +33,7 @@ public class IntakeIOSim implements IntakeIO {
   private final SimulatedMotorController.GenericMotorController deployMotorController;
   private final MapleMotorSim deployMotor;
   private Voltage deployAppliedVoltage = Volts.of(0);
+  private int lastIntakeBallCount = 0;
 
   private final IntakeSimulation intakeSimulation;
 
@@ -51,21 +52,17 @@ public class IntakeIOSim implements IntakeIO {
           0.000015);
 
   public IntakeIOSim(AbstractDriveTrainSimulation driveTrain) {
-    // Here, create the intake simulation with respect to the intake on your real robot
     this.intakeSimulation =
         IntakeSimulation.OverTheBumperIntake(
-            // Specify the type of game pieces that the intake can collect
             "Fuel",
-            // Specify the drivetrain to which this intake is attached
             driveTrain,
-            // Width of the intake
-            Meters.of(0.7),
-            // The extension length of the intake beyond the robot's frame (when activated)
-            Meters.of(0.2),
-            // The intake is mounted on the back side of the chassis
+            Meters.of(2.0), // wide for testing
+            Meters.of(1.0), // long reach for testing
             IntakeSimulation.IntakeSide.BACK,
-            // The intake can hold up to 1 note
-            1);
+            5); // hold up to 5
+
+    // Register with the arena so it participates in collision detection
+    intakeSimulation.register();
 
     intakeMotor =
         new MapleMotorSim(
@@ -87,18 +84,18 @@ public class IntakeIOSim implements IntakeIO {
   @Override
   public void setIntakeOpenLoop(Voltage output) {
     intakeAppliedVoltage = output;
-    if (isDeployed) {
-      intakeSimulation.setIntakeVoltage(
-          output); // Set the intake voltage based on the applied voltage
+    intakeSimulation.setIntakeVoltage(output);
+    if (Math.abs(output.in(Volts)) > 0.5) {
+      intakeSimulation.startIntake();
     } else {
-      intakeSimulation.setIntakeVoltage(Volts.of(0));
-    } // If the intake is not deployed, set voltage to 0
+      intakeSimulation.stopIntake();
+    }
   }
 
   @Override
   public void setIntakeClosedLoop(AngularVelocity velocity) {
-    intakeAppliedVoltage = Volts.of(velocity.in(RPM) * 0.01); // Convert RPM to voltage (simplified)
-    setIntakeOpenLoop(intakeAppliedVoltage); // Use the open loop method to set the voltage
+    intakeAppliedVoltage = Volts.of(velocity.in(RPM) * 0.01);
+    setIntakeOpenLoop(intakeAppliedVoltage);
   }
 
   @Override
@@ -122,6 +119,16 @@ public class IntakeIOSim implements IntakeIO {
     deploySim.setInputVoltage(deployMotor.getAppliedVoltage().in(Volts));
     deployMotor.update(Seconds.of(TimedRobot.kDefaultPeriod));
     deploySim.update(TimedRobot.kDefaultPeriod);
+
+    // Track ball pickup — immediately transfer from intake sim to robot storage
+    // so the intake sim can pick up another ball right away
+    int currentBalls = intakeSimulation.getGamePiecesAmount();
+    if (currentBalls > lastIntakeBallCount) {
+      RobotGamePieceStorage.addBall();
+      intakeSimulation.obtainGamePieceFromIntake(); // clear from intake sim so it can pick up more
+      currentBalls = intakeSimulation.getGamePiecesAmount();
+    }
+    lastIntakeBallCount = currentBalls;
 
     var intakeAngularVelocity = intakeSim.getAngularVelocityRadPerSec();
     var deployAngularVelocity = deploySim.getAngularVelocityRadPerSec();

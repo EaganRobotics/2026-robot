@@ -47,6 +47,7 @@ import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
+import frc.robot26.subsystems.intake.RobotGamePieceStorage;
 import frc.robot26.subsystems.shooter.Shooter;
 import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
@@ -358,38 +359,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(2000)));
-    // driverController
-    //     .leftTrigger()
-    //     .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
-    // driverController
-    //     .rightTrigger()
-    //     .whileTrue(ShooterCommands.shootManualAim(shooter, floor, feeder, drive));
-
-    // driverController.a().whileTrue(feeder.setTunableFeeder());
-    // driverController.x().whileTrue(SnapCommands.tuneableFlipitySnipitySnap(drive));
-    // driverController.b().whileTrue(shooter.setTunableShooter());
-    // driverController.b().whileTrue(floor.setTunableFloor());
-    // driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
-
-    driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
-    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+    // driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
+    driverController.b().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
+    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+    driverController.y().whileTrue(shooter.setShooterClosedLoop(RPM.of(1000)));
 
     // driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     // driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
-
-    // 3.5m
-    // driverController
-    //     .x()
-    //     .whileTrue(
-    //         Commands.sequence(
-    //             RollerCommands.shootClosedLoop(
-    //                 shooter,
-    //                 floor,
-    //                 feeder,
-    //                 RPM.of(750),
-    //                 RPM.of(1000),
-    //                 RPM.of(1000)))); // shooter then feeder
 
     // Operator Controls
 
@@ -529,6 +505,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     if (!(SimulatedArena.getInstance() instanceof Arena2026Rebuilt arena)) return;
 
     AIBrain.update(drive.getPose());
+    Logger.recordOutput("RobotStorage/StoredBalls", RobotGamePieceStorage.getStoredBalls());
 
     if (shooterIOSim != null) {
       shooterIOSim.simulateProjectile(

@@ -25,6 +25,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import frc.robot26.subsystems.intake.RobotGamePieceStorage;
 import frc.robot26.subsystems.shooter.ShooterConstants.Sim;
 import java.util.List;
 import org.ironmaple.simulation.SimulatedArena;
@@ -38,22 +39,11 @@ import org.littletonrobotics.junction.Logger;
 public class ShooterIOSim implements ShooterIO {
 
   // ── Projectile tuning ─────────────────────────────────────────────────────
-  /** Minimum voltage to trigger shooting. */
   private static final double LAUNCH_VOLTAGE_THRESHOLD = 1.0; // volts
-
-  /** How many seconds between each projectile launch while voltage is applied. */
   private static final double FIRE_RATE_SECONDS = 0.1;
-
-  /** Launch speed at full (12V) voltage in m/s. */
   private static final double MAX_LAUNCH_SPEED_MPS = 20.0;
-
-  /** Launch angle in degrees. */
   private static final double LAUNCH_ANGLE_DEGREES = 55.0;
-
-  /** Launch height off the ground in meters. */
   private static final double LAUNCH_HEIGHT_METERS = 0.45;
-
-  /** Shooter offset from robot center in meters. */
   private static final Translation2d SHOOTER_OFFSET = new Translation2d(0.2, 0);
 
   // ── Motor setup ───────────────────────────────────────────────────────────
@@ -67,11 +57,8 @@ public class ShooterIOSim implements ShooterIO {
   private final MapleMotorSim hoodMotor;
   private Voltage hoodAppliedVoltage = Volts.of(0);
 
-  /** Stored each updateInputs so simulateProjectile can read current RPM. */
   private double currentShooterRPM = 0.0;
-
-  /** Accumulates time since last projectile launch. */
-  private double timeSinceLastShot = 0.0;
+  private double timeSinceLastShot = FIRE_RATE_SECONDS; // ready to fire immediately
 
   public double getCurrentShooterRPM() {
     return currentShooterRPM;
@@ -157,13 +144,13 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   /**
-   * Call this from RobotContainer.simulationPeriodic() to launch fuel projectiles at a constant
-   * rate while voltage is applied to the shooter.
+   * Call this from RobotContainer.simulationPeriodic() to launch fuel projectiles while voltage is
+   * applied — but only if there are balls stored in the robot.
    */
   public void simulateProjectile(Pose2d robotPose, ChassisSpeeds fieldRelativeSpeeds) {
     boolean shooting = Math.abs(shooterAppliedVoltage.in(Volts)) > LAUNCH_VOLTAGE_THRESHOLD;
 
-    if (shooting) {
+    if (shooting && RobotGamePieceStorage.hasBalls()) {
       timeSinceLastShot += TimedRobot.kDefaultPeriod;
 
       if (timeSinceLastShot >= FIRE_RATE_SECONDS) {
@@ -192,8 +179,11 @@ public class ShooterIOSim implements ShooterIO {
                     Logger.recordOutput("Shooter/ProjectileMiss", poses.toArray(new Pose3d[0])));
 
         SimulatedArena.getInstance().addGamePieceProjectile(projectile);
+        RobotGamePieceStorage.removeBall();
+
+        Logger.recordOutput("Shooter/BallsRemaining", RobotGamePieceStorage.getStoredBalls());
       }
-    } else {
+    } else if (!shooting) {
       // Reset timer when not shooting so first shot fires immediately next time
       timeSinceLastShot = FIRE_RATE_SECONDS;
     }
