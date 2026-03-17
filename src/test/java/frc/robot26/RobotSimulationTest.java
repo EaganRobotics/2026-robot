@@ -42,7 +42,8 @@ class RobotSimulationTest {
     assertDoesNotThrow(
         () -> {
           final int iterations =
-              250; // 250 x 20ms = 5 seconds; this feels like a bad way to do it but this is what you
+              250; // 250 x 20ms = 5 seconds; this feels like a bad way to do it but this is what
+          // you
           // get
 
           DriverStationSim.setAutonomous(isAuto);
