@@ -49,6 +49,12 @@ class RobotSimulationTest {
           DriverStationSim.setAutonomous(isAuto);
           DriverStationSim.notifyNewData();
 
+          if (isAuto) {
+            robot.autonomousInit();
+          } else {
+            robot.teleopInit();
+          }
+
           for (int i = 0; i < iterations; i++) {
             DriverStationSim.notifyNewData();
             robot.robotPeriodic();
