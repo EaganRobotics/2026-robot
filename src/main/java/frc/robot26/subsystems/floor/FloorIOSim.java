@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.floor.FloorConstants.GEARING;
 import static frc.robot26.subsystems.floor.FloorConstants.SUPPLY_CURRENT_LIMIT;
-import static frc.robot26.subsystems.floor.FloorConstants.Sim;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
