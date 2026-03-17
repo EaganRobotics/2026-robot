@@ -147,6 +147,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIOSim(driveSimulation.getModules()[3]),
                 driveSimulation::setSimulationWorldPose);
         drive.setPose(SimConstants.SIM_INITIAL_FIELD_POSE);
+
+        boolean isCI = System.getenv("CI") != null;
         vision =
             new Vision(
                 new VisionConsumer() {
@@ -158,14 +160,18 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
                   }
                 },
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.limelightBack,
-                    VisionConstants.robotToCameraBack,
-                    driveSimulation::getSimulatedDriveTrainPose),
-                new VisionIOPhotonVisionSim(
-                    VisionConstants.limelightTop,
-                    VisionConstants.robotToCameraTop,
-                    driveSimulation::getSimulatedDriveTrainPose));
+                isCI
+                    ? new frc.robot26.subsystems.vision.VisionIO() {}
+                    : new VisionIOPhotonVisionSim(
+                        VisionConstants.limelightBack,
+                        VisionConstants.robotToCameraBack,
+                        driveSimulation::getSimulatedDriveTrainPose),
+                isCI
+                    ? new frc.robot26.subsystems.vision.VisionIO() {}
+                    : new VisionIOPhotonVisionSim(
+                        VisionConstants.limelightTop,
+                        VisionConstants.robotToCameraTop,
+                        driveSimulation::getSimulatedDriveTrainPose));
         intake = new Intake(new IntakeIOSim(RobotContainer.driveSimulation));
         feeder = new Feeder(new FeederIOSim());
         floor = new Floor(new FloorIOSim());
