@@ -1,7 +1,7 @@
 package frc.robot26.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -56,9 +56,9 @@ public class IntakeIOSim implements IntakeIO {
         IntakeSimulation.OverTheBumperIntake(
             "Fuel",
             driveTrain,
-            Meters.of(2.0), // wide for testing
-            Meters.of(1.0), // long reach for testing
-            IntakeSimulation.IntakeSide.BACK,
+            Feet.of(2.5),
+            Feet.of(1.0),
+            IntakeSimulation.IntakeSide.FRONT,
             5); // hold up to 5
 
     // Register with the arena so it participates in collision detection

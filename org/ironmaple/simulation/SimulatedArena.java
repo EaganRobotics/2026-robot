@@ -77,7 +77,7 @@ public abstract class SimulatedArena {
     public NetworkTable redTable =
             NetworkTableInstance.getDefault().getTable("SmartDashboard/MapleSim/MatchData/Breakdown/Red Alliance");
     public NetworkTable blueTable =
-            NetworkTableInstance.getDefault().getTable("SmartDashboard/MapleSim/MatchData/Breakdown/blue Alliance");
+            NetworkTableInstance.getDefault().getTable("SmartDashboard/MapleSim/MatchData/Breakdown/Blue Alliance");
     public NetworkTable genericInfoTable =
             NetworkTableInstance.getDefault().getTable("SmartDashboard/MapleSim/MatchData/Breakdown");
 

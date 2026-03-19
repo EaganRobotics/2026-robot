@@ -11,7 +11,7 @@ import org.littletonrobotics.junction.Logger;
 public class RobotGamePieceStorage {
 
   private static int storedBalls = 10;
-  private static final int MAX_BALLS = 20; // adjust to match your robot
+  private static final int MAX_BALLS = 80; // adjust to match your robot
 
   public static int getStoredBalls() {
     return storedBalls;
