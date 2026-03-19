@@ -241,7 +241,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
                   return new Rotation2d(angleToRobot);
                 })
-            .withTimeout(.75));
+            .withTimeout(1));
+
+    NamedCommands.registerCommand(
+        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(5)).withTimeout(2));
 
     // autos wont work till intake out works
 
