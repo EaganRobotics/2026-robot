@@ -242,6 +242,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   return new Rotation2d(angleToRobot);
                 })
             .withTimeout(1));
+    NamedCommands.registerCommand("Deploy", intake.setDeployOpenLoop(Volts.of(5)).withTimeout(1));
 
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(5)).withTimeout(2));
@@ -489,6 +490,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.povUp().whileTrue(intake.setDeployClosedLoop(Inches.of(15)));
     jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-5)));
     jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(5)));
+    jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(1));
 
     jithinController
         .a()
