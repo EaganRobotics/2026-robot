@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.229459095251093,
-        "y": 5.642224970433042
+        "x": 6.501159934497816,
+        "y": 5.284387907114264
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.42936214974527,
-        "y": 5.733279942230713
+        "x": 5.7010629889919935,
+        "y": 5.375442878911935
       },
       "isLocked": false,
       "linkedName": "Reloaded.2"
@@ -53,7 +53,7 @@
   "folder": "Jithin",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 106.32413542569226
   },
   "useDefaultConstraints": true
 }
