@@ -229,7 +229,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //     "AutoScore",
     //     ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
     NamedCommands.registerCommand(
-        "AutoScore", ShooterCommands.shootAutoAim(shooter, floor, feeder, drive).withTimeout(10));
+        "AutoScore",
+        ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
+            .alongWith(RollerCommands.intakeJiggleOpenLoop(intake))
+            .withTimeout(10));
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(
