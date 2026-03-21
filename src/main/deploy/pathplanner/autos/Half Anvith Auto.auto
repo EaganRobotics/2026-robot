@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "IntakeOut"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Anvith #2 Path"
@@ -29,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Anvith #3 Path"
+                  "pathName": "Half Anvith #3 Path"
                 }
               },
               {
@@ -44,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Anvith #4 Path"
+            "pathName": "Half Anvith #4 Path"
           }
         },
         {
