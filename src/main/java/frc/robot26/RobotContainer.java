@@ -2,7 +2,6 @@ package frc.robot26;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -487,10 +486,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
     jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
 
-    jithinController.povUp().whileTrue(intake.setDeployClosedLoop(Inches.of(15)));
+    jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
+    jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
     jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-5)));
     jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(5)));
-    jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(1));
+
+    // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
     jithinController
         .a()

@@ -138,7 +138,7 @@ public class IntakeIOTalonFX implements IntakeIO {
 
   @Override
   public void setDeployClosedLoop(Angle angle) {
-    lead.setControl(deployPositionVoltageRequest.withPosition(angle));
+    deploy.setControl(deployPositionVoltageRequest.withPosition(angle));
   }
 
   @Override
