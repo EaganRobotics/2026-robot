@@ -495,6 +495,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-5)));
     jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(5)));
 
+    DriveCommands.joystickDrive(
+        drive,
+        () -> -jithinController.getLeftY(),
+        () -> -jithinController.getLeftX(),
+        () -> -jithinController.getRightX());
+
     // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
     jithinController
