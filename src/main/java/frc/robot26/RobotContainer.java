@@ -223,7 +223,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
-    NamedCommands.registerCommand("Intake", intake.setIntakeClosedLoop(RPM.of(0)).withTimeout(3));
+    NamedCommands.registerCommand("Intake", intake.setIntakeClosedLoop(RPM.of(0)).withTimeout(5));
 
     // NamedCommands.registerCommand(
     //     "AutoScore",
