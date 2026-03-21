@@ -241,7 +241,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   return new Rotation2d(angleToRobot);
                 })
             .withTimeout(1));
-    NamedCommands.registerCommand("Deploy", intake.setDeployOpenLoop(Volts.of(5)).withTimeout(1));
+    NamedCommands.registerCommand("Deploy", intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(5)).withTimeout(2));
