@@ -2,7 +2,6 @@ package frc.robot26;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
@@ -224,13 +223,19 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("FloorIn", floor.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
-    NamedCommands.registerCommand("Intake", intake.setIntakeClosedLoop(RPM.of(0)).withTimeout(3));
+    NamedCommands.registerCommand(
+        "Intake", intake.setIntakeClosedLoop(RPM.of(8000)).withTimeout(15));
+    NamedCommands.registerCommand(
+        "IntakeFor5Secs", intake.setIntakeClosedLoop(RPM.of(8000)).withTimeout(5));
 
     // NamedCommands.registerCommand(
     //     "AutoScore",
     //     ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
     NamedCommands.registerCommand(
-        "AutoScore", ShooterCommands.shootAutoAim(shooter, floor, feeder, drive).withTimeout(10));
+        "AutoScore",
+        ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
+            .alongWith(RollerCommands.intakeJiggleOpenLoop(intake))
+            .withTimeout(10));
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(
@@ -241,7 +246,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
                   return new Rotation2d(angleToRobot);
                 })
-            .withTimeout(.75));
+            .withTimeout(1));
+    NamedCommands.registerCommand("Deploy", intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
+
+    NamedCommands.registerCommand(
+        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(5)).withTimeout(2));
 
     // autos wont work till intake out works
 
@@ -483,9 +492,18 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
     jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
 
-    jithinController.povUp().whileTrue(intake.setDeployClosedLoop(Inches.of(15)));
+    jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
+    jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
     jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-5)));
     jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(5)));
+
+    DriveCommands.joystickDrive(
+        drive,
+        () -> -jithinController.getLeftY(),
+        () -> -jithinController.getLeftX(),
+        () -> -jithinController.getRightX());
+
+    // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
     jithinController
         .a()
