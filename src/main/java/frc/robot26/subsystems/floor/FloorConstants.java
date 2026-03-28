@@ -16,13 +16,12 @@ public class FloorConstants {
   public static final double GEARING = 3.0;
 
   public static final LoggedTunablePIDs floorPIDs =
-      new LoggedTunablePIDs("Floor", 0.01, 0.0, 0.0); // TODO: change
+      new LoggedTunablePIDs("Floor", 0.1, 0.0, 0.0); // TODO: change
   public static final LoggedTunableNumber floorSpeed =
-      new LoggedTunableNumber("Tuning/FloorSpeed", 1000);
+      new LoggedTunableNumber("Tuning/FloorSpeed", 3000);
 
   public static final class Real {
-    public static final int leadMotorID = 20;
-    public static final int followerMotorID = 15;
+    public static final int leadMotorID = 15;
   }
 
   public static final class Sim {

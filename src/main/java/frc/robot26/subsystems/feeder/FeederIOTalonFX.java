@@ -23,7 +23,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 
 public class FeederIOTalonFX implements FeederIO {
-  private final TalonFX lead, follower;
+  private final TalonFX lead, follower, compliantWheel;
   private final StatusSignal<Angle> leadPosition;
   private final StatusSignal<AngularVelocity> leadVelocity;
   private final StatusSignal<Voltage> leadVoltage;
@@ -33,6 +33,7 @@ public class FeederIOTalonFX implements FeederIO {
   public FeederIOTalonFX() {
     lead = new TalonFX(Real.leadMotorID);
     follower = new TalonFX(Real.followerMotorID);
+    compliantWheel = new TalonFX(Real.compliantWheelID);
     leadVelocity = lead.getVelocity();
     leadPosition = lead.getPosition();
     leadVoltage = lead.getMotorVoltage();
@@ -40,7 +41,7 @@ public class FeederIOTalonFX implements FeederIO {
 
     var leadConfig = new TalonFXConfiguration();
 
-    leadConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    leadConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leadConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leadConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     leadConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -54,10 +55,11 @@ public class FeederIOTalonFX implements FeederIO {
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
     follower.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
+    compliantWheel.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50, leadCurrent, leadVoltage, leadPosition, leadVelocity);
-    ParentDevice.optimizeBusUtilizationForAll(lead, follower);
+    ParentDevice.optimizeBusUtilizationForAll(lead, follower, compliantWheel);
   }
 
   @Override

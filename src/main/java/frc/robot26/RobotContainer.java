@@ -487,8 +487,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
     jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
-    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-5)));
-    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(5)));
+    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
+    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
 
     // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
@@ -498,9 +498,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
                 .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
 
-    jithinController
-        .y()
-        .whileTrue(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive));
+    jithinController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
     jithinController
         .b()

@@ -67,7 +67,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     var leadConfigRight = new TalonFXConfiguration();
     var hoodConfig = new TalonFXConfiguration();
 
-    leadConfigLeft.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    leadConfigLeft.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leadConfigLeft.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leadConfigLeft.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     leadConfigLeft.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -76,7 +76,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     leadConfigLeft.Voltage.PeakReverseVoltage = -10;
     leadConfigLeft.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
-    leadConfigRight.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    leadConfigRight.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     leadConfigRight.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leadConfigRight.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
     leadConfigRight.CurrentLimits.SupplyCurrentLimitEnable = true;
