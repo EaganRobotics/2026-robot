@@ -8,11 +8,13 @@ import static frc.robot26.subsystems.floor.FloorConstants.SUPPLY_CURRENT_LIMIT;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -21,7 +23,7 @@ import edu.wpi.first.units.measure.Voltage;
 import frc.robot26.subsystems.floor.FloorConstants.Real;
 
 public class FloorIOTalonFX implements FloorIO {
-  private final TalonFX lead;
+  private final TalonFX lead, follower;
   private final StatusSignal<Angle> leadPosition;
   private final StatusSignal<AngularVelocity> leadVelocity;
   private final StatusSignal<Voltage> leadVoltage;
@@ -31,6 +33,7 @@ public class FloorIOTalonFX implements FloorIO {
 
   public FloorIOTalonFX() {
     lead = new TalonFX(Real.leadMotorID);
+    follower = new TalonFX(Real.followerMotorID);
     leadVelocity = lead.getVelocity();
     leadPosition = lead.getPosition();
     leadVoltage = lead.getMotorVoltage();
@@ -52,9 +55,11 @@ public class FloorIOTalonFX implements FloorIO {
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
 
+    follower.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
+
     BaseStatusSignal.setUpdateFrequencyForAll(
         50, leadCurrent, leadVoltage, leadPosition, leadVelocity);
-    ParentDevice.optimizeBusUtilizationForAll(lead);
+    ParentDevice.optimizeBusUtilizationForAll(lead, follower);
   }
 
   @Override

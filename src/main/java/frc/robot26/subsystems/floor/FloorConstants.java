@@ -21,7 +21,8 @@ public class FloorConstants {
       new LoggedTunableNumber("Tuning/FloorSpeed", 1000);
 
   public static final class Real {
-    public static final int leadMotorID = 15;
+    public static final int leadMotorID = 20;
+    public static final int followerMotorID = 15;
   }
 
   public static final class Sim {
