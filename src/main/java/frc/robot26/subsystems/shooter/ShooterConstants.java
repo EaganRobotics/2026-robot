@@ -28,10 +28,10 @@ public class ShooterConstants {
     public static final int hoodMotorID = 16;
 
     public static final LoggedTunablePIDs shooterPIDs =
-        new LoggedTunablePIDs("Shooter", 2.0, 0.0, 0.001);
-    public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 5.0, 0.0, 0.0);
+        new LoggedTunablePIDs("Shooter", 0.01, 0.0, 0.0);
+    public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 0.01, 0.0, 0.0);
     public static final LoggedTunableNumber shooterSpeed =
-        new LoggedTunableNumber("Tuning/ShooterSpeed", 550);
+        new LoggedTunableNumber("Tuning/ShooterSpeed", 100);
     public static final LoggedTunableNumber hoodAngle =
         new LoggedTunableNumber("Tuning/HoodAngle", 550); // TODO: change
     public static final LoggedTunableNumber hoodAngleBack =
