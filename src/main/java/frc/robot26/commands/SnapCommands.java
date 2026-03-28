@@ -107,9 +107,9 @@ public class SnapCommands {
       anglePIDs.createController(ANGLE_MAX_VELOCITY.get(), ANGLE_MAX_ACCELERATION.get());
 
   static {
-    POSITION_TOLERANCE.addListener(xController::setTolerance);
-    POSITION_TOLERANCE.addListener(yController::setTolerance);
-    ANGLE_TOLERANCE.addListener(angleController::setTolerance);
+    POSITION_TOLERANCE.addListener(value -> xController.setTolerance(value));
+    POSITION_TOLERANCE.addListener(value -> yController.setTolerance(value));
+    ANGLE_TOLERANCE.addListener(value -> angleController.setTolerance(value));
 
     ANGLE_MAX_VELOCITY.addListener(
         (velocity) ->

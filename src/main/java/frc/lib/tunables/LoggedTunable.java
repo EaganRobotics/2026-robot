@@ -17,8 +17,7 @@ interface LoggedTunable<T> {
   public default void addListener(Consumer<T> listener) {
     getListeners().add(listener);
 
-    // Only do tunables when not in a match, when in a match, give listener the
-    // default value
+    // Only do tunables when not in a match, when in a match, give listener the default value
     if (DriverStation.getMatchType() == MatchType.None) {
       listener.accept(getValue());
     } else {
