@@ -319,12 +319,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //         () -> SnapCommands.distanceToHub(drive),
     //         () -> -driverController.getRightY(),
     //         Feet.of(5)));
-    intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getRightY()));
+    intake.setDefaultCommand(intake.setJoystickOpenLoop(() -> -operatorController.getLeftX()));
     feeder.setDefaultCommand(
-        feeder.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
-    floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
-    // shooter.setDefaultCommand(
-    //     shooter.setHoodJoystickOpenLoop(() -> -operatorController.getLeftY() * .5));
+        feeder.setJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
+    floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
+    shooter.setDefaultCommand(
+        shooter.setShooterJoystickOpenLoop(() -> -operatorController.getRightY() * .5));
 
     // Driver Controls
 
