@@ -16,7 +16,7 @@ public class FloorConstants {
   public static final double GEARING = 3.0;
 
   public static final LoggedTunablePIDs floorPIDs =
-      new LoggedTunablePIDs("Floor", 0.1, 0.0, 0.0); // TODO: change
+      new LoggedTunablePIDs("Floor", 0.2, 0.0, 0.0); // TODO: change
   public static final LoggedTunableNumber floorSpeed =
       new LoggedTunableNumber("Tuning/FloorSpeed", 3000);
 

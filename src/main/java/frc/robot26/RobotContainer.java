@@ -310,8 +310,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX(),
+            () -> driverController.getLeftY(),
+            () -> driverController.getLeftX(),
             () -> -driverController.getRightX()));
     // shooter.setDefaultCommand(
     //     ShooterCommands.shooterDefaultCommand(
@@ -373,8 +373,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.b().whileTrue(floor.setTunableFloor());
     // driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
 
-    driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(3.5)));
-    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
+    driverController.b().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
+    driverController.y().whileTrue(SnapCommands.snapToRadiusInterpolation(drive, Feet.of(7.5)));
 
     // =========================================
     // =========== Operator Controls ===========
@@ -400,7 +400,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
-    operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
+    operatorController
+        .leftTrigger()
+        .whileTrue(
+            intake.setIntakeClosedLoop(RPM.of(7000)).alongWith(floor.setClosedLoop(RPM.of(2000))));
     operatorController
         .y()
         .whileTrue(
@@ -408,9 +411,16 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .setHoodPosition(Radians.of(0))
                 .andThen(
                     RollerCommands.shootClosedLoopDangerous(
-                        shooter, floor, feeder, RPM.of(500), RPM.of(4000), RPM.of(4000))));
+                        shooter, floor, feeder, RPM.of(500), RPM.of(3000), RPM.of(3000))));
     operatorController.rightTrigger().whileTrue(shooter.setShooterClosedLoop(RPM.of(650)));
-    operatorController.a().whileTrue(shooter.setTunableShooter());
+    operatorController
+        .a()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(500))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(3000)))
+                .alongWith(intake.setIntakeClosedLoop(RPM.of(6000))));
 
     // operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
