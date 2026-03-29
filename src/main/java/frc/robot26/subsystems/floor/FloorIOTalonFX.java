@@ -48,6 +48,11 @@ public class FloorIOTalonFX implements FloorIO {
     leadConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     FloorConstants.floorPIDs.applyToTalonFXConfig(lead, leadConfig);
+    FloorConstants.floorAcceleration.addListener(
+        (acceleration) -> {
+          leadConfig.MotionMagic.MotionMagicAcceleration = acceleration / 60.0;
+          lead.getConfigurator().apply(leadConfig);
+        });
 
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
