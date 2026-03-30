@@ -4,7 +4,10 @@
         {
             "label": "Build with SpotBugs",
             "type": "shell",
-            "command": "./gradlew",
+            "command": "${workspaceFolder}/gradlew",
+            "windows": {
+                "command": "${workspaceFolder}\\gradlew.bat"
+            },
             "args": [
                 "build",
                 "-PrunSpotBugs"
@@ -17,7 +20,8 @@
             "detail": "Build robot code with SpotBugs static analysis enabled",
             "presentation": {
                 "reveal": "always",
-                "panel": "shared"
+                "panel": "shared",
+                "clear": true
             }
         }
     ]

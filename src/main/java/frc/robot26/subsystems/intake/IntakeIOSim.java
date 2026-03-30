@@ -79,8 +79,6 @@ public class IntakeIOSim implements IntakeIO {
         deployMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
   }
 
-  boolean isDeployed = false;
-
   @Override
   public void setIntakeOpenLoop(Voltage output) {
     intakeAppliedVoltage = output;
@@ -101,11 +99,6 @@ public class IntakeIOSim implements IntakeIO {
   @Override
   public void setDeployOpenLoop(Voltage output) {
     deployAppliedVoltage = output;
-    if (output.in(Volts) > 0.5) {
-      isDeployed = true;
-    } else if (output.in(Volts) < -0.5) {
-      isDeployed = false;
-    }
   }
 
   @Override

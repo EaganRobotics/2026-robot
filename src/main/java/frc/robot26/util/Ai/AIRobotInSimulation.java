@@ -19,7 +19,7 @@ import org.littletonrobotics.junction.Logger;
 public class AIRobotInSimulation extends SubsystemBase {
 
   // ── Spawn positions (center of field) ─────────────────────────────────────
-  public static final Pose2d[] ROBOT_QUEENING_POSITIONS =
+  static final Pose2d[] ROBOT_QUEENING_POSITIONS =
       new Pose2d[] {
         new Pose2d(8.0, 4.0, new Rotation2d()),
         new Pose2d(9.0, 4.0, new Rotation2d()),
@@ -55,7 +55,7 @@ public class AIRobotInSimulation extends SubsystemBase {
   public static final double WAYPOINT_ARRIVAL_THRESHOLD = 0.4; // meters
 
   // ── Static instances ──────────────────────────────────────────────────────
-  public static final AIRobotInSimulation[] instances = new AIRobotInSimulation[3];
+  private static final AIRobotInSimulation[] instances = new AIRobotInSimulation[3];
   private static final Random random = new Random();
 
   /**

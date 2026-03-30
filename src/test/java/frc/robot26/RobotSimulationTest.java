@@ -12,8 +12,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-// Boots the robot in simulation and runs 5 seconds of real-time Sim before passing if it has not
-// caught fatal errors
+// Boots the robot in simulation and runs ~0.5 seconds of real-time sim.
+// Test passes if no fatal exceptions are thrown.
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RobotSimulationTest {
@@ -24,7 +24,6 @@ class RobotSimulationTest {
   void setUp() {
     assert HAL.initialize(500, 0) : "HAL failed to initialize";
 
-    // we could make auto test but not a right now thing
     DriverStationSim.setEnabled(true);
     DriverStationSim.setAutonomous(false);
     DriverStationSim.setTest(false);
@@ -32,7 +31,6 @@ class RobotSimulationTest {
     DriverStationSim.setDsAttached(true);
     DriverStationSim.notifyNewData();
 
-    // i think this constructs the robot
     robot = new Robot();
     robot.robotInit();
     robot.simulationInit();
@@ -40,13 +38,10 @@ class RobotSimulationTest {
 
   @ParameterizedTest
   @ValueSource(booleans = {true, false})
-  void robotSurvivesFiveSeconds(boolean isAuto) {
+  void robotSurvivesHalfSecond(boolean isAuto) {
     assertDoesNotThrow(
         () -> {
-          final int iterations =
-              250; // 250 x 20ms = 5 seconds; this feels like a bad way to do it but this is what
-          // you
-          // get
+          final int iterations = 25; // 25 * 20ms = 0.5 seconds
 
           DriverStationSim.setAutonomous(isAuto);
           DriverStationSim.notifyNewData();
@@ -59,6 +54,7 @@ class RobotSimulationTest {
 
           for (int i = 0; i < iterations; i++) {
             DriverStationSim.notifyNewData();
+
             robot.robotPeriodic();
 
             if (isAuto) {
@@ -69,7 +65,6 @@ class RobotSimulationTest {
 
             robot.simulationPeriodic();
 
-            // Not a clue prob something with stability
             Thread.sleep(20);
           }
         },

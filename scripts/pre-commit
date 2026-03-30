@@ -27,7 +27,17 @@ if [ $RETVAL -ne 0 ]; then
     exit 1
 fi
 
-# 3. Re-add files that were changed by Spotless
+# 3. Run build with SpotBugs
+$GRADLE_CMD build -PrunSpotBugs
+
+# Check if build failed
+RETVAL=$?
+if [ $RETVAL -ne 0 ]; then
+    echo "Build or SpotBugs failed."
+    exit 1
+fi
+
+# 4. Re-add files that were changed by Spotless
 # We only want to re-add files that are *already staged* to avoid 
 # accidentally committing changes you intended to leave unstaged.
 git diff --name-only --cached | while read file; do
