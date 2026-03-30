@@ -34,6 +34,11 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs("Shooter", inputs);
   }
 
+  /** Returns the current measured shooter velocity from logged inputs. */
+  public AngularVelocity getVelocity() {
+    return inputs.shooterVelocity;
+  }
+
   public Command setShooterOpenLoop(Voltage output) {
     return this.startEnd(
             () -> {
@@ -53,7 +58,6 @@ public class Shooter extends SubsystemBase {
             },
             () -> {
               io.setShooterOpenLoop(Volts.of(0));
-              // io.setShooterClosedLoop(RPM.of(0));
               velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");
@@ -67,7 +71,6 @@ public class Shooter extends SubsystemBase {
             },
             () -> {
               io.setShooterOpenLoop(Volts.of(0));
-              // io.setShooterClosedLoop(RPM.of(0));
               velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");

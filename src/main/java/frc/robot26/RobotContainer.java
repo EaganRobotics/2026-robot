@@ -344,7 +344,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 }));
 
     // Switch to X pattern when X button is pressed
-    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
     driverController
@@ -362,6 +362,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.b().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
     // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Meters.of(1.5)));
     driverController.y().whileTrue(shooter.setShooterClosedLoop(RPM.of(1000)));
+    driverController.x().whileTrue(shooter.setShooterClosedLoop(RPM.of(500)));
 
     // driverController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     // driverController.a().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
