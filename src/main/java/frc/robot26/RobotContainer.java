@@ -398,7 +398,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // Operator Controls
 
     // operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
     operatorController
         .leftTrigger()
@@ -419,8 +419,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             shooter
                 .setShooterClosedLoop(RPM.of(500))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(3000)))
-                .alongWith(intake.setIntakeClosedLoop(RPM.of(6000))));
+                .alongWith(floor.setClosedLoop(RPM.of(3000))));
 
     // operatorController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
