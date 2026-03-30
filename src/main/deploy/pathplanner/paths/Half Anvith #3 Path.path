@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.789180722891565,
-        "y": 2.341204819277109
+        "x": 7.811,
+        "y": 6.767
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.789180722891567,
-        "y": 2.341204819277109
+        "x": 7.974951807228916,
+        "y": 6.06755421686747
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4455301204819277,
-        "y": 3.007795180722892
+        "x": 7.767325301204821,
+        "y": 4.526746987951808
       },
       "prevControl": {
-        "x": 1.4455301204819277,
-        "y": 3.007795180722892
+        "x": 7.920313253012047,
+        "y": 5.0512771084337365
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Week 2 Paths",
+  "folder": "Anvith",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0
