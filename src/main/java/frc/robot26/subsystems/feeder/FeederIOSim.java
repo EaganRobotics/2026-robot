@@ -5,7 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot26.subsystems.feeder.FeederConstants.GEARING_FEEDER;
+import static frc.robot26.subsystems.feeder.FeederConstants.GEARING;
 import static frc.robot26.subsystems.feeder.FeederConstants.SUPPLY_CURRENT_LIMIT;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -29,15 +29,14 @@ public class FeederIOSim implements FeederIO {
   // gearbox configuration, using both flywheelsim and maple motor sim is good
   private final FlywheelSim feederSim =
       new FlywheelSim(
-          LinearSystemId.createFlywheelSystem(feederGearbox, 0.1, GEARING_FEEDER),
+          LinearSystemId.createFlywheelSystem(feederGearbox, 0.1, GEARING),
           feederGearbox,
           0.000015);
 
   public FeederIOSim() {
     feederMotor =
         new MapleMotorSim(
-            new SimMotorConfigs(
-                feederGearbox, GEARING_FEEDER, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
+            new SimMotorConfigs(feederGearbox, GEARING, Sim.MOTOR_LOAD_MOI, Sim.FRICTION_VOLTAGE));
     feederMotorController =
         feederMotor.useSimpleDCMotorController().withCurrentLimit(SUPPLY_CURRENT_LIMIT);
   }

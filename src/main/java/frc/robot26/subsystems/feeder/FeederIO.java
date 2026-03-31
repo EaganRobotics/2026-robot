@@ -16,10 +16,6 @@ public interface FeederIO {
     public AngularVelocity feederVelocity = RadiansPerSecond.of(0.0);
     public Voltage feederAppliedVolts = Volts.of(0.0);
     public Current feederCurrent = Amps.of(0.0);
-
-    public AngularVelocity compliantWheelVelocity = RadiansPerSecond.of(0.0);
-    public Voltage compliantWheelAppliedVolts = Volts.of(0.0);
-    public Current compliantWheelCurrent = Amps.of(0.0);
   }
 
   /** Updates the set of loggable inputs. */

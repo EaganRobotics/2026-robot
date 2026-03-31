@@ -13,11 +13,9 @@ public class FeederConstants {
   public static final double joystickSpeedMultiplier =
       Math.E + 0.7; // there is no reason this is like this i just thought it was funny
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
-  public static final double GEARING_FEEDER = 1.5;
-  public static final double GEARING_COMPLIANT_WHEEL = 3.0;
+  public static final double GEARING = 1.5;
 
   public static final class Real {
-    public static final int compliantWheelID = 20;
     public static final int followerMotorID = 10;
     public static final int leadMotorID = 9;
 
