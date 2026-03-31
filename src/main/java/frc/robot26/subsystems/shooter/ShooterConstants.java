@@ -14,11 +14,12 @@ import frc.lib.tunables.*;
 public class ShooterConstants {
   public static final double joystickSpeedMultiplier = 0.85;
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
-  public static final double GEARING_SHOOTER = 5.0;
-  public static final double GEARING_HOOD = 1.0;
+  public static final double GEARING_SHOOTER = 1.0;
+  public static final double GEARING_HOOD = 18.75;
 
   public static final Angle hoodRotationStartLimit = Radians.of(0.0);
-  public static final Angle hoodRotationEndLimit = Radians.of(9.68);
+  public static final Angle hoodRotationEndLimit =
+      Radians.of(9.68); // TODO: need to check for new robot
 
   public static final class Real {
     public static final int followerLeftMotorID = 13;

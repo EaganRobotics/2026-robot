@@ -127,6 +127,7 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setJoystickOpenLoop");
   }
 
+  // TODO: test as an onTrue button
   public Command setDeployPosition(IntakeConstants.DeployState state) {
     return setDeployClosedLoop(state.getState());
   }
