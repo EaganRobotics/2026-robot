@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -350,7 +349,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 }));
 
     // Switch to X pattern when X button is pressed
-    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     // Reset gyro to 0° when B button is pressed
     driverController
@@ -378,7 +378,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.b().whileTrue(floor.setTunableFloor());
     // driverController.y().whileTrue(RollerCommands.shootOpenLoop(floor, feeder));
 
-    driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
+    // driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
+    driverController.b().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
     // driverController.y().whileTrue(SnapCommands.snapToRadiusStrafe(drive, Feet.of(7.5),
     // Math.PI/16));
 
@@ -407,17 +408,26 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
     operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
-    operatorController
-        .y()
-        .whileTrue(
-            shooter
-                .setHoodPosition(Radians.of(0))
-                .andThen(
-                    RollerCommands.shootClosedLoopDangerous(
-                        shooter, floor, feeder, RPM.of(500), RPM.of(3000), RPM.of(3000))));
+    // operatorController
+    //     .y()
+    //     .whileTrue(
+    //         shooter
+    //             .setHoodPosition(Radians.of(0))
+    //             .andThen(
+    //                 RollerCommands.shootClosedLoopDangerous(
+    //                     shooter, floor, feeder, RPM.of(500), RPM.of(3000), RPM.of(3000))));
+
     operatorController.rightTrigger().whileTrue(shooter.setShooterClosedLoop(RPM.of(650)));
     operatorController
         .a()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(535))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
+    operatorController
+        .y()
         .whileTrue(
             shooter
                 .setShooterClosedLoop(RPM.of(535))
