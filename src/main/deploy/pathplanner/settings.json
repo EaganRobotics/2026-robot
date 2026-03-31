@@ -3,15 +3,17 @@
   "robotLength": 0.839,
   "holonomicMode": true,
   "pathFolders": [
+    "Anvith",
     "Jithin",
+    "Week 5 Paths",
     "Practice Path",
     "Test Paths",
     "Week 0 Paths",
     "Week 1 Paths",
-    "Anvith",
     "Winona Paths"
   ],
   "autoFolders": [
+    "Week 5 Autos",
     "Practice Autos",
     "Test Autos",
     "Week 0 Autos",
