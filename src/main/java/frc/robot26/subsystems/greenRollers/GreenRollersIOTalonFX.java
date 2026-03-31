@@ -1,38 +1,37 @@
-package frc.robot26.subsystems.feeder;
+package frc.robot26.subsystems.greenRollers;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot26.subsystems.feeder.FeederConstants.GEARING;
-import static frc.robot26.subsystems.feeder.FeederConstants.Real;
-import static frc.robot26.subsystems.feeder.FeederConstants.SUPPLY_CURRENT_LIMIT;
+import static frc.robot26.subsystems.greenRollers.GreenRollersConstants.GEARING;
+import static frc.robot26.subsystems.greenRollers.GreenRollersConstants.SUPPLY_CURRENT_LIMIT;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
+import frc.robot26.subsystems.greenRollers.GreenRollersConstants.Real;
+import frc.robot26.subsystems.greenRollers.GreenRollersIO.GreenRollersIOInputs;
 
-public class FeederIOTalonFX implements FeederIO {
-  private final TalonFX lead, follower;
+public class GreenRollersIOTalonFX implements GreenRollersIO {
+  private final TalonFX lead;
   private final StatusSignal<Angle> leadPosition;
   private final StatusSignal<AngularVelocity> leadVelocity;
   private final StatusSignal<Voltage> leadVoltage;
   private final StatusSignal<Current> leadCurrent;
+
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
 
-  public FeederIOTalonFX() {
-    lead = new TalonFX(Real.leadMotorID);
-    follower = new TalonFX(Real.followerMotorID);
+  public GreenRollersIOTalonFX() {
+    lead = new TalonFX(Real.greenRollersMotorID);
     leadVelocity = lead.getVelocity();
     leadPosition = lead.getPosition();
     leadVoltage = lead.getMotorVoltage();
@@ -43,41 +42,40 @@ public class FeederIOTalonFX implements FeederIO {
     leadConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leadConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     leadConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
-    leadConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    leadConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
     leadConfig.Feedback.SensorToMechanismRatio = GEARING;
-    leadConfig.Voltage.PeakForwardVoltage = 10;
-    leadConfig.Voltage.PeakReverseVoltage = -10;
+    leadConfig.Voltage.PeakForwardVoltage = 12;
+    leadConfig.Voltage.PeakReverseVoltage = -12;
     leadConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    // Apply feeder velocity PID gains to the lead Talon (tunable via dashboard)
-    Real.feederPIDs.applyToTalonFXConfig(lead, leadConfig);
+    GreenRollersConstants.greenRollersPIDs.applyToTalonFXConfig(lead, leadConfig);
+
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
-    follower.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50, leadCurrent, leadVoltage, leadPosition, leadVelocity);
-    ParentDevice.optimizeBusUtilizationForAll(lead, follower);
+    ParentDevice.optimizeBusUtilizationForAll(lead);
   }
 
   @Override
-  public void setFeederOpenLoop(Voltage output) {
+  public void setGreenRollersOpenLoop(Voltage output) {
     lead.setVoltage(output.in(Volts));
   }
 
   @Override
-  public void setFeederClosedLoop(AngularVelocity velocity) {
+  public void setGreenRollersClosedLoop(AngularVelocity velocity) {
     lead.setControl(velocityVoltageRequest.withVelocity(velocity));
   }
 
   @Override
-  public void updateInputs(FeederIOInputs inputs) {
-    var feederConnectedStatus =
+  public void updateInputs(GreenRollersIOInputs inputs) {
+    var greenRollersConnectedStatus =
         BaseStatusSignal.refreshAll(leadCurrent, leadVoltage, leadPosition, leadVelocity);
 
-    inputs.feederConnected = feederConnectedStatus.isOK();
-    inputs.feederVelocity = leadVelocity.getValue();
-    inputs.feederCurrent = leadCurrent.getValue();
-    inputs.feederAppliedVolts = leadVoltage.getValue();
+    inputs.greenRollersConnected = greenRollersConnectedStatus.isOK();
+    inputs.greenRollersVelocity = leadVelocity.getValue();
+    inputs.greenRollersCurrent = leadCurrent.getValue();
+    inputs.greenRollersAppliedVolts = leadVoltage.getValue();
   }
 }
