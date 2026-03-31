@@ -80,11 +80,24 @@
   ],
   "constraintZones": [
     {
-      "name": "Constraints Zone",
+      "name": "Constraints Zone Ball",
       "minWaypointRelativePos": 1.1763764880952379,
       "maxWaypointRelativePos": 2.166155133928572,
       "constraints": {
         "maxVelocity": 3.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone Bump",
+      "minWaypointRelativePos": 2.5806082589285713,
+      "maxWaypointRelativePos": 2.8285714285714274,
+      "constraints": {
+        "maxVelocity": 2.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
