@@ -216,7 +216,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand("ShooterOut", shooter.setShooterOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("ShooterIn", shooter.setShooterOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand(
-        "Intake", intake.setIntakeClosedLoop(RPM.of(8000)).withTimeout(15));
+        "Intake", intake.setIntakeClosedLoop(RPM.of(7000)).withTimeout(10));
     NamedCommands.registerCommand(
         "IntakeFor5Secs", intake.setIntakeClosedLoop(RPM.of(8000)).withTimeout(5));
 
@@ -225,8 +225,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //     ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
     NamedCommands.registerCommand(
         "AutoScore",
-        ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
-            .alongWith(RollerCommands.intakeJiggleOpenLoop(intake))
+        shooter
+            .setShooterClosedLoop(RPM.of(535))
+            .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
+            .alongWith(floor.setClosedLoop(RPM.of(4000)))
+            .alongWith(
+                Commands.waitSeconds(3)
+                    .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(1)))
             .withTimeout(10));
     NamedCommands.registerCommand(
         "AngleToHub",
@@ -239,10 +244,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   return new Rotation2d(angleToRobot);
                 })
             .withTimeout(1));
-    NamedCommands.registerCommand("Deploy", intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
+    NamedCommands.registerCommand("Deploy", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1));
 
     NamedCommands.registerCommand(
-        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(5)).withTimeout(2));
+        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(1));
 
     // autos wont work till intake out works
 
