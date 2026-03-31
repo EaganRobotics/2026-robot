@@ -9,7 +9,9 @@ import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_HOOD;
 import static frc.robot26.subsystems.shooter.ShooterConstants.GEARING_SHOOTER;
+import static frc.robot26.subsystems.shooter.ShooterConstants.STATOR_CURRENT_LIMIT_HOOD;
 import static frc.robot26.subsystems.shooter.ShooterConstants.SUPPLY_CURRENT_LIMIT;
+import static frc.robot26.subsystems.shooter.ShooterConstants.SUPPLY_CURRENT_LIMIT_HOOD;
 import static frc.robot26.subsystems.shooter.ShooterConstants.hoodRotationEndLimit;
 import static frc.robot26.subsystems.shooter.ShooterConstants.hoodRotationStartLimit;
 
@@ -87,9 +89,10 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     hoodConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     hoodConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    hoodConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
-    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = false;
-    hoodConfig.CurrentLimits.StatorCurrentLimitEnable = false;
+    hoodConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT_HOOD.in(Amps);
+    hoodConfig.CurrentLimits.StatorCurrentLimit = STATOR_CURRENT_LIMIT_HOOD.in(Amps);
+    hoodConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    hoodConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     hoodConfig.Feedback.SensorToMechanismRatio = GEARING_HOOD;
     hoodConfig.Voltage.PeakForwardVoltage = 10;
     hoodConfig.Voltage.PeakReverseVoltage = -10;

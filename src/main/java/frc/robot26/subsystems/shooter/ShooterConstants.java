@@ -13,8 +13,10 @@ import frc.lib.tunables.*;
 
 public class ShooterConstants {
   public static final double joystickSpeedMultiplier = 0.85;
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
-  public static final double GEARING_SHOOTER = 5.0;
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(10);
+  public static final Current SUPPLY_CURRENT_LIMIT_HOOD = Amps.of(10);
+  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(30);
+  public static final double GEARING_SHOOTER = 1;
   public static final double GEARING_HOOD = 18.75;
 
   public static final Angle hoodRotationStartLimit = Radians.of(0.0);
@@ -30,7 +32,7 @@ public class ShooterConstants {
 
     public static final LoggedTunablePIDs shooterPIDs =
         new LoggedTunablePIDs("Shooter", 2.0, 0.0, 0.0);
-    public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 0.01, 0.0, 0.0);
+    public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 200, 0.0, 1);
     public static final LoggedTunableNumber shooterSpeed =
         new LoggedTunableNumber("Tuning/ShooterSpeed", 500);
     public static final LoggedTunableNumber hoodAngle =
