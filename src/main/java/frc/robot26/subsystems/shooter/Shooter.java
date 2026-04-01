@@ -59,6 +59,24 @@ public class Shooter extends SubsystemBase {
         .withName("Shooter.setShooterClosedLoop");
   }
 
+  public Command setShooterClosedLoopAndAngle(AngularVelocity velocity, Angle angle) {
+    return this.startEnd(
+            () -> {
+              io.setShooterClosedLoop(velocity);
+              velocitySetpoint = velocity;
+              io.setHoodPosition(angle);
+            },
+            () -> {
+              io.setShooterOpenLoop(Volts.of(0));
+              // io.setShooterClosedLoop(RPM.of(0));
+              velocitySetpoint = RPM.of(0);
+              io.setHoodPosition(Degrees.of(0));
+            })
+        .withName("Shooter.setShooterClosedLoop");
+
+    // DOSENT DO ANYTHING
+  }
+
   public Command setShooterClosedLoop(Supplier<AngularVelocity> velocity) {
     return this.runEnd(
             () -> {

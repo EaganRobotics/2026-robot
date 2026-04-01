@@ -422,9 +422,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .a()
         .whileTrue(
             shooter
-                .setShooterClosedLoop(RPM.of(535))
+                .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
+    // 20 degree angle
 
     operatorController
         .y()
@@ -507,8 +509,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
     jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
 
-    jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
-    jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
+    // jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
+    // jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
+    jithinController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(5)));
+    jithinController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-5)));
     jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
     jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
 
