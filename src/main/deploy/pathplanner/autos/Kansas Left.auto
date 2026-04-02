@@ -28,6 +28,50 @@
               }
             ]
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Deploy"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SnapToTrench"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "KS.L.2"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SnapToHub"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoScore"
+                }
+              }
+            ]
+          }
         }
       ]
     }
