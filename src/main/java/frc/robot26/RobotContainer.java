@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.simulation.SimConstants;
+import frc.robot26.commands.ControllerCommands;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.SnapCommands;
@@ -408,7 +409,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             shooter
                 .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+                .alongWith(floor.setClosedLoop(RPM.of(4000)))
+                .alongWith(ControllerCommands.rumble(driverController)));
     // 20 degree angle
 
     operatorController
@@ -417,7 +419,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             shooter
                 .setShooterClosedLoop(RPM.of(535))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+                .alongWith(floor.setClosedLoop(RPM.of(4000)))
+                .alongWith(ControllerCommands.rumble(driverController)));
 
     // operatorController
     //     .start()
@@ -450,7 +453,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .rightTrigger()
         .whileTrue(
             RollerCommands.tuneableShootClosedLoop(
-                shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
+                    shooter, floor, feeder, RPM.of(1000), RPM.of(2000))
+                .alongWith(ControllerCommands.rumble(driverController)));
 
     // =========================================
     // ============ Jithin Controls ============
