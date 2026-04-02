@@ -354,7 +354,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Switch to X pattern when X button is pressed
     driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -386,14 +385,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
     operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
-    operatorController
-        .rightTrigger()
-        .whileTrue(
-            shooter
-                .setTunableShooter()
-                .alongWith(Commands.waitSeconds(1.5))
-                .andThen(feeder.setClosedLoop(RPM.of(4000)))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    // operatorController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         shooter
+    //             .setTunableShooter()
+    //             .alongWith(Commands.waitSeconds(1.5))
+    //             .andThen(feeder.setClosedLoop(RPM.of(4000)))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
     operatorController
         .y()
         .whileTrue(
@@ -411,13 +410,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    operatorController
-        .start()
-        .whileTrue(
-            shooter
-                .setShooterClosedLoop(RPM.of(445))
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    // operatorController
+    //     .start()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoop(RPM.of(445))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
@@ -437,11 +437,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   ShooterConstants.Real.shooterSpeed.incrementBy(-15);
                 }));
 
-    // operatorController
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         RollerCommands.tuneableShootClosedLoop(
-    //             shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
+    operatorController
+        .rightTrigger()
+        .whileTrue(
+            RollerCommands.tuneableShootClosedLoop(
+                shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
 
     // =========================================
     // ============ Jithin Controls ============
