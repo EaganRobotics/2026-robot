@@ -9,7 +9,7 @@ public class ControllerCommands {
   public static Command rumble(CommandXboxController controller) {
     return Commands.startEnd(
         () -> {
-          controller.setRumble(RumbleType.kBothRumble, 0.5);
+          controller.setRumble(RumbleType.kBothRumble, 0.8);
         },
         () -> {
           controller.setRumble(RumbleType.kBothRumble, 0);
