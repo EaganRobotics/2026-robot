@@ -76,7 +76,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
-  private final CommandXboxController jithinController = new CommandXboxController(2);
+  //   private final CommandXboxController jithinController = new CommandXboxController(2);
 
   // Drive simulation
   private static final SwerveDriveSimulation driveSimulation =
@@ -358,23 +358,24 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
-    driverController.b().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+    driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
+    driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
 
     // Lock to 0° when A button is held
-    driverController
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> {
-                  Translation2d hubToRobot =
-                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-                  return new Rotation2d(angleToRobot);
-                }));
+    // driverController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -driverController.getLeftY(),
+    //             () -> -driverController.getLeftX(),
+    //             () -> {
+    //               Translation2d hubToRobot =
+    //                   SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+    //               double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+    //               return new Rotation2d(angleToRobot);
+    //             }));
 
     // =========================================
     // =========== Operator Controls ===========
@@ -386,7 +387,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     operatorController.rightTrigger().whileTrue(shooter.setShooterClosedLoop(RPM.of(650)));
     operatorController
-        .a()
+        .y()
         .whileTrue(
             shooter
                 .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
@@ -395,7 +396,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // 20 degree angle
 
     operatorController
-        .y()
+        .a()
         .whileTrue(
             shooter
                 .setShooterClosedLoop(RPM.of(535))
