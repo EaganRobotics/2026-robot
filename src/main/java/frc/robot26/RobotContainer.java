@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.simulation.SimConstants;
+import frc.robot26.commands.ControllerCommands;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.SnapCommands;
@@ -228,13 +229,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand(
         "AutoScore",
         shooter
-            .setShooterClosedLoop(RPM.of(535))
+            .setShooterClosedLoop(RPM.of(525))
             .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
             .alongWith(floor.setClosedLoop(RPM.of(4000)))
             .alongWith(
-                Commands.waitSeconds(3)
+                Commands.waitSeconds(2)
                     .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(2)))
-            .withTimeout(6));
+            .withTimeout(5));
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(
@@ -360,6 +361,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+
+    driverController
+        .rightTrigger()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
     // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(5)));
 
     // Lock to 0° when A button is held
@@ -381,8 +391,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // =========== Operator Controls ===========
     // =========================================
 
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
-    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
+    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
+    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     // operatorController
@@ -399,7 +409,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             shooter
                 .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+                .alongWith(floor.setClosedLoop(RPM.of(4000)))
+                .alongWith(ControllerCommands.rumble(driverController)));
     // 20 degree angle
 
     operatorController
@@ -408,7 +419,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             shooter
                 .setShooterClosedLoop(RPM.of(535))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+                .alongWith(floor.setClosedLoop(RPM.of(4000)))
+                .alongWith(ControllerCommands.rumble(driverController)));
 
     // operatorController
     //     .start()
@@ -441,7 +453,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .rightTrigger()
         .whileTrue(
             RollerCommands.tuneableShootClosedLoop(
-                shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
+                    shooter, floor, feeder, RPM.of(1000), RPM.of(2000))
+                .alongWith(ControllerCommands.rumble(driverController)));
 
     // =========================================
     // ============ Jithin Controls ============
