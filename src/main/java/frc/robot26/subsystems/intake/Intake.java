@@ -73,6 +73,19 @@ public class Intake extends SubsystemBase {
         .withName("Intake.setDeployOpenLoop");
   }
 
+  public Command setDeployOpenLoopWithSpin(Voltage output, AngularVelocity angularVelocity) {
+    return this.startEnd(
+            () -> {
+              io.setDeployOpenLoop(output);
+              io.setIntakeClosedLoop(angularVelocity);
+            },
+            () -> {
+              io.setDeployOpenLoop(Volts.of(0));
+              io.setIntakeClosedLoop(RPM.of(0));
+            })
+        .withName("Intake.setDeployOpenLoop");
+  }
+
   public Command setIntakeClosedLoop(AngularVelocity velocity) {
     return this.startEnd(
             () -> {
