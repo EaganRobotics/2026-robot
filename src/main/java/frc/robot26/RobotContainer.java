@@ -76,7 +76,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
-  private final CommandXboxController jithinController = new CommandXboxController(2);
+  //   private final CommandXboxController jithinController = new CommandXboxController(2);
 
   // Drive simulation
   private static final SwerveDriveSimulation driveSimulation =
