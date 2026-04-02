@@ -230,7 +230,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "AutoScore",
         shooter
             .setShooterClosedLoop(RPM.of(525))
-            .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+            .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
             .alongWith(floor.setClosedLoop(RPM.of(4000)))
             .alongWith(
                 Commands.waitSeconds(2)
