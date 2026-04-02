@@ -45,6 +45,7 @@ import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.shooter.Shooter;
+import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
@@ -75,7 +76,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   // Controllers
   private final CommandXboxController driverController = new CommandXboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
-  //   private final CommandXboxController jithinController = new CommandXboxController(2);
+  private final CommandXboxController jithinController = new CommandXboxController(2);
 
   // Drive simulation
   private static final SwerveDriveSimulation driveSimulation =
@@ -360,6 +361,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(5)));
 
     // Lock to 0° when A button is held
     // driverController
@@ -384,7 +386,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
     operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
-    operatorController.rightTrigger().whileTrue(shooter.setShooterClosedLoop(RPM.of(600)));
+    operatorController
+        .rightTrigger()
+        .whileTrue(
+            shooter
+                .setTunableShooter()
+                .alongWith(Commands.waitSeconds(1.5))
+                .andThen(feeder.setClosedLoop(RPM.of(4000)))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
     operatorController
         .y()
         .whileTrue(
@@ -402,23 +411,31 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
+    operatorController
+        .start()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(445))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
 
-    // operatorController
-    //     .rightBumper()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> {
-    //               ShooterConstants.Real.shooterSpeed.incrementBy(15);
-    //             }));
-    // operatorController
-    //     .leftBumper()
-    //     .onTrue(
-    //         Commands.runOnce(
-    //             () -> {
-    //               ShooterConstants.Real.shooterSpeed.incrementBy(-15);
-    //             }));
+    operatorController
+        .rightBumper()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ShooterConstants.Real.shooterSpeed.incrementBy(15);
+                }));
+    operatorController
+        .leftBumper()
+        .onTrue(
+            Commands.runOnce(
+                () -> {
+                  ShooterConstants.Real.shooterSpeed.incrementBy(-15);
+                }));
 
     // operatorController
     //     .rightTrigger()
@@ -431,6 +448,42 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // =========================================
 
     // tim said to comment them out
+
+    // jithinController
+    //     .a()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoop(RPM.of(420))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
+    //     jithinController
+    //     .b()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoop(RPM.of(440))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
+    //     jithinController
+    //     .x()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoop(RPM.of(450))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
+    //     jithinController
+    //     .y()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoop(RPM.of(500))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
     // jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
     // jithinController.leftBumper().whileTrue(floor.setTunableFloor());
