@@ -360,6 +360,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+
+    driverController
+        .rightTrigger()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
     // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(5)));
 
     // Lock to 0° when A button is held
