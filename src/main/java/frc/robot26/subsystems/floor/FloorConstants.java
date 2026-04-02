@@ -12,7 +12,7 @@ import frc.lib.tunables.LoggedTunablePIDs;
 
 public class FloorConstants {
   public static final double joystickSpeedMultiplier = 0.314; // TODO: change
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(50); // TODO: change
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(30); // TODO: change
   public static final double GEARING = 3.0;
 
   public static final LoggedTunablePIDs floorPIDs =
