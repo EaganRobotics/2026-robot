@@ -22,6 +22,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Radians;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -107,9 +108,9 @@ public class SnapCommands {
       anglePIDs.createController(ANGLE_MAX_VELOCITY.get(), ANGLE_MAX_ACCELERATION.get());
 
   static {
-    POSITION_TOLERANCE.addListener(xController::setTolerance);
-    POSITION_TOLERANCE.addListener(yController::setTolerance);
-    ANGLE_TOLERANCE.addListener(angleController::setTolerance);
+    POSITION_TOLERANCE.addListener(value -> xController.setTolerance(value));
+    POSITION_TOLERANCE.addListener(value -> yController.setTolerance(value));
+    ANGLE_TOLERANCE.addListener(value -> angleController.setTolerance(value));
 
     ANGLE_MAX_VELOCITY.addListener(
         (velocity) ->
@@ -212,6 +213,37 @@ public class SnapCommands {
     return Meters.of(mp);
   }
 
+  private static Pose2d getRadiusStrafePose(
+      Translation2d hubCenter,
+      Translation2d robotPos,
+      double radiusMeters,
+      double strafeSpeedRadsPerSecond) {
+    Translation2d hubToRobot = robotPos.minus(hubCenter);
+    double strafeAngleDelta =
+        strafeSpeedRadsPerSecond
+            / 5; // divide by robot ticks per second (tick every 20ms, so 5 per second)
+    double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX()) + strafeAngleDelta;
+
+    Translation2d targetPosition =
+        hubCenter.plus(
+            new Translation2d(
+                radiusMeters * Math.cos(angleToRobot), radiusMeters * Math.sin(angleToRobot)));
+
+    // Heading: face the hub from the target position on the circle.
+    // Both targetPosition and hubCenter are fixed at defer time so this angle is
+    // perfectly stable — no per-cycle noise.
+    // 03/30/26 JITHIN: Inverted angle by adding Pi so that the robot's logical "front" (intake)
+    // faces exactly away from the hub
+    double angleToHub =
+        MathUtil.angleModulus(
+            Math.PI
+                + Math.atan2(
+                    hubCenter.getY() - targetPosition.getY(),
+                    hubCenter.getX() - targetPosition.getX()));
+
+    return new Pose2d(targetPosition, new Rotation2d(angleToHub));
+  }
+
   private static Pose2d getRadiusTargetPose(
       Translation2d hubCenter, Translation2d robotPos, double radiusMeters) {
     Translation2d hubToRobot = robotPos.minus(hubCenter);
@@ -225,9 +257,14 @@ public class SnapCommands {
     // Heading: face the hub from the target position on the circle.
     // Both targetPosition and hubCenter are fixed at defer time so this angle is
     // perfectly stable — no per-cycle noise.
+    // 03/30/26 JITHIN: Inverted angle by adding Pi so that the robot's logical "front" (intake)
+    // faces exactly away from the hub
     double angleToHub =
-        Math.atan2(
-            hubCenter.getY() - targetPosition.getY(), hubCenter.getX() - targetPosition.getX());
+        MathUtil.angleModulus(
+            Math.PI
+                + Math.atan2(
+                    hubCenter.getY() - targetPosition.getY(),
+                    hubCenter.getX() - targetPosition.getX()));
 
     return new Pose2d(targetPosition, new Rotation2d(angleToHub));
   }
@@ -368,6 +405,25 @@ public class SnapCommands {
             () -> {
               drive.runVelocity(new ChassisSpeeds());
             });
+  }
+
+  public static Command snapToRadiusStrafe(
+      Drive drive, Distance radius, double StrafeRadsPerSecond) {
+    return Commands.defer(
+            () -> {
+              Translation2d hubCenter = getHubCenter();
+              double radiusMeters = radius.in(Meters);
+              Translation2d robotPos = drive.getPose().getTranslation();
+
+              Pose2d innerPose = getRadiusTargetPose(hubCenter, robotPos, radiusMeters);
+
+              Logger.recordOutput("SnapToRadius/InnerPose", innerPose);
+              Logger.recordOutput("SnapToRadius/DesiredRadius", radiusMeters);
+
+              return snapToPosition(drive, innerPose);
+            },
+            Set.of(drive))
+        .withName("SnapCommands.snapToRadiusStrafe");
   }
 
   public static Command snapToRadius(Drive drive, Distance radius) {

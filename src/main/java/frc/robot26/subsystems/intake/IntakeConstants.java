@@ -52,11 +52,11 @@ public class IntakeConstants {
     public static final int limitSwitchChannel = 0;
 
     public static final LoggedTunablePIDs intakePIDs =
-        new LoggedTunablePIDs("Intake", 0.1, 0.0, 0.0001); // TODO: change
+        new LoggedTunablePIDs("Intake", 0.7, 0.0, 0.0); // TODO: change
     public static final LoggedTunablePIDs deployPIDs =
-        new LoggedTunablePIDs("Deploy", 1.0, 0.0, 0.0); // TODO: change
+        new LoggedTunablePIDs("Deploy", 0.1, 0.0, 0.0); // TODO: change
     public static final LoggedTunableNumber intakeSpeed =
-        new LoggedTunableNumber("Tuning/IntakeSpeed", 8000);
+        new LoggedTunableNumber("Tuning/IntakeSpeed", 6000);
     public static final LoggedTunableNumber deployPosition =
         new LoggedTunableNumber("Tuning/DeployPosition", 10);
     public static final LoggedTunableNumber deployPositionBack =

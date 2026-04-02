@@ -51,6 +51,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Week 2 Autos",
+  "folder": null,
   "choreoAuto": false
 }

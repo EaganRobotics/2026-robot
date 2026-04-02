@@ -16,13 +16,14 @@ public class FeederConstants {
   public static final double GEARING = 1.5;
 
   public static final class Real {
+    public static final int compliantWheelID = 20;
     public static final int followerMotorID = 10;
     public static final int leadMotorID = 9;
 
     public static final LoggedTunablePIDs feederPIDs =
-        new LoggedTunablePIDs("Feeder", 0.5, 0.0, 0.001);
+        new LoggedTunablePIDs("Feeder", 0.5, 0.0, 0.0);
     public static final LoggedTunableNumber feederSpeed =
-        new LoggedTunableNumber("Tuning/FeederSpeed", 2000);
+        new LoggedTunableNumber("Tuning/FeederSpeed", 4000);
   }
 
   public static final class Sim {

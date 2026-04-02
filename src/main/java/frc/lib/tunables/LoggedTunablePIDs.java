@@ -42,9 +42,9 @@ public class LoggedTunablePIDs {
             kD.getValue(),
             new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
 
-    kP.addListener(controller::setP);
-    kI.addListener(controller::setI);
-    kD.addListener(controller::setD);
+    kP.addListener(value -> controller.setP(value));
+    kI.addListener(value -> controller.setI(value));
+    kD.addListener(value -> controller.setD(value));
 
     return controller;
   }
