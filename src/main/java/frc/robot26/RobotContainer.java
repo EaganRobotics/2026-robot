@@ -217,6 +217,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "Intake", intake.setIntakeClosedLoop(RPM.of(7000)).withTimeout(10));
     NamedCommands.registerCommand(
         "IntakeFor5Secs", intake.setIntakeClosedLoop(RPM.of(8000)).withTimeout(5));
+    NamedCommands.registerCommand(
+        "SnapToTrench",
+        SnapCommands.snapToPosition(
+            drive, new Pose2d(new Translation2d(3.300, 7.400), new Rotation2d(135))));
 
     // NamedCommands.registerCommand(
     // "AutoScore",
