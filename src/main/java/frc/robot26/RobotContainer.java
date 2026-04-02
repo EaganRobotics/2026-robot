@@ -233,9 +233,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
             .alongWith(floor.setClosedLoop(RPM.of(4000)))
             .alongWith(
-                Commands.waitSeconds(3)
+                Commands.waitSeconds(2)
                     .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(2)))
-            .withTimeout(6));
+            .withTimeout(5));
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(
