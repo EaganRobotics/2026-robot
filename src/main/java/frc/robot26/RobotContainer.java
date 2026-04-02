@@ -45,7 +45,6 @@ import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.shooter.Shooter;
-import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
@@ -220,7 +219,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand(
         "SnapToTrench",
         SnapCommands.snapToPosition(
-            drive, new Pose2d(new Translation2d(3.300, 7.400), new Rotation2d(135))));
+            drive, new Pose2d(new Translation2d(3.300, 7.400), Rotation2d.fromDegrees(0))));
 
     // NamedCommands.registerCommand(
     // "AutoScore",
@@ -385,7 +384,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
     operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
-    operatorController.rightTrigger().whileTrue(shooter.setShooterClosedLoop(RPM.of(650)));
+    operatorController.rightTrigger().whileTrue(shooter.setShooterClosedLoop(RPM.of(600)));
     operatorController
         .y()
         .whileTrue(
@@ -406,26 +405,26 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
 
-    operatorController
-        .rightBumper()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  ShooterConstants.Real.shooterSpeed.incrementBy(15);
-                }));
-    operatorController
-        .leftBumper()
-        .onTrue(
-            Commands.runOnce(
-                () -> {
-                  ShooterConstants.Real.shooterSpeed.incrementBy(-15);
-                }));
+    // operatorController
+    //     .rightBumper()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               ShooterConstants.Real.shooterSpeed.incrementBy(15);
+    //             }));
+    // operatorController
+    //     .leftBumper()
+    //     .onTrue(
+    //         Commands.runOnce(
+    //             () -> {
+    //               ShooterConstants.Real.shooterSpeed.incrementBy(-15);
+    //             }));
 
-    operatorController
-        .rightTrigger()
-        .whileTrue(
-            RollerCommands.tuneableShootClosedLoop(
-                shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
+    // operatorController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         RollerCommands.tuneableShootClosedLoop(
+    //             shooter, floor, feeder, RPM.of(1000), RPM.of(2000)));
 
     // =========================================
     // ============ Jithin Controls ============
