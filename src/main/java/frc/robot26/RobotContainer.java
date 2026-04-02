@@ -229,8 +229,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             .alongWith(floor.setClosedLoop(RPM.of(4000)))
             .alongWith(
                 Commands.waitSeconds(3)
-                    .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(1)))
-            .withTimeout(10));
+                    .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(2)))
+            .withTimeout(6));
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(
@@ -242,7 +242,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   return new Rotation2d(angleToRobot);
                 })
             .withTimeout(1));
-    NamedCommands.registerCommand("Deploy", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1));
+    NamedCommands.registerCommand(
+        "Deploy", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1.2));
 
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(1));
