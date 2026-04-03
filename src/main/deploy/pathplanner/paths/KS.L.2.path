@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3356333333333335,
-        "y": 5.477177777777777
+        "x": 2.719315263908701,
+        "y": 5.3353352353780314
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3904222222222224,
-        "y": 7.504022222222222
+        "x": 1.77410415279759,
+        "y": 7.362179679822477
       },
       "isLocked": false,
       "linkedName": null
@@ -96,12 +96,12 @@
     },
     {
       "anchor": {
-        "x": 2.3356333333333335,
-        "y": 5.477177777777777
+        "x": 2.719315263908701,
+        "y": 5.3353352353780314
       },
       "prevControl": {
-        "x": 2.6571999999999996,
-        "y": 5.9643999999999995
+        "x": 3.040881930575367,
+        "y": 5.822557457600254
       },
       "nextControl": null,
       "isLocked": false,
@@ -175,7 +175,7 @@
     {
       "name": "Intaking",
       "waypointRelativePos": 1.65,
-      "endWaypointRelativePos": 3.31810224089636,
+      "endWaypointRelativePos": 5.213414634146289,
       "command": {
         "type": "named",
         "data": {
