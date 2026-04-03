@@ -259,6 +259,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(2));
+    NamedCommands.registerCommand(
+        "SnapToHub12", SnapCommands.snapToRadius(drive, Feet.of(11.5)).withTimeout(3));
 
     // autos wont work till intake out works
 
@@ -432,6 +434,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(floor.setClosedLoop(RPM.of(4000)))
                 .alongWith(ControllerCommands.rumble(driverController)));
 
+    operatorController
+        .povUp()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(600), Degrees.of(30))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000)))
+                .alongWith(ControllerCommands.rumble(driverController)));
+
     // operatorController
     //     .start()
     //     .whileTrue(
@@ -441,9 +452,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
     //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
+    // operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
 
-    operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
+    // operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
 
     operatorController
         .rightBumper()
