@@ -64,12 +64,12 @@
     },
     {
       "anchor": {
-        "x": 2.336,
-        "y": 2.827
+        "x": 1.904179743223965,
+        "y": 2.8122967189728967
       },
       "prevControl": {
-        "x": 2.3652333333333333,
-        "y": 2.1254
+        "x": 1.9334130765572985,
+        "y": 2.1106967189728967
       },
       "nextControl": null,
       "isLocked": false,
@@ -83,7 +83,7 @@
     },
     {
       "waypointRelativePos": 2,
-      "rotationDegrees": 141.54629078329415
+      "rotationDegrees": 141.54629078329418
     },
     {
       "waypointRelativePos": 3,
@@ -110,7 +110,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -147.2573123275339
+    "rotation": -147.25731232753392
   },
   "reversed": false,
   "folder": "Week 5 Paths",
