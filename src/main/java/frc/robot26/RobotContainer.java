@@ -233,9 +233,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
             .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
             .alongWith(floor.setClosedLoop(RPM.of(4000)))
             .alongWith(
-                Commands.waitSeconds(2)
-                    .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(2)))
-            .withTimeout(5));
+                Commands.waitSeconds(0.75)
+                    .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(1.5)))
+            .withTimeout(3.25));
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(
@@ -369,8 +369,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
-
-    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(5)));
 
     // Lock to 0° when A button is held
     // driverController
