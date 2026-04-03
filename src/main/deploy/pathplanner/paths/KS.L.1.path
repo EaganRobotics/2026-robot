@@ -16,44 +16,44 @@
     },
     {
       "anchor": {
-        "x": 7.691606452419942,
-        "y": 7.048091794032024
+        "x": 7.880222222222223,
+        "y": 7.094755555555555
       },
       "prevControl": {
-        "x": 7.428813625818777,
-        "y": 7.475242335334789
+        "x": 7.617429395621058,
+        "y": 7.52190609685832
       },
       "nextControl": {
-        "x": 8.032098705940632,
-        "y": 6.494646510605415
+        "x": 8.220714475742913,
+        "y": 6.541310272128946
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.691606452419942,
-        "y": 4.8709504639737995
+        "x": 7.051944444444445,
+        "y": 3.9278111111111107
       },
       "prevControl": {
-        "x": 7.922344036985264,
-        "y": 4.967180225840708
+        "x": 8.184201483950208,
+        "y": 2.0853201104608248
       },
       "nextControl": {
-        "x": 7.4608688678546216,
-        "y": 4.774720702106892
+        "x": 5.9800555555555555,
+        "y": 5.672066666666666
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7916920828784573,
-        "y": 4.8709504639737995
+        "x": 2.3356333333333335,
+        "y": 5.496666666666666
       },
       "prevControl": {
-        "x": 4.631305483217593,
-        "y": 6.037827112268519
+        "x": 4.567111111111114,
+        "y": 5.6136
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,20 +62,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.4868173847695392,
-      "rotationDegrees": -93.44
+      "waypointRelativePos": 1.3817427385892085,
+      "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 2.103785696392786,
-      "rotationDegrees": -142.0283723656982
-    },
-    {
-      "waypointRelativePos": 2.3913530185370733,
-      "rotationDegrees": 177.23341186590727
+      "waypointRelativePos": 2.312863070539415,
+      "rotationDegrees": 135.0
     },
     {
       "waypointRelativePos": 2.7048706788577155,
-      "rotationDegrees": 149.7131929991991
+      "rotationDegrees": 145.0
     }
   ],
   "constraintZones": [
@@ -143,7 +139,7 @@
   },
   "goalEndState": {
     "velocity": 3.0,
-    "rotation": 153.9665094923803
+    "rotation": 140.71059313749964
   },
   "reversed": false,
   "folder": "Week 5 Paths",

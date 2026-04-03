@@ -11,7 +11,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
@@ -30,22 +30,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Deploy"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SnapToTrench"
-                }
-              }
-            ]
+            "name": "Deploy"
           }
         },
         {

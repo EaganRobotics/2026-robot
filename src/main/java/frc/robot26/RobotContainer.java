@@ -251,7 +251,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "Deploy", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1.2));
 
     NamedCommands.registerCommand(
-        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(1));
+        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(1.5));
 
     // autos wont work till intake out works
 
@@ -395,14 +395,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
-    // operatorController
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         shooter
-    //             .setTunableShooter()
-    //             .alongWith(Commands.waitSeconds(1.5))
-    //             .andThen(feeder.setClosedLoop(RPM.of(4000)))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
     operatorController
         .y()
         .whileTrue(
@@ -432,6 +424,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
     operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
+
     operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
 
     operatorController
