@@ -64,32 +64,32 @@
     },
     {
       "anchor": {
-        "x": 8.240766666666667,
-        "y": 4.220144444444444
+        "x": 8.541711840228244,
+        "y": 3.769757489300999
       },
       "prevControl": {
-        "x": 8.322204340395002,
-        "y": 3.983780518902247
+        "x": 8.623149513956578,
+        "y": 3.5333935637588016
       },
       "nextControl": {
-        "x": 8.159328992938333,
-        "y": 4.456508369986642
+        "x": 8.460274166499909,
+        "y": 4.0061214148431965
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.110411111111111,
-        "y": 5.477177777777777
+        "x": 7.28666191155492,
+        "y": 5.490599144079885
       },
       "prevControl": {
-        "x": 8.591704861074474,
-        "y": 5.723414301818741
+        "x": 8.767955661518286,
+        "y": 5.736835668120849
       },
       "nextControl": {
-        "x": 5.629117361147743,
-        "y": 5.230941253736812
+        "x": 5.805368161591552,
+        "y": 5.24436262003892
       },
       "isLocked": false,
       "linkedName": null
@@ -174,12 +174,25 @@
   "eventMarkers": [
     {
       "name": "Intaking",
-      "waypointRelativePos": 1.65,
-      "endWaypointRelativePos": 5.213414634146289,
+      "waypointRelativePos": 1.361242403781232,
+      "endWaypointRelativePos": 5.3315327481431325,
       "command": {
-        "type": "named",
+        "type": "sequential",
         "data": {
-          "name": "Intake"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Deploy"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
         }
       }
     }

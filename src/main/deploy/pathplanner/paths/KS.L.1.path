@@ -107,7 +107,7 @@
     {
       "name": "Initial Intake",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 2.3817243303571436,
+      "endWaypointRelativePos": 2.5118163403105935,
       "command": {
         "type": "sequential",
         "data": {

@@ -258,7 +258,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "Deploy", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1.2));
 
     NamedCommands.registerCommand(
-        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(1.5));
+        "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(2));
 
     // autos wont work till intake out works
 
@@ -368,6 +368,19 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+    driverController
+        .rightBumper()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
+                () -> {
+                  Translation2d hubToRobot =
+                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX()) + Math.PI;
+                  return new Rotation2d(angleToRobot);
+                }));
 
     driverController
         .rightTrigger()
@@ -377,7 +390,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    // Lock to 0° when A button is held
+    // Lock to hub° when A button is held
     // driverController
     //     .a()
     //     .whileTrue(
