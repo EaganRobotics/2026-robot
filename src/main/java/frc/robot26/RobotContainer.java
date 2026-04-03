@@ -15,10 +15,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.lib.limelight.LimelightHelpers;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.ControllerCommands;
 import frc.robot26.commands.DriveCommands;
@@ -223,6 +225,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         SnapCommands.snapToPosition(
             drive, new Pose2d(new Translation2d(3.300, 7.400), Rotation2d.fromDegrees(0))));
 
+    NamedCommands.registerCommand(
+        "KansasLeftFastSnap",
+        SnapCommands.snapToPosition(
+                drive, new Pose2d(new Translation2d(2.719, 5.335), Rotation2d.fromDegrees(0)))
+            .withTimeout(3));
     // NamedCommands.registerCommand(
     // "AutoScore",
     // ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
@@ -517,9 +524,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //         }));
   }
 
+  private boolean hasBeenInTeleop = false;
+
   @Override
   public void teleopInit() {
     // drive.swerveBreak(true);
+    hasBeenInTeleop = true;
+    LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
   }
 
   @Override
@@ -529,6 +540,25 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     arena.getBlueHub().setOnScoredCallback((gp) -> System.out.println("Blue Hub Scored!"));
     arena.getRedHub().setOnScoredCallback((gp) -> System.out.println("Red Hub Scored!"));
     arena.setNeutralFuelCount(80); // for performance
+  }
+
+  @Override
+  public void autonomousInit() {
+    LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
+  }
+
+  @Override
+  public void disabledInit() {
+    if (DriverStation.isFMSAttached() && hasBeenInTeleop) {
+      Logger.recordOutput(
+          "Limelight/LimelightRewind",
+          "Getting limelight rewind capture (fms=" + hasBeenInTeleop + ")");
+      LimelightHelpers.triggerRewindCapture(VisionConstants.limelightFront, 150);
+    } else {
+      Logger.recordOutput(
+          "Limelight/LimelightRewind",
+          "Skipping limelight rewind capture (fms=" + hasBeenInTeleop + ")");
+    }
   }
 
   @Override
