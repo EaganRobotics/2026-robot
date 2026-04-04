@@ -493,7 +493,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .whileTrue(
             shooter
                 .setShooterClosedLoopAndAngle(RPM.of(600), Degrees.of(30))
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(Commands.waitSeconds(0.75).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000)))
                 .alongWith(ControllerCommands.rumble(driverController)));
 
