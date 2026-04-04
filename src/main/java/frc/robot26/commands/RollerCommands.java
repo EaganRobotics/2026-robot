@@ -1,6 +1,6 @@
 package frc.robot26.commands;
 
-import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -81,20 +81,21 @@ public class RollerCommands {
         .withName("RollerCommands.shootClosedLoopDangerous");
   }
 
-  public static Command intakeJiggleClosedLoop(Intake intake) {
-    return Commands.repeatingSequence(
-        intake.setDeployClosedLoop(Inches.of(1)),
-        Commands.waitSeconds(0.75),
-        intake.setDeployClosedLoop(Inches.of(1)),
-        Commands.waitSeconds(0.75));
-  }
+  // public static Command intakeJiggleClosedLoop(Intake intake) {
+  //   return Commands.repeatingSequence(
+  //       intake.setDeployClosedLoop(Inches.of(1)),
+  //       Commands.waitSeconds(0.75),
+  //       intake.setDeployClosedLoop(Inches.of(1)),
+  //       Commands.waitSeconds(0.75));
+  // }
+  //  BAD dont use
 
   public static Command intakeJiggleOpenLoop(Intake intake) {
     return Commands.repeatingSequence(
-        intake.setDeployOpenLoop(Volts.of(2)).withTimeout(0.55),
+        intake.setDeployOpenLoopWithSpin(Volts.of(4), RPM.of(7000)).withTimeout(0.5),
         // Commands.waitSeconds(0.05),
-        intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(0.3),
-        Commands.waitSeconds(0.15));
+        intake.setDeployOpenLoopWithSpin(Volts.of(-4), RPM.of(7000)).withTimeout(0.5),
+        Commands.waitSeconds(0.001));
     // i made volts 3 not 2 lol
   }
 }

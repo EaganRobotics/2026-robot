@@ -25,6 +25,12 @@
                 "data": {
                   "name": "AutoScore"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "KansasLeftFastSnap"
+                }
               }
             ]
           }
@@ -38,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "KS.L.2"
+            "pathName": "KS.L.2.f"
           }
         },
         {

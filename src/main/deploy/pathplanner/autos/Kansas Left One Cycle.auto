@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Anvith #1 Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Anvith #2 Path"
+            "pathName": "KS.L.1"
           }
         },
         {
@@ -21,30 +15,18 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Half Anvith #3 Path"
+                  "name": "SnapToHub"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeFor5Secs"
+                  "name": "AutoScore"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Half Anvith #4 Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SuperAutoShootT17"
           }
         }
       ]

@@ -20,8 +20,7 @@ public class ShooterConstants {
   public static final double GEARING_HOOD = 18.75;
 
   public static final Angle hoodRotationStartLimit = Radians.of(0.0);
-  public static final Angle hoodRotationEndLimit =
-      Radians.of(9.68); // TODO: need to check for new robot
+  public static final Angle hoodRotationEndLimit = Radians.of(9.68);
 
   public static final class Real {
     public static final int followerLeftMotorID = 13;
@@ -36,9 +35,9 @@ public class ShooterConstants {
     public static final LoggedTunableNumber shooterSpeed =
         new LoggedTunableNumber("Tuning/ShooterSpeed", 500);
     public static final LoggedTunableNumber hoodAngle =
-        new LoggedTunableNumber("Tuning/HoodAngle", 550); // TODO: change
+        new LoggedTunableNumber("Tuning/HoodAngle", 15);
     public static final LoggedTunableNumber hoodAngleBack =
-        new LoggedTunableNumber("Tuning/hoodAngleBack", 0); // TODO: change
+        new LoggedTunableNumber("Tuning/hoodAngleBack", 0);
     public static final LoggedTunableNumber shooterAcceleration =
         new LoggedTunableNumber("Tuning/ShooterAcceleration", 500);
     public static final LoggedTunableNumber hoodCruiseVelocity =
