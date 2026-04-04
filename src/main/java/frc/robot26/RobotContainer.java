@@ -267,7 +267,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 })
             .withTimeout(1));
     NamedCommands.registerCommand(
-        "Deploy", intake.setDeployOpenLoop(Volts.of(-2)).withTimeout(1.2));
+        "Deploy", intake.setDeployOpenLoop(Volts.of(-4)).withTimeout(1.5));
 
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(2));

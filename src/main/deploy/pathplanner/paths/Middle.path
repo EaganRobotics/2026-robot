@@ -97,7 +97,25 @@
       "name": "Initial Intake",
       "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 3.7836228287841105,
-      "command": null
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Deploy"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
