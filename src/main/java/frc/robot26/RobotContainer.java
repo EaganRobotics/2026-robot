@@ -378,9 +378,17 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
+    driverController
+        .a()
+        .whileTrue(
+            SnapCommands.snapToRadius(drive, Feet.of(7.5))
+                .alongWith(ControllerCommands.rumble(operatorController)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
-    driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+    driverController
+        .y()
+        .whileTrue(
+            SnapCommands.snapToRadius(drive, Feet.of(11.5))
+                .alongWith(ControllerCommands.rumble(operatorController)));
 
     // driverController
     //     .rightBumper()
@@ -401,31 +409,33 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .leftBumper()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> {
-                  Translation2d vollyToRobot =
-                      SnapCommands.getLeftVolly().minus(drive.getPose().getTranslation());
-                  double angleToRobot =
-                      Math.atan2(vollyToRobot.getY(), vollyToRobot.getX()) + Math.PI;
-                  return new Rotation2d(angleToRobot);
-                }));
+                    drive,
+                    () -> -driverController.getLeftY(),
+                    () -> -driverController.getLeftX(),
+                    () -> {
+                      Translation2d vollyToRobot =
+                          SnapCommands.getLeftVolly().minus(drive.getPose().getTranslation());
+                      double angleToRobot =
+                          Math.atan2(vollyToRobot.getY(), vollyToRobot.getX()) + Math.PI;
+                      return new Rotation2d(angleToRobot);
+                    })
+                .alongWith(ControllerCommands.rumble(operatorController)));
 
     driverController
         .rightBumper()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX(),
-                () -> {
-                  Translation2d vollyToRobot =
-                      SnapCommands.getRightVolly().minus(drive.getPose().getTranslation());
-                  double angleToRobot =
-                      Math.atan2(vollyToRobot.getY(), vollyToRobot.getX()) + Math.PI;
-                  return new Rotation2d(angleToRobot);
-                }));
+                    drive,
+                    () -> -driverController.getLeftY(),
+                    () -> -driverController.getLeftX(),
+                    () -> {
+                      Translation2d vollyToRobot =
+                          SnapCommands.getRightVolly().minus(drive.getPose().getTranslation());
+                      double angleToRobot =
+                          Math.atan2(vollyToRobot.getY(), vollyToRobot.getX()) + Math.PI;
+                      return new Rotation2d(angleToRobot);
+                    })
+                .alongWith(ControllerCommands.rumble(operatorController)));
 
     driverController
         .rightTrigger()

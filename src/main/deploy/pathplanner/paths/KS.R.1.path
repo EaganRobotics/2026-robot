@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.34298888888889,
-        "y": 0.43929999999999947
+        "x": 5.255292439372324,
+        "y": 0.5609700427960058
       },
       "isLocked": false,
       "linkedName": null
@@ -97,7 +97,25 @@
       "name": "Initial Intake",
       "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 2.799007444168694,
-      "command": null
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Deploy"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -116,7 +134,7 @@
   "folder": "Week 5 Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
