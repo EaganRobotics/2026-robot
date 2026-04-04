@@ -243,6 +243,18 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 Commands.waitSeconds(0.75)
                     .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(1.5)))
             .withTimeout(3.25));
+
+    NamedCommands.registerCommand(
+        "AutoScore12",
+        shooter
+            .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+            .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
+            .alongWith(floor.setClosedLoop(RPM.of(4000)))
+            .alongWith(
+                Commands.waitSeconds(0.75)
+                    .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(1.5)))
+            .withTimeout(3.25));
+
     NamedCommands.registerCommand(
         "AngleToHub",
         SnapCommands.snapToAngle(

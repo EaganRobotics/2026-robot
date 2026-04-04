@@ -32,7 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "AutoScore"
+            "name": "SnapToHub12"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore12"
           }
         },
         {
@@ -58,6 +64,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SnapToHub12"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore12"
           }
         }
       ]
