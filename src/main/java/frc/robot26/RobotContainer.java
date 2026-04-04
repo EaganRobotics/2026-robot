@@ -382,6 +382,37 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+
+    // driverController
+    //     .rightBumper()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -driverController.getLeftY(),
+    //             () -> -driverController.getLeftX(),
+    //             () -> {
+    //               Translation2d hubToRobot =
+    //                   SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+    //               double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX()) +
+    // Math.PI;
+    //               return new Rotation2d(angleToRobot);
+    //             }));
+
+    driverController
+        .leftBumper()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
+                () -> {
+                  Translation2d vollyToRobot =
+                      SnapCommands.getLeftVolly().minus(drive.getPose().getTranslation());
+                  double angleToRobot =
+                      Math.atan2(vollyToRobot.getY(), vollyToRobot.getX()) + Math.PI;
+                  return new Rotation2d(angleToRobot);
+                }));
+
     driverController
         .rightBumper()
         .whileTrue(
@@ -390,9 +421,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 () -> -driverController.getLeftY(),
                 () -> -driverController.getLeftX(),
                 () -> {
-                  Translation2d hubToRobot =
-                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX()) + Math.PI;
+                  Translation2d vollyToRobot =
+                      SnapCommands.getRightVolly().minus(drive.getPose().getTranslation());
+                  double angleToRobot =
+                      Math.atan2(vollyToRobot.getY(), vollyToRobot.getX()) + Math.PI;
                   return new Rotation2d(angleToRobot);
                 }));
 

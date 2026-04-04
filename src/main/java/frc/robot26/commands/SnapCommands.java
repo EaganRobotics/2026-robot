@@ -284,6 +284,18 @@ public class SnapCommands {
         : BLUE_HUB_CENTER;
   }
 
+  public static Translation2d getLeftVolly() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+        ? new Translation2d(14, 2)
+        : new Translation2d(2, 6);
+  }
+
+  public static Translation2d getRightVolly() {
+    return DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+        ? new Translation2d(14, 6)
+        : new Translation2d(2, 2);
+  }
+
   // ============================================
   // =========== Actual snap commands ===========
   // ============================================
