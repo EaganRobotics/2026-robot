@@ -224,11 +224,12 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         SnapCommands.snapToPosition(
             drive, new Pose2d(new Translation2d(3.300, 7.400), Rotation2d.fromDegrees(0))));
 
-    NamedCommands.registerCommand(
-        "KansasLeftFastSnap",
-        SnapCommands.snapToPosition(
-                drive, new Pose2d(new Translation2d(2.719, 5.335), Rotation2d.fromDegrees(0)))
-            .withTimeout(3));
+    // NamedCommands.registerCommand(
+    //     "KansasLeftFastSnap",
+    //     SnapCommands.snapToPosition(
+    //             drive, new Pose2d(new Translation2d(2.719, 5.335), Rotation2d.fromDegrees(0)))
+    //         .withTimeout(3));
+
     // NamedCommands.registerCommand(
     // "AutoScore",
     // ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
@@ -472,7 +473,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .y()
         .whileTrue(
             shooter
-                .setShooterClosedLoopAndAngle(RPM.of(505), Degrees.of(20))
+                .setShooterClosedLoopAndAngle(RPM.of(500), Degrees.of(20))
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000)))
                 .alongWith(ControllerCommands.rumble(driverController)));
