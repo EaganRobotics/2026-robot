@@ -5,40 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "KS.L.1"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SnapToHub"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoScore"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Deploy"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "KS.L.2.f"
           }
         },
         {
@@ -48,22 +17,71 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SnapToHub"
+                  "name": "Intake"
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "AutoScore"
+                  "pathName": "Q.1.L"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SnapToHub12"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore12"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deploy"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Q.2.L"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SnapToHub12"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore12"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Week 5 Autos",
+  "folder": "Quals Day 2",
   "choreoAuto": false
 }

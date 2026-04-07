@@ -94,8 +94,9 @@ public class RollerCommands {
     return Commands.repeatingSequence(
         intake.setDeployOpenLoopWithSpin(Volts.of(4), RPM.of(7000)).withTimeout(0.5),
         // Commands.waitSeconds(0.05),
-        intake.setDeployOpenLoopWithSpin(Volts.of(-4), RPM.of(7000)).withTimeout(0.5),
-        Commands.waitSeconds(0.001));
+        intake.setDeployOpenLoopWithSpin(Volts.of(-4), RPM.of(7000)).withTimeout(0.5)
+        // Commands.waitSeconds(0.001));
+        );
     // i made volts 3 not 2 lol
   }
 }

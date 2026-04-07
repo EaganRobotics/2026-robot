@@ -5,20 +5,22 @@
   "pathFolders": [
     "Anvith",
     "Jithin",
-    "Week 5 Paths",
+    "Quals Day 2",
     "Practice Path",
     "Test Paths",
     "Week 0 Paths",
     "Week 1 Paths",
+    "Week 5 Paths",
     "Winona Paths"
   ],
   "autoFolders": [
-    "Week 5 Autos",
+    "Quals Day 2",
     "Practice Autos",
     "Test Autos",
     "Week 0 Autos",
     "Week 1 Autos",
-    "Week 2 Autos"
+    "Week 2 Autos",
+    "Week 5 Autos"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

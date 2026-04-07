@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.45053715201965,
-        "y": 7.680689478711791
+        "x": 5.48308888888889,
+        "y": 7.504022222222222
       },
       "isLocked": false,
       "linkedName": null
@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 2.2147075606276743,
-        "y": 5.438844507845934
+        "x": 2.735155555555556,
+        "y": 5.311522222222222
       },
       "prevControl": {
-        "x": 4.446185338405455,
-        "y": 5.5557778411792675
+        "x": 4.966633333333332,
+        "y": 5.428455555555556
       },
       "nextControl": null,
       "isLocked": false,
@@ -145,7 +145,7 @@
   "folder": "Week 5 Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }
