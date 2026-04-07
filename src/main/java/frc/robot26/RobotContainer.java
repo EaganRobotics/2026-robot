@@ -230,6 +230,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //             drive, new Pose2d(new Translation2d(2.719, 5.335), Rotation2d.fromDegrees(0)))
     //         .withTimeout(3));
 
+    NamedCommands.registerCommand(
+        "KansasLeftFastSnap",
+        SnapCommands.snapToPosition(
+                drive, new Pose2d(new Translation2d(2.719, 5.335), Rotation2d.fromDegrees(0)))
+            .withTimeout(3));
     // NamedCommands.registerCommand(
     // "AutoScore",
     // ShooterCommands.shootAutoAim(shooter, intake, floor, feeder, drive).withTimeout(5));
@@ -380,7 +385,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     driverController
-        .a()
+        .rightBumper()
         .whileTrue(
             SnapCommands.snapToRadius(drive, Feet.of(7.5))
                 .alongWith(ControllerCommands.rumble(operatorController)));
@@ -437,6 +442,29 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                       return new Rotation2d(angleToRobot);
                     })
                 .alongWith(ControllerCommands.rumble(operatorController)));
+
+    driverController
+        .rightTrigger()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
+    // Lock to hub° when A button is held
+    // driverController
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -driverController.getLeftY(),
+    //             () -> -driverController.getLeftX(),
+    //             () -> {
+    //               Translation2d hubToRobot =
+    //                   SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+    //               double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+    //               return new Rotation2d(angleToRobot);
+    //             }));
 
     driverController
         .rightTrigger()
