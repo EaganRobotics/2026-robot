@@ -655,15 +655,24 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void disabledInit() {
-    if (DriverStation.isFMSAttached() && hasBeenInTeleop) {
+    boolean isFMSAttached = DriverStation.isFMSAttached();
+    if (isFMSAttached && hasBeenInTeleop) {
       Logger.recordOutput(
           "Limelight/LimelightRewind",
-          "Getting limelight rewind capture (fms=" + hasBeenInTeleop + ")");
+          "Getting limelight rewind capture (fms="
+              + isFMSAttached
+              + ", hasBeenInTeleop="
+              + hasBeenInTeleop
+              + ")");
       LimelightHelpers.triggerRewindCapture(VisionConstants.limelightFront, 150);
     } else {
       Logger.recordOutput(
           "Limelight/LimelightRewind",
-          "Skipping limelight rewind capture (fms=" + hasBeenInTeleop + ")");
+          "Skipping limelight rewind capture (fms="
+              + isFMSAttached
+              + ", hasBeenInTeleop="
+              + hasBeenInTeleop
+              + ")");
     }
   }
 
