@@ -6,6 +6,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.controls.RainbowAnimation;
+import com.ctre.phoenix6.hardware.CANdle;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -72,6 +74,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private Feeder feeder;
   private Floor floor;
   private Shooter shooter;
+
+  CANdle candle = new CANdle(1);
 
   @SuppressFBWarnings("URF_UNREAD_FIELD")
   private Vision vision;
@@ -555,6 +559,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // drive.swerveBreak(true);
     hasBeenInTeleop = true;
     LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
+
+    candle.setControl(new RainbowAnimation(0, 100));
   }
 
   @Override
@@ -569,6 +575,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   @Override
   public void autonomousInit() {
     LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
+    candle.setControl(new RainbowAnimation(0, 100));
   }
 
   @Override
