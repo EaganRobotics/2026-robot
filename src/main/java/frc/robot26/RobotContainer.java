@@ -2,7 +2,6 @@ package frc.robot26;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -273,26 +272,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(2));
     NamedCommands.registerCommand(
         "SnapToHub12", SnapCommands.snapToRadius(drive, Feet.of(11.5)).withTimeout(3));
-
-    // autos wont work till intake out works
-
-    NamedCommands.registerCommand(
-        "AutoShootT17",
-        RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
-            .withTimeout(17));
-    NamedCommands.registerCommand(
-        "SuperAutoShootT17",
-        Commands.sequence(
-            SnapCommands.snapToRadius(drive, Meters.of(1.5)),
-            RollerCommands.shootClosedLoop(
-                    shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(1000))
-                .withTimeout(17)));
-    NamedCommands.registerCommand(
-        "AutoShootT5",
-        RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
-            .withTimeout(5));
 
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder,
