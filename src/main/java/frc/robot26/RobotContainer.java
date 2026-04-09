@@ -105,9 +105,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void initialize() {
+    // Blue Twilight blue (from our logo) is RGB (0, 35, 105)
     candle.setControl(
         new com.ctre.phoenix6.controls.SolidColor(0, 100)
-            .withColor(new com.ctre.phoenix6.signals.RGBWColor(0, 0, 255)));
+            .withColor(new com.ctre.phoenix6.signals.RGBWColor(0, 35, 105)));
 
     // Create IO implementations
     switch (SimConstants.CURRENT_MODE) {
