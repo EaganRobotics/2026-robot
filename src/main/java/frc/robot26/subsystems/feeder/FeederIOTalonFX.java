@@ -2,6 +2,7 @@ package frc.robot26.subsystems.feeder;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot26.subsystems.feeder.FeederConstants.COMPLIANT_RATIO;
 import static frc.robot26.subsystems.feeder.FeederConstants.GEARING;
 import static frc.robot26.subsystems.feeder.FeederConstants.Real;
 import static frc.robot26.subsystems.feeder.FeederConstants.SUPPLY_CURRENT_LIMIT;
@@ -80,12 +81,13 @@ public class FeederIOTalonFX implements FeederIO {
   @Override
   public void setFeederOpenLoop(Voltage output) {
     lead.setVoltage(output.in(Volts));
+    compliantWheel.setVoltage(output.in(Volts) * COMPLIANT_RATIO);
   }
 
   @Override
   public void setFeederClosedLoop(AngularVelocity velocity) {
     lead.setControl(velocityVoltageRequest.withVelocity(velocity));
-    compliantWheel.setControl(velocityVoltageRequest.withVelocity(velocity.times(.1)));
+    compliantWheel.setControl(velocityVoltageRequest.withVelocity(velocity.times(COMPLIANT_RATIO)));
   }
 
   @Override
