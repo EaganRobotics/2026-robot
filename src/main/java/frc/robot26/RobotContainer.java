@@ -78,7 +78,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private Shooter shooter;
   private LEDs leds;
 
-  @SuppressFBWarnings("URF_UNREAD_FIELD")
+  @SuppressWarnings("URF_UNREAD_FIELD")
   private Vision vision;
 
   // Controllers
@@ -375,7 +375,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // Find somewhere to put this: .whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
-    // Reset gyro to 0° when B button is pressed
+    // Reset gyro to 0when B button is pressed
     driverController
         .start()
         .or(driverController.back())
@@ -457,7 +457,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    // Lock to hub° when A button is held
+    // Lock to hub when A button is held
     // driverController
     //     .a()
     //     .whileTrue(

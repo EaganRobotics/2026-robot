@@ -35,6 +35,7 @@ public class LEDCommands {
         });
   }
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
   public static boolean isUSBPluggedIn() {
     if (RobotBase.isSimulation()) {
       return true;
