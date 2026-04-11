@@ -14,8 +14,6 @@ import frc.lib.tunables.*;
 public class ShooterConstants {
   public static final double joystickSpeedMultiplier = 0.85;
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25);
-  public static final Current SUPPLY_CURRENT_LIMIT_HOOD = Amps.of(10);
-  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(30);
   public static final double GEARING_SHOOTER = 1.0;
   public static final double GEARING_HOOD = 18.75;
 

@@ -432,8 +432,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //                 RollerCommands.shootClosedLoopDangerous(
     //                     shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(2000))));
 
-    operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
-    operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
+    operatorController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(100)));
+    operatorController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-100)));
 
     // operatorController.povUp().onTrue(shooter.setTunableHood());
     // operatorController.povDown().onTrue(shooter.setTunableHoodBack());
@@ -499,7 +499,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
     jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
 
-    jithinController.x().onTrue(shooter.setHoodOpenLoop(Volts.of(2)));
+    // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
     jithinController
         .a()
