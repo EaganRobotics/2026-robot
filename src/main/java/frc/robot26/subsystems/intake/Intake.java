@@ -157,11 +157,7 @@ public class Intake extends SubsystemBase {
               } else {
                 nextState = DeployState.EXTENDED;
               }
-
-              Command moveCommand = setDeployPosition(nextState);
-              currentState = nextState;
-
-              return moveCommand;
+              return setDeployPosition(nextState);
             },
             Set.of(this))
         .withName("Intake.toggleDeploy");

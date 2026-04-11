@@ -33,13 +33,6 @@ public class IntakeConstants {
         case RETRACTED -> retractLimit;
       };
     }
-
-    public Distance toggleDeployInches() {
-      return switch (this) {
-        case EXTENDED -> deployLimit.times(-1.0); // if extended, need to retract
-        case RETRACTED -> deployLimit; // if retracted, need to extend
-      };
-    }
   }
 
   public static Angle deployRotationsFrom(Distance distance) {
