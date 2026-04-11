@@ -375,7 +375,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
+    // driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
     driverController
@@ -401,19 +401,19 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
     // Lock to hub° when A button is held
-    // driverController
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -driverController.getLeftY(),
-    //             () -> -driverController.getLeftX(),
-    //             () -> {
-    //               Translation2d hubToRobot =
-    //                   SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-    //               double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-    //               return new Rotation2d(angleToRobot);
-    //             }));
+    driverController
+        .a()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
+                () -> {
+                  Translation2d hubToRobot =
+                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+                  return new Rotation2d(angleToRobot);
+                }));
 
     // =========================================
     // =========== Operator Controls ===========
