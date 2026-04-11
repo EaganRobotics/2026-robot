@@ -439,6 +439,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   Translation2d hubCenter = SnapCommands.getHubCenter();
                   Translation2d hubToRobot = hubCenter.minus(drive.getPose().getTranslation());
                   double distToHub = hubToRobot.getNorm();
+                  double leadscale = 100;
 
                   // Time-of-flight estimate
                   double tof = distToHub / ShooterConstants.BALL_SPEED_MPS;
@@ -451,7 +452,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   double vy = fieldSpeeds.vyMetersPerSecond;
 
                   // Shift aim point opposite to robot velocity
-                  Translation2d virtualHub = hubCenter.minus(new Translation2d(vx * tof, vy * tof));
+                  Translation2d virtualHub =
+                      hubCenter.minus(
+                          new Translation2d(vx * tof * leadscale, vy * tof * leadscale));
 
                   // Angle to virtual hub
                   Translation2d virtualHubToRobot =
