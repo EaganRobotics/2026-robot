@@ -21,6 +21,7 @@ public class ShooterConstants {
 
   public static final Angle hoodRotationStartLimit = Radians.of(0.0);
   public static final Angle hoodRotationEndLimit = Radians.of(9.68);
+  public static final double BALL_SPEED_MPS = 4.0; // TODO measure
 
   public static final class Real {
     public static final int followerLeftMotorID = 13;
