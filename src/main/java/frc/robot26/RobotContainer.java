@@ -414,9 +414,19 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 () -> {
                   Translation2d hubToRobot =
                       SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-                  double angleToRobot = 180 - 45 + Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-                  return new Rotation2d(angleToRobot);
+                  double angleToRobot = Math.PI + Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+                  Rotation2d targetAngle = new Rotation2d(angleToRobot);
+
+                  // Apply 0.5 degree deadzone — hold current heading if within threshold
+                  Rotation2d currentAngle = drive.getPose().getRotation();
+                  double errorDegrees = Math.abs(targetAngle.minus(currentAngle).getDegrees());
+                  if (errorDegrees < 1) {
+                    return currentAngle;
+                  }
+                  return targetAngle;
                 }));
+
+    // make this not jiggle the little bits
 
     // =========================================
     // =========== Operator Controls ===========
