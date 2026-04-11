@@ -6,9 +6,10 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.controls.ColorFlowAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
-import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.RGBWColor;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -566,6 +567,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
 
     candle.setControl(new RainbowAnimation(0, 100));
+    candle.setControl(new ColorFlowAnimation(0, 100).withColor(new RGBWColor(0, 70, 255)));
   }
 
   @Override
@@ -580,9 +582,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   @Override
   public void autonomousInit() {
     LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
-    candle.setControl(
-        new SolidColor(0, 100).withColor(new com.ctre.phoenix6.signals.RGBWColor(0, 35, 105)));
-    // what the fudge is this
   }
 
   @Override
