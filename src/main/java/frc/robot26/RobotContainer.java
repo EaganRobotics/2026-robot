@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.controls.ColorFlowAnimation;
-import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -566,8 +565,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     hasBeenInTeleop = true;
     LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
 
-    candle.setControl(new RainbowAnimation(0, 100));
-    candle.setControl(new ColorFlowAnimation(0, 100).withColor(new RGBWColor(0, 70, 255)));
+    // candle.setControl(new RainbowAnimation(0, 100));
+    candle.setControl(new ColorFlowAnimation(0, 47).withColor(new RGBWColor(0, 70, 255)));
   }
 
   @Override
