@@ -27,8 +27,12 @@ public class FeederIOTalonFX implements FeederIO {
   private final TalonFX lead, follower, compliantWheel;
   private final StatusSignal<Angle> leadPosition;
   private final StatusSignal<AngularVelocity> leadVelocity;
+  private final StatusSignal<Angle> compliantWheelPosition;
+  private final StatusSignal<AngularVelocity> compliantWheelVelocity;
   private final StatusSignal<Voltage> leadVoltage;
   private final StatusSignal<Current> leadCurrent;
+  private final StatusSignal<Voltage> compliantWheelVoltage;
+  private final StatusSignal<Current> compliantWheelCurrent;
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
 
   public FeederIOTalonFX() {
@@ -39,6 +43,10 @@ public class FeederIOTalonFX implements FeederIO {
     leadPosition = lead.getPosition();
     leadVoltage = lead.getMotorVoltage();
     leadCurrent = lead.getStatorCurrent();
+    compliantWheelPosition = compliantWheel.getPosition();
+    compliantWheelVelocity = compliantWheel.getVelocity();
+    compliantWheelVoltage = compliantWheel.getMotorVoltage();
+    compliantWheelCurrent = compliantWheel.getStatorCurrent();
 
     var leadConfig = new TalonFXConfiguration();
 
@@ -74,7 +82,15 @@ public class FeederIOTalonFX implements FeederIO {
     compliantWheel.setPosition(0);
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50, leadCurrent, leadVoltage, leadPosition, leadVelocity);
+        50,
+        leadCurrent,
+        leadVoltage,
+        leadPosition,
+        leadVelocity,
+        compliantWheelCurrent,
+        compliantWheelVoltage,
+        compliantWheelPosition,
+        compliantWheelVelocity);
     ParentDevice.optimizeBusUtilizationForAll(lead, follower, compliantWheel);
   }
 
@@ -99,5 +115,9 @@ public class FeederIOTalonFX implements FeederIO {
     inputs.feederVelocity = leadVelocity.getValue();
     inputs.feederCurrent = leadCurrent.getValue();
     inputs.feederAppliedVolts = leadVoltage.getValue();
+    inputs.compliantWheelConnected = compliantWheel.isConnected();
+    inputs.compliantWheelVelocity = compliantWheelVelocity.getValue();
+    inputs.compliantWheelCurrent = compliantWheelCurrent.getValue();
+    inputs.compliantWheelAppliedVolts = compliantWheelVoltage.getValue();
   }
 }
