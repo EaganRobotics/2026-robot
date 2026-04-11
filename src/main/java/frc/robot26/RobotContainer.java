@@ -24,6 +24,7 @@ import frc.lib.limelight.LimelightHelpers;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.ControllerCommands;
 import frc.robot26.commands.DriveCommands;
+import frc.robot26.commands.LEDCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.SnapCommands;
 import frc.robot26.generated.TunerConstants;
@@ -47,6 +48,10 @@ import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
+import frc.robot26.subsystems.leds.LEDs;
+import frc.robot26.subsystems.leds.LEDsIO;
+import frc.robot26.subsystems.leds.LEDsIOCANdle;
+import frc.robot26.subsystems.leds.LEDsIOSim;
 import frc.robot26.subsystems.shooter.Shooter;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
@@ -71,6 +76,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private Feeder feeder;
   private Floor floor;
   private Shooter shooter;
+  private LEDs leds;
 
   @SuppressFBWarnings("URF_UNREAD_FIELD")
   private Vision vision;
@@ -132,6 +138,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         feeder = new Feeder(new FeederIOTalonFX());
         floor = new Floor(new FloorIOTalonFX());
         shooter = new Shooter(new ShooterIOTalonFX());
+        leds = new LEDs(new LEDsIOCANdle());
         break;
       case SIM:
         super.configureDriveSimulation(driveSimulation);
@@ -167,6 +174,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         feeder = new Feeder(new FeederIOSim());
         floor = new Floor(new FloorIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        leds = new LEDs(new LEDsIOSim());
         break;
       case REPLAY:
         drive =
@@ -182,6 +190,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         feeder = new Feeder(new FeederIO() {});
         floor = new Floor(new FloorIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        leds = new LEDs(new LEDsIO() {});
         break;
       default:
         drive =
@@ -197,6 +206,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         feeder = new Feeder(new FeederIO() {});
         floor = new Floor(new FloorIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        leds = new LEDs(new LEDsIO() {});
         throw new IllegalStateException(
             "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
@@ -357,6 +367,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
     shooter.setDefaultCommand(
         shooter.setShooterJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+    leds.setDefaultCommand(LEDCommands.defaultCommand(leds, vision::hasSeenAprilTag));
 
     // =========================================
     // ============ Driver Controls ============
