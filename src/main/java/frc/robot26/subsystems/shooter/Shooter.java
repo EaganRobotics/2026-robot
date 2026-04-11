@@ -77,6 +77,19 @@ public class Shooter extends SubsystemBase {
     // DOSENT DO ANYTHING
   }
 
+  public Command setTunableShootWithHood() {
+    return this.startEnd(
+            () -> {
+              io.setShooterClosedLoop(RPM.of(ShooterConstants.Real.shooterSpeed.get()));
+              io.setHoodPosition(Degrees.of(ShooterConstants.Real.hoodAngle.get()));
+            },
+            () -> {
+              io.setShooterOpenLoop(Volts.of(0));
+              io.setHoodPosition(Degrees.of(0));
+            })
+        .withName("Shooter.setShooterClosedLoop2");
+  }
+
   public Command setShooterClosedLoop(Supplier<AngularVelocity> velocity) {
     return this.runEnd(
             () -> {
