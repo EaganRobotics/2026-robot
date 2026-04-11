@@ -114,5 +114,9 @@ public class FeederIOTalonFX implements FeederIO {
     inputs.feederVelocity = leadVelocity.getValue();
     inputs.feederCurrent = leadCurrent.getValue();
     inputs.feederAppliedVolts = leadVoltage.getValue();
+    inputs.compliantWheelConnected = compliantWheel.isConnected();
+    inputs.compliantWheelVelocity = compliantWheelVelocity.getValue();
+    inputs.compliantWheelCurrent = compliantWheelCurrent.getValue();
+    inputs.compliantWheelAppliedVolts = compliantWheelVoltage.getValue();
   }
 }
