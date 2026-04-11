@@ -553,70 +553,73 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // ============ Jithin Controls ============
     // =========================================
 
-    // tim said to comment them out
+    jithinController
+        .a()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(420))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    // jithinController
-    //     .a()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoop(RPM.of(420))
-    //
-    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController
+        .b()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(440))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    //     jithinController
-    //     .b()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoop(RPM.of(440))
-    //
-    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController
+        .x()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(450))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    //     jithinController
-    //     .x()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoop(RPM.of(450))
-    //
-    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController
+        .y()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(500))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    //     jithinController
-    //     .y()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoop(RPM.of(500))
-    //
-    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
+    jithinController.leftBumper().whileTrue(floor.setTunableFloor());
+    jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
+    jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
 
-    // jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
-    // jithinController.leftBumper().whileTrue(floor.setTunableFloor());
-    // jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
-    // jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
+    // jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
+    // jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
+    jithinController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(5)));
+    jithinController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-5)));
+    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
+    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
 
-    // // jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
-    // // jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
-    // jithinController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(5)));
-    // jithinController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-5)));
-    // jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
-    // jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
+    // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
-    // // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
+    jithinController
+        .a()
+        .whileTrue(
+            ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
+                .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
 
-    // jithinController.a().whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
-    //         .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
+    jithinController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
-    // jithinController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
-
-    // jithinController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,
-    //         () -> -jithinController.getLeftY(), () -> -jithinController.getLeftX(), () -> {
-    //             Translation2d hubToRobot =
-    //                     SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-    //             double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-    //             return new Rotation2d(angleToRobot);
-    //         }));
+    jithinController
+        .b()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -jithinController.getLeftY(),
+                () -> -jithinController.getLeftX(),
+                () -> {
+                  Translation2d hubToRobot =
+                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+                  return new Rotation2d(angleToRobot);
+                }));
   }
 
   private boolean hasBeenInTeleop = false;
