@@ -50,12 +50,27 @@ public class FeederIOTalonFX implements FeederIO {
     leadConfig.Voltage.PeakReverseVoltage = -10;
     leadConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    var compliantWheelConfig = new TalonFXConfiguration();
+
+    compliantWheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    compliantWheelConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    compliantWheelConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
+    compliantWheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    compliantWheelConfig.Feedback.SensorToMechanismRatio = GEARING;
+    compliantWheelConfig.Voltage.PeakForwardVoltage = 10;
+    compliantWheelConfig.Voltage.PeakReverseVoltage = -10;
+    compliantWheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
     // Apply feeder velocity PID gains to the lead Talon (tunable via dashboard)
     Real.feederPIDs.applyToTalonFXConfig(lead, leadConfig);
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
     follower.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
-    compliantWheel.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
+    // compliantWheel.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
+    // Apply feeder velocity PID gains to the lead Talon (tunable via dashboard)
+    Real.feederPIDs.applyToTalonFXConfig(compliantWheel, compliantWheelConfig);
+    compliantWheel.getConfigurator().apply(compliantWheelConfig, 0.25);
+    compliantWheel.setPosition(0);
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50, leadCurrent, leadVoltage, leadPosition, leadVelocity);
@@ -70,6 +85,7 @@ public class FeederIOTalonFX implements FeederIO {
   @Override
   public void setFeederClosedLoop(AngularVelocity velocity) {
     lead.setControl(velocityVoltageRequest.withVelocity(velocity));
+    compliantWheel.setControl(velocityVoltageRequest.withVelocity(velocity.times(.1)));
   }
 
   @Override
