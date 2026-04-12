@@ -2,7 +2,6 @@ package frc.robot26;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Feet;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -13,6 +12,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,6 +25,7 @@ import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.ControllerCommands;
 import frc.robot26.commands.DriveCommands;
 import frc.robot26.commands.RollerCommands;
+import frc.robot26.commands.ShooterCommands;
 import frc.robot26.commands.SnapCommands;
 import frc.robot26.generated.TunerConstants;
 import frc.robot26.subsystems.drive.Drive;
@@ -48,6 +49,7 @@ import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
 import frc.robot26.subsystems.shooter.Shooter;
+import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
@@ -100,7 +102,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void initialize() {
-
     // Create IO implementations
     switch (SimConstants.CURRENT_MODE) {
       case REAL:
@@ -274,26 +275,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand(
         "SnapToHub12", SnapCommands.snapToRadius(drive, Feet.of(11.5)).withTimeout(3));
 
-    // autos wont work till intake out works
-
-    NamedCommands.registerCommand(
-        "AutoShootT17",
-        RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
-            .withTimeout(17));
-    NamedCommands.registerCommand(
-        "SuperAutoShootT17",
-        Commands.sequence(
-            SnapCommands.snapToRadius(drive, Meters.of(1.5)),
-            RollerCommands.shootClosedLoop(
-                    shooter, floor, feeder, RPM.of(550), RPM.of(1000), RPM.of(1000))
-                .withTimeout(17)));
-    NamedCommands.registerCommand(
-        "AutoShootT5",
-        RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(500), RPM.of(1000), RPM.of(1000))
-            .withTimeout(5));
-
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder,
     // intake).withTimeout(3));
@@ -379,49 +360,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    driverController
-        .a()
-        .whileTrue(
-            SnapCommands.snapToRadius(drive, Feet.of(7.5))
-                .alongWith(ControllerCommands.rumble(operatorController)));
+    // driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
-    driverController
-        .y()
-        .whileTrue(
-            SnapCommands.snapToRadius(drive, Feet.of(11.5))
-                .alongWith(ControllerCommands.rumble(operatorController)));
-
-    // driverController
-    //     .rightBumper()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -driverController.getLeftY(),
-    //             () -> -driverController.getLeftX(),
-    //             () -> {
-    //               Translation2d hubToRobot =
-    //                   SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-    //               double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX()) +
-    // Math.PI;
-    //               return new Rotation2d(angleToRobot);
-    //             }));
-
-    driverController
-        .leftBumper()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                    drive,
-                    () -> -driverController.getLeftY(),
-                    () -> -driverController.getLeftX(),
-                    () -> {
-                      Translation2d vollyToRobot =
-                          SnapCommands.getLeftVolley().minus(drive.getPose().getTranslation());
-                      double angleToRobot =
-                          Math.atan2(vollyToRobot.getY(), vollyToRobot.getX()) + Math.PI;
-                      return new Rotation2d(angleToRobot);
-                    })
-                .alongWith(ControllerCommands.rumble(operatorController)));
-
+    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+    driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
     driverController
         .rightBumper()
         .whileTrue(
@@ -457,9 +399,62 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     //             () -> {
     //               Translation2d hubToRobot =
     //                   SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-    //               double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-    //               return new Rotation2d(angleToRobot);
+    //               double angleToRobot = Math.PI + Math.atan2(hubToRobot.getY(),
+    // hubToRobot.getX());
+    //               Rotation2d targetAngle = new Rotation2d(angleToRobot);
+
+    //               // Apply 0.5 degree deadzone — hold current heading if within threshold
+    //               Rotation2d currentAngle = drive.getPose().getRotation();
+    //               double errorDegrees = Math.abs(targetAngle.minus(currentAngle).getDegrees());
+    //               if (errorDegrees < 1) {
+    //                 return currentAngle;
+    //               }
+    //               return targetAngle;
     //             }));
+
+    driverController
+        .a()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX(),
+                () -> {
+                  Translation2d hubCenter = SnapCommands.getHubCenter();
+                  Translation2d hubToRobot = hubCenter.minus(drive.getPose().getTranslation());
+                  double distToHub = hubToRobot.getNorm();
+                  double leadscale = 2;
+
+                  // Time-of-flight estimate
+                  double tof = distToHub / ShooterConstants.BALL_SPEED_MPS;
+
+                  // Robot velocity in field-space
+                  ChassisSpeeds fieldSpeeds =
+                      ChassisSpeeds.fromRobotRelativeSpeeds(
+                          drive.getChassisSpeeds(), drive.getPose().getRotation());
+                  double vx = fieldSpeeds.vxMetersPerSecond;
+                  double vy = fieldSpeeds.vyMetersPerSecond;
+
+                  // Shift aim point opposite to robot velocity
+                  Translation2d virtualHub =
+                      hubCenter.minus(
+                          new Translation2d(vx * tof * leadscale, vy * tof * leadscale));
+
+                  // Angle to virtual hub
+                  Translation2d virtualHubToRobot =
+                      virtualHub.minus(drive.getPose().getTranslation());
+                  double angleToRobot =
+                      Math.PI + Math.atan2(virtualHubToRobot.getY(), virtualHubToRobot.getX());
+                  Rotation2d targetAngle = new Rotation2d(angleToRobot);
+
+                  // 0.5 degree deadzone
+                  Rotation2d currentAngle = drive.getPose().getRotation();
+                  double errorDegrees = Math.abs(targetAngle.minus(currentAngle).getDegrees());
+                  if (errorDegrees < 0.5) {
+                    return currentAngle;
+                  }
+                  return targetAngle;
+                }));
 
     // =========================================
     // =========== Operator Controls ===========
@@ -469,24 +464,36 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
-    operatorController
-        .y()
-        .whileTrue(
-            shooter
-                .setShooterClosedLoopAndAngle(RPM.of(500), Degrees.of(20))
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000)))
-                .alongWith(ControllerCommands.rumble(driverController)));
-    // 20 degree angle
+    // operatorController
+    //     .y()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000)))
+    //             .alongWith(ControllerCommands.rumble(driverController)));
 
     operatorController
-        .a()
-        .whileTrue(
-            shooter
-                .setShooterClosedLoop(RPM.of(535))
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000)))
-                .alongWith(ControllerCommands.rumble(driverController)));
+        .y()
+        .whileTrue(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive));
+    // 20 degree angle
+
+    // operatorController
+    //     .a()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoop(RPM.of(535))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000)))
+    //             .alongWith(ControllerCommands.rumble(driverController)));
+
+    operatorController.a().whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
+
+    // operatorController
+    //     .y()
+    //     .whileTrue(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive));
 
     operatorController
         .povUp()
@@ -536,8 +543,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // ============ Jithin Controls ============
     // =========================================
 
-    // tim said to comment them out
-
     // jithinController
     //     .a()
     //     .whileTrue(
@@ -547,59 +552,64 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
     //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    //     jithinController
-    //     .b()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoop(RPM.of(440))
-    //
-    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController
+        .b()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(440))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    //     jithinController
-    //     .x()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoop(RPM.of(450))
-    //
-    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController
+        .x()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoop(RPM.of(450))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+                .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    //     jithinController
-    //     .y()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoop(RPM.of(500))
-    //
-    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
 
-    // jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
-    // jithinController.leftBumper().whileTrue(floor.setTunableFloor());
-    // jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
-    // jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
+    jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
+    jithinController.leftBumper().whileTrue(floor.setTunableFloor());
+    jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
+    jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
 
-    // // jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
-    // // jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
-    // jithinController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(5)));
-    // jithinController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-5)));
-    // jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
-    // jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
+    // jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
+    // jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
+    jithinController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(5)));
+    jithinController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-5)));
+    jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-2)));
+    jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(2)));
 
-    // // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
+    // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
-    // jithinController.a().whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
-    //         .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
+    jithinController
+        .a()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(525), Degrees.of(15))
+                .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(6000))))
+                .alongWith(floor.setClosedLoop(RPM.of(6000)))
+                .alongWith(
+                    Commands.waitSeconds(1.5)
+                        .andThen(intake.setDeployOpenLoop(Volts.of(2.5)).withTimeout(1.5))));
 
     // jithinController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
-    // jithinController.b().whileTrue(DriveCommands.joystickDriveAtAngle(drive,
-    //         () -> -jithinController.getLeftY(), () -> -jithinController.getLeftX(), () -> {
-    //             Translation2d hubToRobot =
-    //                     SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-    //             double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
-    //             return new Rotation2d(angleToRobot);
-    //         }));
+    jithinController
+        .b()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -jithinController.getLeftY(),
+                () -> -jithinController.getLeftX(),
+                () -> {
+                  Translation2d hubToRobot =
+                      SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
+                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+                  return new Rotation2d(angleToRobot);
+                }));
   }
 
   private boolean hasBeenInTeleop = false;

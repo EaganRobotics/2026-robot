@@ -357,6 +357,39 @@ public class Drive extends SubsystemBase {
     return getMaxLinearSpeedMetersPerSec() / DRIVE_BASE_RADIUS;
   }
 
+  /**
+   * Returns the linear momentum vector of the robot in robot-centric coordinates. px = m * vx, py =
+   * m * vy (kg·m/s) Uses the measured chassis speeds from the drive kinematics.
+   */
+  public Translation2d getMomentumVector() {
+    ChassisSpeeds speeds = getChassisSpeeds();
+    double vx = speeds.vxMetersPerSecond; // forward
+    double vy = speeds.vyMetersPerSecond; // lateral (for swerve)
+    return new Translation2d(vx * ROBOT_MASS_KG, vy * ROBOT_MASS_KG);
+  }
+
+  /** Returns the magnitude of the linear momentum vector (kg·m/s). */
+  public double getMomentumMagnitude() {
+    ChassisSpeeds speeds = getChassisSpeeds();
+    double speed = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+    return ROBOT_MASS_KG * speed;
+  }
+
+  /**
+   * Returns the unit direction vector of current motion in robot-centric coordinates. If the robot
+   * is effectively stationary, returns a zero vector.
+   */
+  public Translation2d getMotionDirection() {
+    ChassisSpeeds speeds = getChassisSpeeds();
+    double vx = speeds.vxMetersPerSecond;
+    double vy = speeds.vyMetersPerSecond;
+    double mag = Math.hypot(vx, vy);
+    if (mag < 1e-9) {
+      return new Translation2d(0.0, 0.0);
+    }
+    return new Translation2d(vx / mag, vy / mag);
+  }
+
   /** Returns an array of module translations. */
   public static Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
