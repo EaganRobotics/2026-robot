@@ -67,7 +67,8 @@ public class RollerCommands {
         .withName("RollerCommands.shootClosedLoop");
   }
 
-  public static Command tuneableShootClosedLoop2(Shooter shooter, Floor floor, Feeder feeder) {
+  public static Command tuneableShootClosedLoopWithHood(
+      Shooter shooter, Floor floor, Feeder feeder) {
     return shooter
         .setTunableShootWithHood()
         .alongWith(
