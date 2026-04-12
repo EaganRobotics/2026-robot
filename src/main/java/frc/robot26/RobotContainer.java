@@ -5,9 +5,6 @@ import static edu.wpi.first.units.Units.Feet;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
-import com.ctre.phoenix6.controls.ColorFlowAnimation;
-import com.ctre.phoenix6.hardware.CANdle;
-import com.ctre.phoenix6.signals.RGBWColor;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -77,8 +74,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private Floor floor;
   private Shooter shooter;
 
-  CANdle candle = new CANdle(1);
-
   @SuppressFBWarnings("URF_UNREAD_FIELD")
   private Vision vision;
 
@@ -107,11 +102,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public void initialize() {
-    // Blue Twilight blue (from our logo) is RGB (0, 35, 105)
-    candle.setControl(
-        new com.ctre.phoenix6.controls.SolidColor(0, 100)
-            .withColor(new com.ctre.phoenix6.signals.RGBWColor(0, 35, 105)));
-
     // Create IO implementations
     switch (SimConstants.CURRENT_MODE) {
       case REAL:
@@ -629,9 +619,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // drive.swerveBreak(true);
     hasBeenInTeleop = true;
     LimelightHelpers.setRewindEnabled(VisionConstants.limelightFront, true);
-
-    // candle.setControl(new RainbowAnimation(0, 100));
-    candle.setControl(new ColorFlowAnimation(0, 47).withColor(new RGBWColor(0, 70, 255)));
   }
 
   @Override
