@@ -433,7 +433,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   Translation2d hubCenter = SnapCommands.getHubCenter();
                   Translation2d hubToRobot = hubCenter.minus(drive.getPose().getTranslation());
                   double distToHub = hubToRobot.getNorm();
-                  double leadscale = 100;
+                  double leadscale = 2;
 
                   // Time-of-flight estimate
                   double tof = distToHub / ShooterConstants.BALL_SPEED_MPS;
@@ -486,7 +486,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     operatorController
         .y()
-        .whileTrue(RollerCommands.tuneableShootClosedLoop2(shooter, floor, feeder));
+        .whileTrue(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive));
     // 20 degree angle
 
     // operatorController
@@ -553,13 +553,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // ============ Jithin Controls ============
     // =========================================
 
-    jithinController
-        .a()
-        .whileTrue(
-            shooter
-                .setShooterClosedLoop(RPM.of(420))
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    // jithinController
+    //     .a()
+    //     .whileTrue(
+    //         shooter
+    //             .setShooterClosedLoop(RPM.of(420))
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
     jithinController
         .b()
@@ -577,13 +578,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    jithinController
-        .y()
-        .whileTrue(
-            shooter
-                .setShooterClosedLoop(RPM.of(500))
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    jithinController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
 
     jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
     jithinController.leftBumper().whileTrue(floor.setTunableFloor());
@@ -602,10 +597,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     jithinController
         .a()
         .whileTrue(
-            ShooterCommands.shootAutoAim(shooter, floor, feeder, drive)
-                .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(525), Degrees.of(15))
+                .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(6000))))
+                .alongWith(floor.setClosedLoop(RPM.of(6000)))
+                .alongWith(
+                    Commands.waitSeconds(1.5)
+                        .andThen(intake.setDeployOpenLoop(Volts.of(2.5)).withTimeout(1.5))));
 
-    jithinController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    // jithinController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
     jithinController
         .b()
