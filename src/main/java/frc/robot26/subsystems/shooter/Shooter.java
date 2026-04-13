@@ -77,6 +77,40 @@ public class Shooter extends SubsystemBase {
     // DOSENT DO ANYTHING
   }
 
+  /**
+   * Continuously update both shooter velocity and hood angle from suppliers. Use this when you want
+   * the setpoints to be re-read each scheduler cycle.
+   */
+  public Command setShooterClosedLoopAndAngle(
+      Supplier<AngularVelocity> velocity, Supplier<Angle> angle) {
+    return this.runEnd(
+            () -> {
+              io.setShooterClosedLoop(velocity.get());
+              velocitySetpoint = velocity.get();
+              io.setHoodPosition(angle.get());
+            },
+            () -> {
+              io.setShooterOpenLoop(Volts.of(0));
+              // io.setShooterClosedLoop(RPM.of(0));
+              velocitySetpoint = RPM.of(0);
+              io.setHoodPosition(Degrees.of(0));
+            })
+        .withName("Shooter.setShooterClosedLoopAndAngle");
+  }
+
+  public Command setTunableShootWithHood() {
+    return this.startEnd(
+            () -> {
+              io.setShooterClosedLoop(RPM.of(ShooterConstants.Real.shooterSpeed.get()));
+              io.setHoodPosition(Degrees.of(ShooterConstants.Real.hoodAngle.get()));
+            },
+            () -> {
+              io.setShooterOpenLoop(Volts.of(0));
+              io.setHoodPosition(Degrees.of(0));
+            })
+        .withName("Shooter.setShooterClosedLoop2");
+  }
+
   public Command setShooterClosedLoop(Supplier<AngularVelocity> velocity) {
     return this.runEnd(
             () -> {

@@ -2,6 +2,7 @@ package frc.robot26.subsystems.feeder;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Volts;
+import static frc.robot26.subsystems.feeder.FeederConstants.COMPLIANT_RATIO;
 import static frc.robot26.subsystems.feeder.FeederConstants.GEARING;
 import static frc.robot26.subsystems.feeder.FeederConstants.Real;
 import static frc.robot26.subsystems.feeder.FeederConstants.SUPPLY_CURRENT_LIMIT;
@@ -26,8 +27,12 @@ public class FeederIOTalonFX implements FeederIO {
   private final TalonFX lead, follower, compliantWheel;
   private final StatusSignal<Angle> leadPosition;
   private final StatusSignal<AngularVelocity> leadVelocity;
+  private final StatusSignal<Angle> compliantWheelPosition;
+  private final StatusSignal<AngularVelocity> compliantWheelVelocity;
   private final StatusSignal<Voltage> leadVoltage;
   private final StatusSignal<Current> leadCurrent;
+  private final StatusSignal<Voltage> compliantWheelVoltage;
+  private final StatusSignal<Current> compliantWheelCurrent;
   private final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
 
   public FeederIOTalonFX() {
@@ -38,6 +43,10 @@ public class FeederIOTalonFX implements FeederIO {
     leadPosition = lead.getPosition();
     leadVoltage = lead.getMotorVoltage();
     leadCurrent = lead.getStatorCurrent();
+    compliantWheelPosition = compliantWheel.getPosition();
+    compliantWheelVelocity = compliantWheel.getVelocity();
+    compliantWheelVoltage = compliantWheel.getMotorVoltage();
+    compliantWheelCurrent = compliantWheel.getStatorCurrent();
 
     var leadConfig = new TalonFXConfiguration();
 
@@ -50,26 +59,51 @@ public class FeederIOTalonFX implements FeederIO {
     leadConfig.Voltage.PeakReverseVoltage = -10;
     leadConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
+    var compliantWheelConfig = new TalonFXConfiguration();
+
+    compliantWheelConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    compliantWheelConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    compliantWheelConfig.CurrentLimits.SupplyCurrentLimit = SUPPLY_CURRENT_LIMIT.in(Amps);
+    compliantWheelConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    compliantWheelConfig.Feedback.SensorToMechanismRatio = GEARING;
+    compliantWheelConfig.Voltage.PeakForwardVoltage = 10;
+    compliantWheelConfig.Voltage.PeakReverseVoltage = -10;
+    compliantWheelConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
     // Apply feeder velocity PID gains to the lead Talon (tunable via dashboard)
     Real.feederPIDs.applyToTalonFXConfig(lead, leadConfig);
     lead.getConfigurator().apply(leadConfig, 0.25);
     lead.setPosition(0);
     follower.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
-    compliantWheel.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
+    // compliantWheel.setControl(new Follower(Real.leadMotorID, MotorAlignmentValue.Opposed));
+    // Apply feeder velocity PID gains to the lead Talon (tunable via dashboard)
+    Real.feederPIDs.applyToTalonFXConfig(compliantWheel, compliantWheelConfig);
+    compliantWheel.getConfigurator().apply(compliantWheelConfig, 0.25);
+    compliantWheel.setPosition(0);
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50, leadCurrent, leadVoltage, leadPosition, leadVelocity);
+        50,
+        leadCurrent,
+        leadVoltage,
+        leadPosition,
+        leadVelocity,
+        compliantWheelCurrent,
+        compliantWheelVoltage,
+        compliantWheelPosition,
+        compliantWheelVelocity);
     ParentDevice.optimizeBusUtilizationForAll(lead, follower, compliantWheel);
   }
 
   @Override
   public void setFeederOpenLoop(Voltage output) {
     lead.setVoltage(output.in(Volts));
+    compliantWheel.setVoltage(output.in(Volts) * COMPLIANT_RATIO);
   }
 
   @Override
   public void setFeederClosedLoop(AngularVelocity velocity) {
     lead.setControl(velocityVoltageRequest.withVelocity(velocity));
+    compliantWheel.setControl(velocityVoltageRequest.withVelocity(velocity.times(COMPLIANT_RATIO)));
   }
 
   @Override
@@ -81,5 +115,9 @@ public class FeederIOTalonFX implements FeederIO {
     inputs.feederVelocity = leadVelocity.getValue();
     inputs.feederCurrent = leadCurrent.getValue();
     inputs.feederAppliedVolts = leadVoltage.getValue();
+    inputs.compliantWheelConnected = compliantWheel.isConnected();
+    inputs.compliantWheelVelocity = compliantWheelVelocity.getValue();
+    inputs.compliantWheelCurrent = compliantWheelCurrent.getValue();
+    inputs.compliantWheelAppliedVolts = compliantWheelVoltage.getValue();
   }
 }

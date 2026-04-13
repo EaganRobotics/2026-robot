@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.intake.IntakeConstants.PITCH_CIRCUMFERENCE;
+import static frc.robot26.subsystems.intake.IntakeConstants.Real;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -109,7 +110,7 @@ public class Intake extends SubsystemBase {
   public Command setTunableIntakeDeploy() {
     return Commands.defer(
         () -> {
-          return setDeployClosedLoop(Inches.of(IntakeConstants.Real.deployPosition.get()));
+          return setDeployClosedLoop(Inches.of(Real.deployPosition.get()));
         },
         Set.of(this));
   }
@@ -117,15 +118,14 @@ public class Intake extends SubsystemBase {
   public Command setTunableIntakeDeployBack() {
     return Commands.defer(
         () -> {
-          return setDeployClosedLoop(Inches.of(IntakeConstants.Real.deployPositionBack.get()));
+          return setDeployClosedLoop(Inches.of(Real.deployPositionBack.get()));
         },
         Set.of(this));
   }
 
   public Command setTunableIntake() {
     return Commands.defer(
-        () -> this.setIntakeClosedLoop(RPM.of(IntakeConstants.Real.intakeSpeed.get())),
-        Set.of(this));
+        () -> this.setIntakeClosedLoop(RPM.of(Real.intakeSpeed.get())), Set.of(this));
   }
 
   public Command setJoystickOpenLoop(DoubleSupplier speed) {
@@ -141,6 +141,25 @@ public class Intake extends SubsystemBase {
   }
 
   public Command setDeployPosition(IntakeConstants.DeployState state) {
-    return setDeployClosedLoop(state.getState());
+    return Commands.runOnce(() -> currentState = state)
+        .andThen(setDeployClosedLoop(state.getState()))
+        .withName("Intake.setDeployPosition");
+  }
+
+  // TODO: test as an onTrue button
+  public Command toggleDeploy() {
+    return Commands.defer(
+            () -> {
+              DeployState nextState;
+
+              if (currentState == DeployState.EXTENDED) {
+                nextState = DeployState.RETRACTED;
+              } else {
+                nextState = DeployState.EXTENDED;
+              }
+              return setDeployPosition(nextState);
+            },
+            Set.of(this))
+        .withName("Intake.toggleDeploy");
   }
 }
