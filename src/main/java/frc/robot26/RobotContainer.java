@@ -384,9 +384,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .rightTrigger()
         .whileTrue(
             shooter
-                .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+                .setShooterClosedLoopAndAngle(RPM.of(300), Degrees.of(20))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(3000))))
+                .alongWith(floor.setClosedLoop(RPM.of(3000))));
 
     // Lock to hub° when A button is held
     // driverController
