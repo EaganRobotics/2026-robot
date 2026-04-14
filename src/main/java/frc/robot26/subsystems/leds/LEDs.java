@@ -17,15 +17,19 @@ public class LEDs extends SubsystemBase {
 
   public Command setColor(Supplier<Color> colorSupplier) {
     return this.runEnd(
-        () -> {
-          Color color = colorSupplier.get();
-          io.setColor(
-              new Color8Bit(
-                  (int) (color.red * 255), (int) (color.green * 255), (int) (color.blue * 255)));
-        },
-        () -> {
-          io.setColor(new Color8Bit());
-        });
+            () -> {
+              Color color = colorSupplier.get();
+              io.setColor(
+                  new Color8Bit(
+                      (int) (color.red * 255),
+                      (int) (color.green * 255),
+                      (int) (color.blue * 255)));
+            },
+            () -> {
+              io.setColor(new Color8Bit());
+            })
+        .ignoringDisable(true)
+        .withName("LEDs.setColor");
   }
 
   @Override

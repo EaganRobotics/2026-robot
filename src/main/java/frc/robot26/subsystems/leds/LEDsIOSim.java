@@ -7,7 +7,7 @@ public class LEDsIOSim implements LEDsIO {
 
   @Override
   public void updateInputs(LEDsIOInputs inputs) {
-    inputs.LEDsConnected = true;
-    inputs.LEDsCurrent = Amps.of(1);
+    inputs.ledsConnected = true;
+    inputs.ledsCurrent = Amps.of(1);
   }
 }

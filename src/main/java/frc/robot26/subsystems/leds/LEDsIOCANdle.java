@@ -31,7 +31,7 @@ public class LEDsIOCANdle implements LEDsIO {
   public void updateInputs(LEDsIOInputs inputs) {
     var candleConnectedStatus = BaseStatusSignal.refreshAll(candleCurrent);
 
-    inputs.LEDsConnected = candleConnectedStatus.isOK();
-    inputs.LEDsCurrent = candleCurrent.getValue();
+    inputs.ledsConnected = candleConnectedStatus.isOK();
+    inputs.ledsCurrent = candleCurrent.getValue();
   }
 }

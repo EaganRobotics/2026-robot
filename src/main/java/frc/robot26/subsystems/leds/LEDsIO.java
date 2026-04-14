@@ -9,8 +9,8 @@ import org.littletonrobotics.junction.AutoLog;
 public interface LEDsIO {
   @AutoLog
   public static class LEDsIOInputs {
-    public boolean LEDsConnected = false;
-    public Current LEDsCurrent = Amps.of(0.0);
+    public boolean ledsConnected = false;
+    public Current ledsCurrent = Amps.of(0.0);
 
     public boolean limit = false;
   }

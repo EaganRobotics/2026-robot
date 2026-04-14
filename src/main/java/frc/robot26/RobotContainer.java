@@ -61,6 +61,7 @@ import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot26.subsystems.vision.Vision;
 import frc.robot26.subsystems.vision.Vision.VisionConsumer;
 import frc.robot26.subsystems.vision.VisionConstants;
+import frc.robot26.subsystems.vision.VisionIO;
 import frc.robot26.subsystems.vision.VisionIOLimelight;
 import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
 import org.ironmaple.simulation.SimulatedArena;
@@ -166,7 +167,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   }
                 },
                 isCI
-                    ? new frc.robot26.subsystems.vision.VisionIO() {}
+                    ? new VisionIO() {}
                     : new VisionIOPhotonVisionSim(
                         VisionConstants.limelightFront,
                         VisionConstants.robotToCameraTop,
@@ -186,7 +187,18 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 driveSimulation::setSimulationWorldPose);
-        vision = null;
+        vision =
+            new Vision(
+                new VisionConsumer() {
+                  public void accept(
+                      Pose2d visionRobotPoseMeters,
+                      double timestampSeconds,
+                      Matrix<N3, N1> visionMeasurementStdDevs) {
+                    drive.addVisionMeasurement(
+                        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+                  }
+                },
+                new VisionIO() {});
         intake = new Intake(new IntakeIO() {});
         feeder = new Feeder(new FeederIO() {});
         floor = new Floor(new FloorIO() {});
@@ -202,7 +214,18 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 driveSimulation::setSimulationWorldPose);
-        vision = null;
+        vision =
+            new Vision(
+                new VisionConsumer() {
+                  public void accept(
+                      Pose2d visionRobotPoseMeters,
+                      double timestampSeconds,
+                      Matrix<N3, N1> visionMeasurementStdDevs) {
+                    drive.addVisionMeasurement(
+                        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+                  }
+                },
+                new VisionIO() {});
         intake = new Intake(new IntakeIO() {});
         feeder = new Feeder(new FeederIO() {});
         floor = new Floor(new FloorIO() {});
