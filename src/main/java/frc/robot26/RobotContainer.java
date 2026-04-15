@@ -24,6 +24,7 @@ import frc.lib.limelight.LimelightHelpers;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.ControllerCommands;
 import frc.robot26.commands.DriveCommands;
+import frc.robot26.commands.LEDCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.ShooterCommands;
 import frc.robot26.commands.SnapCommands;
@@ -48,6 +49,10 @@ import frc.robot26.subsystems.intake.Intake;
 import frc.robot26.subsystems.intake.IntakeIO;
 import frc.robot26.subsystems.intake.IntakeIOSim;
 import frc.robot26.subsystems.intake.IntakeIOTalonFX;
+import frc.robot26.subsystems.leds.LEDs;
+import frc.robot26.subsystems.leds.LEDsIO;
+import frc.robot26.subsystems.leds.LEDsIOCANdle;
+import frc.robot26.subsystems.leds.LEDsIOSim;
 import frc.robot26.subsystems.shooter.Shooter;
 import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
@@ -56,6 +61,7 @@ import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
 import frc.robot26.subsystems.vision.Vision;
 import frc.robot26.subsystems.vision.Vision.VisionConsumer;
 import frc.robot26.subsystems.vision.VisionConstants;
+import frc.robot26.subsystems.vision.VisionIO;
 import frc.robot26.subsystems.vision.VisionIOLimelight;
 import frc.robot26.subsystems.vision.VisionIOPhotonVisionSim;
 import org.ironmaple.simulation.SimulatedArena;
@@ -73,8 +79,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   private Feeder feeder;
   private Floor floor;
   private Shooter shooter;
+  private LEDs leds;
 
-  @SuppressFBWarnings("URF_UNREAD_FIELD")
+  @SuppressWarnings("URF_UNREAD_FIELD")
   private Vision vision;
 
   // Controllers
@@ -133,6 +140,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         feeder = new Feeder(new FeederIOTalonFX());
         floor = new Floor(new FloorIOTalonFX());
         shooter = new Shooter(new ShooterIOTalonFX());
+        leds = new LEDs(new LEDsIOCANdle());
         break;
       case SIM:
         super.configureDriveSimulation(driveSimulation);
@@ -159,7 +167,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   }
                 },
                 isCI
-                    ? new frc.robot26.subsystems.vision.VisionIO() {}
+                    ? new VisionIO() {}
                     : new VisionIOPhotonVisionSim(
                         VisionConstants.limelightFront,
                         VisionConstants.robotToCameraTop,
@@ -168,6 +176,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         feeder = new Feeder(new FeederIOSim());
         floor = new Floor(new FloorIOSim());
         shooter = new Shooter(new ShooterIOSim());
+        leds = new LEDs(new LEDsIOSim());
         break;
       case REPLAY:
         drive =
@@ -178,11 +187,23 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 driveSimulation::setSimulationWorldPose);
-        vision = null;
+        vision =
+            new Vision(
+                new VisionConsumer() {
+                  public void accept(
+                      Pose2d visionRobotPoseMeters,
+                      double timestampSeconds,
+                      Matrix<N3, N1> visionMeasurementStdDevs) {
+                    drive.addVisionMeasurement(
+                        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+                  }
+                },
+                new VisionIO() {});
         intake = new Intake(new IntakeIO() {});
         feeder = new Feeder(new FeederIO() {});
         floor = new Floor(new FloorIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        leds = new LEDs(new LEDsIO() {});
         break;
       default:
         drive =
@@ -193,11 +214,23 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 driveSimulation::setSimulationWorldPose);
-        vision = null;
+        vision =
+            new Vision(
+                new VisionConsumer() {
+                  public void accept(
+                      Pose2d visionRobotPoseMeters,
+                      double timestampSeconds,
+                      Matrix<N3, N1> visionMeasurementStdDevs) {
+                    drive.addVisionMeasurement(
+                        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+                  }
+                },
+                new VisionIO() {});
         intake = new Intake(new IntakeIO() {});
         feeder = new Feeder(new FeederIO() {});
         floor = new Floor(new FloorIO() {});
         shooter = new Shooter(new ShooterIO() {});
+        leds = new LEDs(new LEDsIO() {});
         throw new IllegalStateException(
             "SimConstants.CURRENT_MODE was invalid: " + SimConstants.CURRENT_MODE);
     }
@@ -338,6 +371,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
     shooter.setDefaultCommand(
         shooter.setShooterJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+    leds.setDefaultCommand(LEDCommands.defaultCommand(leds, vision::hasSeenAprilTag));
 
     // =========================================
     // ============ Driver Controls ============
@@ -345,7 +379,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // Find somewhere to put this: .whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
-    // Reset gyro to 0° when B button is pressed
+    // Reset gyro to 0when B button is pressed
     driverController
         .start()
         .or(driverController.back())
@@ -388,7 +422,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    // Lock to hub° when A button is held
+    // Lock to hub when A button is held
     // driverController
     //     .a()
     //     .whileTrue(
