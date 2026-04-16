@@ -393,11 +393,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
-    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-    // driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
-    driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
-    // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
-    driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
+    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // // driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
+    // // driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
+    // // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+    // driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
+
+    driverController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
+    driverController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
     driverController
         .rightBumper()
         .whileTrue(
@@ -418,9 +421,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .rightTrigger()
         .whileTrue(
             shooter
-                .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+                .setTunableShootWithHood()
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
+
+    driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
 
     // Lock to hub when A button is held
     // driverController
@@ -457,7 +462,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                       Translation2d hubCenter = SnapCommands.getHubCenter();
                       Translation2d hubToRobot = hubCenter.minus(drive.getPose().getTranslation());
                       double distToHub = hubToRobot.getNorm();
-                      double leadscale = 2;
+                      double leadscale = 1.6;
 
                       // Time-of-flight estimate
                       double tof = distToHub / ShooterConstants.BALL_SPEED_MPS;
@@ -489,7 +494,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                       }
                       return targetAngle;
                     })
-                .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive)));
+                .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive))
+                .alongWith(
+                    Commands.waitSeconds(1.75).andThen(intake.setDeployOpenLoop(Volts.of(4)))));
 
     // =========================================
     // =========== Operator Controls ===========
@@ -607,7 +614,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
     //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    // jithinController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
+    jithinController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
 
     // jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
     // jithinController.leftBumper().whileTrue(floor.setTunableFloor());
@@ -623,16 +630,16 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
 
-    // jithinController
-    //     .a()
-    //     .whileTrue(
-    //         shooter
-    //             .setShooterClosedLoopAndAngle(RPM.of(525), Degrees.of(15))
-    //             .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(6000))))
-    //             .alongWith(floor.setClosedLoop(RPM.of(6000)))
-    //             .alongWith(
-    //                 Commands.waitSeconds(1.5)
-    //                     .andThen(intake.setDeployOpenLoop(Volts.of(2.5)).withTimeout(1.5))));
+    jithinController
+        .a()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(525), Degrees.of(15))
+                .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(6000))))
+                .alongWith(floor.setClosedLoop(RPM.of(6000)))
+                .alongWith(
+                    Commands.waitSeconds(1.5)
+                        .andThen(intake.setDeployOpenLoop(Volts.of(2.5)).withTimeout(1.5))));
 
     // jithinController.y().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
 
