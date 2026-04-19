@@ -399,8 +399,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
     // driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
 
-    driverController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
-    driverController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
+    driverController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-8)));
+    driverController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(8)));
     driverController
         .rightBumper()
         .whileTrue(
@@ -496,7 +496,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     })
                 .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive))
                 .alongWith(
-                    Commands.waitSeconds(1.75).andThen(intake.setDeployOpenLoop(Volts.of(4)))));
+                    Commands.waitSeconds(1.75)
+                        .andThen(RollerCommands.intakeJiggleOpenLoop(intake))));
 
     // =========================================
     // =========== Operator Controls ===========
