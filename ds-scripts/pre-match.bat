@@ -22,6 +22,10 @@ netsh interface set interface "Wi-Fi 2" DISABLED 2>nul
 powershell -NoProfile -Command ^
   "Get-NetAdapter | Where-Object { $_.InterfaceDescription -like '*Wireless*' -or $_.Name -like '*Wi-Fi*' } | Disable-NetAdapter -Confirm:$false" 2>nul
 
+:: --- ADDED: Disable Bluetooth ---
+powershell -NoProfile -Command ^
+  "Get-NetAdapter | Where-Object { $_.InterfaceDescription -like '*Bluetooth*' -or $_.Name -like '*Bluetooth*' } | Disable-NetAdapter -Confirm:$false" 2>nul
+
 echo [4/4] Waiting for services to settle...
 timeout /t 2 /nobreak >nul
 
