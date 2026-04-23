@@ -50,7 +50,7 @@ public final class ShooterCommands {
               .setShooterClosedLoopAndAngle(
                   () -> getSetpoint(drive).shooterSpeed, () -> getSetpoint(drive).hoodAngle)
               .alongWith(
-                  Commands.waitSeconds(1.5)
+                  Commands.waitSeconds(1.75)
                       .andThen(feeder.setClosedLoop(() -> getSetpoint(drive).feederSpeed)))
               .alongWith(floor.setClosedLoop(RPM.of(6000)));
         },
