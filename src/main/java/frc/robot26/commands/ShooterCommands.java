@@ -57,6 +57,22 @@ public final class ShooterCommands {
         Set.of(shooter, feeder, floor));
   }
 
+  public static Command shootAutoAimVollyContinuous(
+      Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
+    return Commands.defer(
+        () -> {
+          return shooter
+              .setShooterClosedLoopAndAngle(
+                  () -> getSetpoint(drive).shooterSpeed.plus(RPM.of(50)),
+                  () -> getSetpoint(drive).hoodAngle)
+              .alongWith(
+                  Commands.waitSeconds(1.75)
+                      .andThen(feeder.setClosedLoop(() -> getSetpoint(drive).feederSpeed)))
+              .alongWith(floor.setClosedLoop(RPM.of(6000)));
+        },
+        Set.of(shooter, feeder, floor));
+  }
+
   private static ShooterSetpoint getSetpoint(Drive drive) {
     Distance distance = SnapCommands.distanceToHub(drive);
     ShooterSetpoint setpoint = ShooterDistanceTable.getShooterSetpoint(distance);
