@@ -800,33 +800,42 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         Commands.print("Testing shooter..."),
         shooter.setShooterOpenLoop(Volts.of(3)).withTimeout(2),
         Commands.print("Shooter OK"),
+        Commands.waitSeconds(0.5),
 
         // Hood
         Commands.print("Testing hood..."),
-        shooter.setHoodPosition(Degrees.of(15)).withTimeout(2),
+        shooter
+            .setHoodPosition(Degrees.of(15))
+            .withTimeout(2)
+            .andThen(shooter.setHoodPosition(Degrees.of(0))),
         Commands.print("Hood OK"),
+        Commands.waitSeconds(0.5),
 
         // Feeder
         Commands.print("Testing feeder..."),
-        feeder.setOpenLoop(Volts.of(3)).withTimeout(1),
+        feeder.setOpenLoop(Volts.of(3)).withTimeout(2),
         Commands.print("Feeder OK"),
+        Commands.waitSeconds(0.5),
 
         // Floor
         Commands.print("Testing floor..."),
-        floor.setOpenLoop(Volts.of(3)).withTimeout(1),
+        floor.setOpenLoop(Volts.of(3)).withTimeout(2),
         Commands.print("Floor OK"),
+        Commands.waitSeconds(0.5),
 
         // Intake roller
         Commands.print("Testing intake roller..."),
-        intake.setIntakeClosedLoop(RPM.of(3000)).withTimeout(1),
+        intake.setIntakeClosedLoop(RPM.of(3000)).withTimeout(2),
         Commands.print("Intake OK"),
+        Commands.waitSeconds(0.5),
 
         // Intake deploy
         Commands.print("Testing intake deploy..."),
         intake.setDeployOpenLoop(Volts.of(4)).withTimeout(1),
+        Commands.waitSeconds(0.1),
         intake.setDeployOpenLoop(Volts.of(-4)).withTimeout(1),
         Commands.print("Intake deploy OK"),
-        Commands.print("=== All tests passed ==="));
+        Commands.print("=== All tests Ran ==="));
   }
 
   @Override
@@ -834,4 +843,5 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'getRobotPose'");
   }
+  // this is suspitious ^
 }
