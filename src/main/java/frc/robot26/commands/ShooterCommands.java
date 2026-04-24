@@ -7,6 +7,7 @@ import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngle;
 import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterSpeed;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -46,12 +47,13 @@ public final class ShooterCommands {
       Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
     return Commands.defer(
         () -> {
+          ShooterSetpoint setpoint = getSetpoint(drive);
           return shooter
-              .setShooterClosedLoopAndAngle(
-                  () -> getSetpoint(drive).shooterSpeed, () -> getSetpoint(drive).hoodAngle)
+              .setShooterClosedLoopAndAngle(() -> setpoint.shooterSpeed, () -> setpoint.hoodAngle)
               .alongWith(
-                  Commands.waitSeconds(1.75)
-                      .andThen(feeder.setClosedLoop(() -> getSetpoint(drive).feederSpeed)))
+                  Commands.waitUntil(
+                          shooter.isAtVelocitySetpoint(setpoint.shooterSpeed)::getAsBoolean)
+                      .andThen(feeder.setClosedLoop(() -> setpoint.feederSpeed)))
               .alongWith(floor.setClosedLoop(RPM.of(6000)));
         },
         Set.of(shooter, feeder, floor));
@@ -61,13 +63,13 @@ public final class ShooterCommands {
       Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
     return Commands.defer(
         () -> {
+          ShooterSetpoint setpoint = getSetpoint(drive);
+          AngularVelocity vollySpeed = setpoint.shooterSpeed.plus(RPM.of(50));
           return shooter
-              .setShooterClosedLoopAndAngle(
-                  () -> getSetpoint(drive).shooterSpeed.plus(RPM.of(50)),
-                  () -> getSetpoint(drive).hoodAngle)
+              .setShooterClosedLoopAndAngle(() -> vollySpeed, () -> setpoint.hoodAngle)
               .alongWith(
-                  Commands.waitSeconds(1.75)
-                      .andThen(feeder.setClosedLoop(() -> getSetpoint(drive).feederSpeed)))
+                  Commands.waitUntil(shooter.isAtVelocitySetpoint(vollySpeed)::getAsBoolean)
+                      .andThen(feeder.setClosedLoop(() -> setpoint.feederSpeed)))
               .alongWith(floor.setClosedLoop(RPM.of(6000)));
         },
         Set.of(shooter, feeder, floor));
