@@ -52,7 +52,7 @@ public final class ShooterCommands {
               .setShooterClosedLoopAndAngle(() -> setpoint.shooterSpeed, () -> setpoint.hoodAngle)
               .alongWith(
                   Commands.waitUntil(
-                          shooter.isAtVelocitySetpoint(setpoint.shooterSpeed)::getAsBoolean)
+                          shooter.isAtVelocitySetpoint(setpoint.shooterSpeed, 0.9)::getAsBoolean)
                       .andThen(feeder.setClosedLoop(() -> setpoint.feederSpeed)))
               .alongWith(floor.setClosedLoop(RPM.of(6000)));
         },
@@ -68,7 +68,7 @@ public final class ShooterCommands {
           return shooter
               .setShooterClosedLoopAndAngle(() -> vollySpeed, () -> setpoint.hoodAngle)
               .alongWith(
-                  Commands.waitUntil(shooter.isAtVelocitySetpoint(vollySpeed)::getAsBoolean)
+                  Commands.waitUntil(shooter.isAtVelocitySetpoint(vollySpeed, 0.9)::getAsBoolean)
                       .andThen(feeder.setClosedLoop(() -> setpoint.feederSpeed)))
               .alongWith(floor.setClosedLoop(RPM.of(6000)));
         },
