@@ -793,7 +793,40 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
   @Override
   public Command getTestCommand() {
-    return Commands.print("Test command!");
+    return Commands.sequence(
+        Commands.print("=== System Tests Starting ==="),
+
+        // Shooter
+        Commands.print("Testing shooter..."),
+        shooter.setShooterOpenLoop(Volts.of(3)).withTimeout(2),
+        Commands.print("Shooter OK"),
+
+        // Hood
+        Commands.print("Testing hood..."),
+        shooter.setHoodPosition(Degrees.of(15)).withTimeout(2),
+        Commands.print("Hood OK"),
+
+        // Feeder
+        Commands.print("Testing feeder..."),
+        feeder.setOpenLoop(Volts.of(3)).withTimeout(1),
+        Commands.print("Feeder OK"),
+
+        // Floor
+        Commands.print("Testing floor..."),
+        floor.setOpenLoop(Volts.of(3)).withTimeout(1),
+        Commands.print("Floor OK"),
+
+        // Intake roller
+        Commands.print("Testing intake roller..."),
+        intake.setIntakeClosedLoop(RPM.of(3000)).withTimeout(1),
+        Commands.print("Intake OK"),
+
+        // Intake deploy
+        Commands.print("Testing intake deploy..."),
+        intake.setDeployOpenLoop(Volts.of(4)).withTimeout(1),
+        intake.setDeployOpenLoop(Volts.of(-4)).withTimeout(1),
+        Commands.print("Intake deploy OK"),
+        Commands.print("=== All tests passed ==="));
   }
 
   @Override
