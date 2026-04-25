@@ -15,7 +15,7 @@ public class ShooterConstants {
   public static final double joystickSpeedMultiplier = 0.85;
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // 50
   public static final Current SUPPLY_CURRENT_LIMIT_HOOD = Amps.of(10);
-  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(15);
+  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(17.5);
   public static final double GEARING_SHOOTER = 30.0 / 18.0;
   public static final double GEARING_HOOD = 34.375;
 

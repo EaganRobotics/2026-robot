@@ -16,6 +16,7 @@ import frc.lib.tunables.*;
 public class IntakeConstants {
   public static final double joystickSpeedMultiplier = 0.85; // TODO: change
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(20); // TODO: change
+  public static final Current STATOR_CURRENT_LIMIT = Amps.of(40); // TODO: change
   public static final double GEARING_INTAKE = 1.25;
   public static final double GEARING_DEPLOY = 10.0; // TODO: adjust (10:1 is an estimate)
   public static final Distance PITCH_CIRCUMFERENCE = Inches.of(1.26 * Math.PI);
