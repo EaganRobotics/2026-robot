@@ -31,20 +31,20 @@ public class ShooterConstants {
     public static final int hoodMotorID = 16;
 
     public static final LoggedTunablePIDs shooterPIDs =
-        new LoggedTunablePIDs("Shooter", 2.0, 0.0, 0.0);
+        new LoggedTunablePIDs("Shooter", 0.5, 0.0, 0.0);
     public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 200, 0.0, 1);
     public static final LoggedTunableNumber shooterSpeed =
-        new LoggedTunableNumber("Tuning/ShooterSpeed", 500);
+        new LoggedTunableNumber("Tuning/ShooterSpeed", 1000);
     public static final LoggedTunableNumber hoodAngle =
         new LoggedTunableNumber("Tuning/HoodAngle", 15);
     public static final LoggedTunableNumber hoodAngleBack =
         new LoggedTunableNumber("Tuning/hoodAngleBack", 0);
     public static final LoggedTunableNumber shooterAcceleration =
-        new LoggedTunableNumber("Tuning/ShooterAcceleration", 600);
+        new LoggedTunableNumber("Tuning/ShooterAcceleration", 3000);
     public static final LoggedTunableNumber hoodCruiseVelocity =
         new LoggedTunableNumber("Tuning/hoodCruiseVelocity", 1000);
     public static final LoggedTunableNumber hoodAcceleration =
-        new LoggedTunableNumber("Tuning/hoodAcceleration", 1000);
+        new LoggedTunableNumber("Tuning/hoodAcceleration", 2000);
   }
 
   public static final class Sim {

@@ -416,7 +416,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
 
     driverController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-8)));
-    driverController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(8)));
+    driverController.x().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
 
     driverController
         .rightTrigger()
@@ -426,7 +426,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
+    // driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
+
+    driverController.a().whileTrue(shooter.setTunableShootWithHood());
+    driverController.y().whileTrue(floor.setTunableFloor().alongWith(feeder.setTunableFeeder()));
 
     // Lock to hub when A button is held
     // driverController
@@ -653,16 +656,20 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     jithinController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
 
-    // jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
-    // jithinController.leftBumper().whileTrue(floor.setTunableFloor());
-    // jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
-    // jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
+    jithinController.leftTrigger().whileTrue(intake.setTunableIntake());
+    jithinController.leftBumper().whileTrue(floor.setTunableFloor());
+    jithinController.rightTrigger().whileTrue(shooter.setTunableShooter());
+    jithinController.rightBumper().whileTrue(feeder.setTunableFeeder());
+
+    jithinController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(15)));
+
+    jithinController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-15)));
 
     // // jithinController.povUp().whileTrue(intake.setTunableIntakeDeploy());
     // // jithinController.povDown().whileTrue(intake.setTunableIntakeDeployBack());
     // jithinController.povUp().onTrue(shooter.incrementSetHoodPosition(Degrees.of(5)));
     // jithinController.povDown().onTrue(shooter.incrementSetHoodPosition(Degrees.of(-5)));
-    // jithinController.povLeft().whileTrue(intake.setDeployOpenLoop(Volts.of(-3)));
+    jithinController.povLeft().whileTrue(intake.setOpenLoop(Volts.of(5)));
     // jithinController.povRight().whileTrue(intake.setDeployOpenLoop(Volts.of(3)));
 
     // // jithinController.povDown().onTrue(intake.setDeployOpenLoop(Volts.of(5)).withTimeout(.5));
