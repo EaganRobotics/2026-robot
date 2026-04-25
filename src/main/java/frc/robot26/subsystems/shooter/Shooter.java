@@ -132,7 +132,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public Trigger isAtVelocitySetpoint(AngularVelocity target, double percentage) {
-    return new Trigger(() -> inputs.shooterVelocity.isNear(target, 0.6 - percentage));
+    return new Trigger(() -> inputs.shooterVelocity.isNear(target, 0.6 - percentage)).debounce(0.1);
   }
 
   public Command setHoodPosition(Angle angle) {

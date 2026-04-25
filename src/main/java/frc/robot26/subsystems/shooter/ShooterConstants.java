@@ -15,7 +15,7 @@ public class ShooterConstants {
   public static final double joystickSpeedMultiplier = 0.85;
   public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(50);
   public static final Current SUPPLY_CURRENT_LIMIT_HOOD = Amps.of(10);
-  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(30);
+  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(15);
   public static final double GEARING_SHOOTER = 30.0 / 18.0;
   public static final double GEARING_HOOD = 34.375;
 
@@ -40,7 +40,7 @@ public class ShooterConstants {
     public static final LoggedTunableNumber hoodAngleBack =
         new LoggedTunableNumber("Tuning/hoodAngleBack", 0);
     public static final LoggedTunableNumber shooterAcceleration =
-        new LoggedTunableNumber("Tuning/ShooterAcceleration", 3000);
+        new LoggedTunableNumber("Tuning/ShooterAcceleration", 5000);
     public static final LoggedTunableNumber hoodCruiseVelocity =
         new LoggedTunableNumber("Tuning/hoodCruiseVelocity", 1000);
     public static final LoggedTunableNumber hoodAcceleration =
