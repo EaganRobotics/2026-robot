@@ -37,7 +37,7 @@ public final class ShooterCommands {
                       .alongWith(
                           Commands.waitSeconds(1.5)
                               .andThen(feeder.setClosedLoop(setpoint.feederSpeed)))
-                      .alongWith(floor.setClosedLoop(RPM.of(6000))));
+                      .alongWith(floor.setClosedLoop(RPM.of(5000))));
         },
         Set.of(shooter, feeder, floor));
   }
@@ -52,7 +52,7 @@ public final class ShooterCommands {
               .alongWith(
                   Commands.waitSeconds(1.75)
                       .andThen(feeder.setClosedLoop(() -> getSetpoint(drive).feederSpeed)))
-              .alongWith(floor.setClosedLoop(RPM.of(6000)));
+              .alongWith(floor.setClosedLoop(RPM.of(5000)));
         },
         Set.of(shooter, feeder, floor));
   }
