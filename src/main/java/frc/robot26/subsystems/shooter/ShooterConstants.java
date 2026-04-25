@@ -17,7 +17,7 @@ public class ShooterConstants {
   public static final Current SUPPLY_CURRENT_LIMIT_HOOD = Amps.of(10);
   public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(30);
   public static final double GEARING_SHOOTER = 30.0 / 18.0;
-  public static final double GEARING_HOOD = 18.75;
+  public static final double GEARING_HOOD = 34.375;
 
   public static final Angle hoodRotationStartLimit = Radians.of(0.0);
   public static final Angle hoodRotationEndLimit = Radians.of(9.68);
