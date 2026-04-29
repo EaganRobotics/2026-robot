@@ -822,17 +822,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
         // Shooter
         Commands.print("Testing shooter..."),
-        shooter.setShooterOpenLoop(Volts.of(3)).withTimeout(2),
+        shooter.setShooterClosedLoopAndAngle(RPM.of(100), Degrees.of(14)).withTimeout(2),
         Commands.print("Shooter OK"),
-        Commands.waitSeconds(0.5),
-
-        // Hood
-        Commands.print("Testing hood..."),
-        shooter
-            .setHoodPosition(Degrees.of(15))
-            .withTimeout(2)
-            .andThen(shooter.setHoodPosition(Degrees.of(0))),
-        Commands.print("Hood OK"),
         Commands.waitSeconds(0.5),
 
         // Feeder
@@ -861,11 +852,4 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         Commands.print("Intake deploy OK"),
         Commands.print("=== All tests Ran ==="));
   }
-
-  @Override
-  public Pose2d getRobotPose() {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'getRobotPose'");
-  }
-  // this is suspitious ^
 }
