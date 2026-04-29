@@ -133,9 +133,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   }
                 },
                 new VisionIOLimelight(
-                    VisionConstants.limelightFront, () -> drive.getPose().getRotation()),
-                new VisionIOLimelight(
-                    VisionConstants.limelightSide, () -> drive.getPose().getRotation())
+                    VisionConstants.limelightFront, () -> drive.getPose().getRotation())
+                // new VisionIOLimelight(
+                //     VisionConstants.limelightSide, () -> drive.getPose().getRotation())
                 // , new VisionIOLimelight(VisionConstants.limelightBack,
                 // () -> drive.getPose().getRotation())
                 );
