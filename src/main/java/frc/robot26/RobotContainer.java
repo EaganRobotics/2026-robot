@@ -13,7 +13,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,6 +24,7 @@ import frc.lib.limelight.LimelightHelpers;
 import frc.lib.simulation.SimConstants;
 import frc.robot26.commands.ControllerCommands;
 import frc.robot26.commands.DriveCommands;
+import frc.robot26.commands.EverythingCommands;
 import frc.robot26.commands.LEDCommands;
 import frc.robot26.commands.RollerCommands;
 import frc.robot26.commands.ShooterCommands;
@@ -55,7 +55,6 @@ import frc.robot26.subsystems.leds.LEDsIO;
 import frc.robot26.subsystems.leds.LEDsIOCANdle;
 import frc.robot26.subsystems.leds.LEDsIOSim;
 import frc.robot26.subsystems.shooter.Shooter;
-import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.ShooterIO;
 import frc.robot26.subsystems.shooter.ShooterIOSim;
 import frc.robot26.subsystems.shooter.ShooterIOTalonFX;
@@ -274,7 +273,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "AutoScore",
         shooter
             .setHoodPosition(Degree.of(5))
-            .andThen(shooter.setShooterClosedLoop(RPM.of(535)))
+            .andThen(shooter.setShooterClosedLoop(RPM.of(535 * 5)))
             .alongWith(Commands.waitSeconds(1.5).andThen(feeder.setClosedLoop(RPM.of(5000))))
             .alongWith(floor.setClosedLoop(RPM.of(5000)))
             .alongWith(
@@ -297,7 +296,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand(
         "Volley",
         shooter
-            .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+            .setShooterClosedLoopAndAngle(RPM.of(510 * 5), Degrees.of(20))
             .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
             .alongWith(floor.setClosedLoop(RPM.of(4000)))
             .alongWith(
@@ -323,6 +322,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(2));
     NamedCommands.registerCommand(
         "SnapToHub12", SnapCommands.snapToRadius(drive, Feet.of(11.5)).withTimeout(3));
+
+    NamedCommands.registerCommand(
+        "getTheBallsIntoTheHub",
+        EverythingCommands.getTheBallsIntoTheHub(
+            drive, shooter, floor, intake, feeder, () -> 0, () -> 0));
 
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder,
@@ -426,54 +430,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    driverController
-        .y()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                    drive,
-                    () -> -driverController.getLeftY(),
-                    () -> -driverController.getLeftX(),
-                    () -> {
-                      Translation2d hubCenter = SnapCommands.getHubCenter();
-                      Translation2d hubToRobot = hubCenter.minus(drive.getPose().getTranslation());
-                      double distToHub = hubToRobot.getNorm();
-                      double leadscale = 1.6;
-
-                      // Time-of-flight estimate
-                      double tof = distToHub / ShooterConstants.BALL_SPEED_MPS;
-
-                      // Robot velocity in field-space
-                      ChassisSpeeds fieldSpeeds =
-                          ChassisSpeeds.fromRobotRelativeSpeeds(
-                              drive.getChassisSpeeds(), drive.getPose().getRotation());
-                      double vx = fieldSpeeds.vxMetersPerSecond;
-                      double vy = fieldSpeeds.vyMetersPerSecond;
-
-                      // Shift aim point opposite to robot velocity
-                      Translation2d virtualHub =
-                          hubCenter.minus(
-                              new Translation2d(vx * tof * leadscale, vy * tof * leadscale));
-
-                      // Angle to virtual hub
-                      Translation2d virtualHubToRobot =
-                          virtualHub.minus(drive.getPose().getTranslation());
-                      double angleToRobot =
-                          Math.PI + Math.atan2(virtualHubToRobot.getY(), virtualHubToRobot.getX());
-                      Rotation2d targetAngle = new Rotation2d(angleToRobot);
-
-                      // 0.5 degree deadzone
-                      Rotation2d currentAngle = drive.getPose().getRotation();
-                      double errorDegrees = Math.abs(targetAngle.minus(currentAngle).getDegrees());
-                      if (errorDegrees < 0.5) {
-                        return currentAngle;
-                      }
-                      return targetAngle;
-                    })
-                .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive))
-                .alongWith(
-                    Commands.waitSeconds(0.5)
-                        .andThen(RollerCommands.intakeJiggleOpenLoop(intake))));
-
     // driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
 
     // driverController.a().whileTrue(shooter.setTunableShootWithHood());
@@ -513,50 +469,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     operatorController
         .y()
         .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                    drive,
-                    () -> -driverController.getLeftY(),
-                    () -> -driverController.getLeftX(),
-                    () -> {
-                      Translation2d hubCenter = SnapCommands.getHubCenter();
-                      Translation2d hubToRobot = hubCenter.minus(drive.getPose().getTranslation());
-                      double distToHub = hubToRobot.getNorm();
-                      double leadscale = 1.6;
-
-                      // Time-of-flight estimate
-                      double tof = distToHub / ShooterConstants.BALL_SPEED_MPS;
-
-                      // Robot velocity in field-space
-                      ChassisSpeeds fieldSpeeds =
-                          ChassisSpeeds.fromRobotRelativeSpeeds(
-                              drive.getChassisSpeeds(), drive.getPose().getRotation());
-                      double vx = fieldSpeeds.vxMetersPerSecond;
-                      double vy = fieldSpeeds.vyMetersPerSecond;
-
-                      // Shift aim point opposite to robot velocity
-                      Translation2d virtualHub =
-                          hubCenter.minus(
-                              new Translation2d(vx * tof * leadscale, vy * tof * leadscale));
-
-                      // Angle to virtual hub
-                      Translation2d virtualHubToRobot =
-                          virtualHub.minus(drive.getPose().getTranslation());
-                      double angleToRobot =
-                          Math.PI + Math.atan2(virtualHubToRobot.getY(), virtualHubToRobot.getX());
-                      Rotation2d targetAngle = new Rotation2d(angleToRobot);
-
-                      // 0.5 degree deadzone
-                      Rotation2d currentAngle = drive.getPose().getRotation();
-                      double errorDegrees = Math.abs(targetAngle.minus(currentAngle).getDegrees());
-                      if (errorDegrees < 0.5) {
-                        return currentAngle;
-                      }
-                      return targetAngle;
-                    })
-                .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive))
-                .alongWith(
-                    Commands.waitSeconds(1.75)
-                        .andThen(RollerCommands.intakeJiggleOpenLoop(intake))));
+            EverythingCommands.getTheBallsIntoTheHub(
+                drive,
+                shooter,
+                floor,
+                intake,
+                feeder,
+                () -> -driverController.getLeftY(),
+                () -> -driverController.getLeftX()));
 
     operatorController
         .rightBumper()
