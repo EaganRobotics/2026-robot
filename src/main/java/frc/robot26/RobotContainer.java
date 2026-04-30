@@ -274,11 +274,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         shooter
             .setHoodPosition(Degree.of(5))
             .andThen(shooter.setShooterClosedLoop(RPM.of(535 * 5)))
-            .alongWith(Commands.waitSeconds(1.5).andThen(feeder.setClosedLoop(RPM.of(5000))))
+            .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(5000))))
             .alongWith(floor.setClosedLoop(RPM.of(5000)))
             .alongWith(
                 Commands.waitSeconds(0.75)
-                    .andThen(intake.setDeployOpenLoop(Volts.of(2)).withTimeout(1.5)))
+                    .andThen(intake.setDeployOpenLoop(Volts.of(4)).withTimeout(1.5)))
             .withTimeout(3.25)
             .andThen(shooter.setHoodPosition(Degree.of(0))));
 
