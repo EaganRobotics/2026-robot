@@ -242,9 +242,9 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // NamedCommands.registerCommand(
     // "IntakeIn", intake.setDeployPosition(IntakeConstants.DeployState.RETRACTED));
     NamedCommands.registerCommand(
-        "IntakeOut", intake.setDeployOpenLoop(Volts.of(3)).withTimeout(2));
+        "IntakeOut", intake.setDeployOpenLoop(Volts.of(4)).withTimeout(2));
     NamedCommands.registerCommand(
-        "IntakeIn", intake.setDeployOpenLoop(Volts.of(-3)).withTimeout(2));
+        "IntakeIn", intake.setDeployOpenLoop(Volts.of(-4)).withTimeout(2));
     NamedCommands.registerCommand("FeederOut", feeder.setOpenLoop(Volts.of(3)));
     NamedCommands.registerCommand("FeederIn", feeder.setOpenLoop(Volts.of(-3)));
     NamedCommands.registerCommand("FloorOut", floor.setOpenLoop(Volts.of(3)));
@@ -316,7 +316,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 })
             .withTimeout(1));
     NamedCommands.registerCommand(
-        "Deploy", intake.setDeployOpenLoop(Volts.of(-4)).withTimeout(1.5));
+        "Deploy", intake.setDeployOpenLoopWithSpin(Volts.of(-4), RPM.of(7000)).withTimeout(1.75));
 
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(2));
@@ -331,7 +331,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder,
-    // intake).withTimeout(3));
+    // intake).withTimeout(3));j
 
     // NamedCommands.registerCommand("SnapToRadius", DriveCommands.snapToRadius(drive,
     // Feet.of(10.0)));
