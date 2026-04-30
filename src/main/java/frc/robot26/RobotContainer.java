@@ -430,35 +430,6 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
                 .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
-    // driverController.y().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
-
-    // driverController.a().whileTrue(shooter.setTunableShootWithHood());
-    // driverController.y().whileTrue(floor.setTunableFloor().alongWith(feeder.setTunableFeeder()));
-
-    // Lock to hub when A button is held
-    // driverController
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -driverController.getLeftY(),
-    //             () -> -driverController.getLeftX(),
-    //             () -> {
-    //               Translation2d hubToRobot =
-    //                   SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-    //               double angleToRobot = Math.PI + Math.atan2(hubToRobot.getY(),
-    // hubToRobot.getX());
-    //               Rotation2d targetAngle = new Rotation2d(angleToRobot);
-
-    //               // Apply 0.5 degree deadzone — hold current heading if within threshold
-    //               Rotation2d currentAngle = drive.getPose().getRotation();
-    //               double errorDegrees = Math.abs(targetAngle.minus(currentAngle).getDegrees());
-    //               if (errorDegrees < 1) {
-    //                 return currentAngle;
-    //               }
-    //               return targetAngle;
-    //             }));
-
     // =========================================
     // =========== Operator Controls ===========
     // =========================================
@@ -493,7 +464,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                       return new Rotation2d(angleToRobot);
                     })
                 .alongWith(ControllerCommands.rumble(operatorController))
-                .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive))
+                .alongWith(
+                    ShooterCommands.shootAutoAimVollyContinuous(shooter, floor, feeder, drive))
                 .alongWith(
                     Commands.waitSeconds(1.75)
                         .andThen(RollerCommands.intakeJiggleOpenLoop(intake))));
@@ -513,7 +485,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                       return new Rotation2d(angleToRobot);
                     })
                 .alongWith(ControllerCommands.rumble(operatorController))
-                .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive))
+                .alongWith(
+                    ShooterCommands.shootAutoAimVollyContinuous(shooter, floor, feeder, drive))
                 .alongWith(
                     Commands.waitSeconds(1.75)
                         .andThen(RollerCommands.intakeJiggleOpenLoop(intake))));
