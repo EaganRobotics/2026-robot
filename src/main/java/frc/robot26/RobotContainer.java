@@ -442,13 +442,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         .y()
         .whileTrue(
             EverythingCommands.getTheBallsIntoTheHub(
-                drive,
-                shooter,
-                floor,
-                intake,
-                feeder,
-                () -> -driverController.getLeftY(),
-                () -> -driverController.getLeftX()));
+                    drive,
+                    shooter,
+                    floor,
+                    intake,
+                    feeder,
+                    () -> -driverController.getLeftY(),
+                    () -> -driverController.getLeftX())
+                .alongWith(ControllerCommands.rumble(driverController)));
 
     operatorController
         .rightBumper()
