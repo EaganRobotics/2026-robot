@@ -285,7 +285,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     NamedCommands.registerCommand(
         "AutoScore12",
         shooter
-            .setShooterClosedLoopAndAngle(RPM.of(510), Degrees.of(20))
+            .setShooterClosedLoopAndAngle(RPM.of(510 * 5), Degrees.of(20))
             .alongWith(Commands.waitSeconds(1).andThen(feeder.setClosedLoop(RPM.of(4000))))
             .alongWith(floor.setClosedLoop(RPM.of(4000)))
             .alongWith(
@@ -340,13 +340,13 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     autoChooser.addOption(
         "Center-Hub",
         RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(515), RPM.of(1000), RPM.of(1500))
+                shooter, floor, feeder, RPM.of(515 * 5), RPM.of(1000), RPM.of(1500))
             .withTimeout(17));
 
     autoChooser.addOption(
         "Angle-Hub",
         RollerCommands.shootClosedLoop(
-                shooter, floor, feeder, RPM.of(545), RPM.of(1000), RPM.of(1500))
+                shooter, floor, feeder, RPM.of(545 * 5), RPM.of(1000), RPM.of(1500))
             .withTimeout(17));
 
     // Set up SysId routines
