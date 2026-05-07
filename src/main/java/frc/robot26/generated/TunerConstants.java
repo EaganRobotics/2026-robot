@@ -73,9 +73,47 @@ public class TunerConstants {
 
   // The stator current at which the wheels start to slip;
   // This needs to be tuned to your individual robot
-  private static final Current kSlipCurrent = Amps.of(70);
-  // make 70 again
-  private static final Current kNonSlipCurrent = Amps.of(70);
+  private static final Current kSlipCurrent = Amps.of(70); // TODO make big
+
+  //                   _,.,
+  //                 ,'   ,'
+  //                /   ,'
+  //               /   ,
+  //              /   ,
+  //             /   '
+  //            /   ,'
+  //            '.__|
+  //             |  |
+  //             |__|
+  //             |  |
+  //             |__|
+  //             |  |
+  //             |__|
+  //             |  |
+  //             |__|
+  //             |, |
+  //             |--|
+  //             |__|
+  //             |  |
+  //             |--|
+  //             |__|
+  //             |__|        ,-.
+  //             |__|'     ,'  /
+  //        _,.-'     ',_,' o /
+  //       /     8888        /
+  //       |                /
+  //        1              /
+  //        `L   8888     /
+  //         |           /
+  //        /    ====    \
+  //       /     ____     \
+  //      /     (____)  o  \
+  //     /             o    \
+  //    /             o     ,'
+  //   /               _,.'^
+  //  /        __,.-"~^
+
+  private static final Current kNonSlipCurrent = Amps.of(70); // not acctualy used
 
   // Initial configs for the drive and steer motors and the azimuth encoder; these
   // cannot be null.

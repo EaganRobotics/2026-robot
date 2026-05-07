@@ -64,7 +64,7 @@ public final class ShooterCommands {
     return Commands.defer(
         () -> {
           ShooterSetpoint setpoint = getSetpoint(drive);
-          AngularVelocity vollySpeed = setpoint.shooterSpeed.plus(RPM.of(50));
+          AngularVelocity vollySpeed = setpoint.shooterSpeed.plus(RPM.of(100));
           return shooter
               .setShooterClosedLoopAndAngle(() -> vollySpeed, () -> setpoint.hoodAngle)
               .alongWith(

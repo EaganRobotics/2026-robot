@@ -17,13 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SnapToHub"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoScore"
+                  "name": "getTheBallsIntoTheHub"
                 }
               }
             ]
