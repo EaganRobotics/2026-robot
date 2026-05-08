@@ -34,40 +34,51 @@ public class Shooter extends SubsystemBase {
     Logger.processInputs("Shooter", inputs);
   }
 
+  public void applyShooterOpenLoop(Voltage output) {
+    io.setShooterOpenLoop(output);
+  }
+
+  public void applyShooterClosedLoop(AngularVelocity velocity) {
+    io.setShooterClosedLoop(velocity);
+  }
+
+  public void applyShooterClosedLoop(
+      AngularVelocity velocity, double accelerationLimitRpmPerSecond) {
+    io.setShooterClosedLoop(velocity, accelerationLimitRpmPerSecond);
+  }
+
+  public void stopShooter() {
+    applyShooterOpenLoop(Volts.of(0));
+  }
+
   public Command setShooterOpenLoop(Voltage output) {
     return this.startEnd(
             () -> {
-              io.setShooterOpenLoop(output);
+              applyShooterOpenLoop(output);
             },
-            () -> {
-              io.setShooterOpenLoop(Volts.of(0));
-            })
+            this::stopShooter)
         .withName("Shooter.setOpenLoop");
   }
 
   public Command setShooterClosedLoop(AngularVelocity velocity) {
     return this.startEnd(
             () -> {
-              io.setShooterClosedLoop(velocity);
+              applyShooterClosedLoop(velocity);
               // velocitySetpoint = velocity;
             },
-            () -> {
-              io.setShooterOpenLoop(Volts.of(0));
-              // io.setShooterClosedLoop(RPM.of(0));
-              // velocitySetpoint = RPM.of(0);
-            })
+            this::stopShooter)
         .withName("Shooter.setShooterClosedLoop");
   }
 
   public Command setShooterClosedLoopAndAngle(AngularVelocity velocity, Angle angle) {
     return this.startEnd(
             () -> {
-              io.setShooterClosedLoop(velocity);
+              applyShooterClosedLoop(velocity);
               // velocitySetpoint = velocity;
               io.setHoodPosition(angle);
             },
             () -> {
-              io.setShooterOpenLoop(Volts.of(0));
+              stopShooter();
               // io.setShooterClosedLoop(RPM.of(0));
               // velocitySetpoint = RPM.of(0);
               io.setHoodPosition(Degrees.of(0));
@@ -85,12 +96,12 @@ public class Shooter extends SubsystemBase {
       Supplier<AngularVelocity> velocity, Supplier<Angle> angle) {
     return this.runEnd(
             () -> {
-              io.setShooterClosedLoop(velocity.get());
+              applyShooterClosedLoop(velocity.get());
               // velocitySetpoint = velocity.get();
               io.setHoodPosition(angle.get());
             },
             () -> {
-              io.setShooterOpenLoop(Volts.of(0));
+              stopShooter();
               // io.setShooterClosedLoop(RPM.of(0));
               // velocitySetpoint = RPM.of(0);
               io.setHoodPosition(Degrees.of(0));
@@ -101,11 +112,11 @@ public class Shooter extends SubsystemBase {
   public Command setTunableShootWithHood() {
     return this.startEnd(
             () -> {
-              io.setShooterClosedLoop(RPM.of(ShooterConstants.Real.shooterSpeed.get()));
+              applyShooterClosedLoop(RPM.of(ShooterConstants.Real.shooterSpeed.get()));
               io.setHoodPosition(Degrees.of(ShooterConstants.Real.hoodAngle.get()));
             },
             () -> {
-              io.setShooterOpenLoop(Volts.of(0));
+              stopShooter();
               io.setHoodPosition(Degrees.of(0));
             })
         .withName("Shooter.setShooterClosedLoop2");
@@ -114,14 +125,10 @@ public class Shooter extends SubsystemBase {
   public Command setShooterClosedLoop(Supplier<AngularVelocity> velocity) {
     return this.runEnd(
             () -> {
-              io.setShooterClosedLoop(velocity.get());
+              applyShooterClosedLoop(velocity.get());
               // velocitySetpoint = velocity.get();
             },
-            () -> {
-              io.setShooterOpenLoop(Volts.of(0));
-              // io.setShooterClosedLoop(RPM.of(0));
-              // velocitySetpoint = RPM.of(0);
-            })
+            this::stopShooter)
         .withName("Shooter.setShooterClosedLoop");
   }
 
@@ -179,12 +186,10 @@ public class Shooter extends SubsystemBase {
   public Command setShooterJoystickOpenLoop(DoubleSupplier speed) {
     return this.runEnd(
             () -> {
-              io.setShooterOpenLoop(
+              applyShooterOpenLoop(
                   Volts.of(speed.getAsDouble() * 12.0 * ShooterConstants.joystickSpeedMultiplier));
             },
-            () -> {
-              io.setShooterOpenLoop(Volts.of(0));
-            })
+            this::stopShooter)
         .withName("Shooter.setShooterJoystickOpenLoop");
   }
 

@@ -35,12 +35,16 @@ public class ShooterConstants {
     public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 200, 0.0, 1);
     public static final LoggedTunableNumber shooterSpeed =
         new LoggedTunableNumber("Tuning/ShooterSpeed", 1000);
+    public static final LoggedTunableNumber shooterPreSpinSpeed =
+        new LoggedTunableNumber("Tuning/ShooterPreSpinSpeed", 2000);
     public static final LoggedTunableNumber hoodAngle =
         new LoggedTunableNumber("Tuning/HoodAngle", 15);
     public static final LoggedTunableNumber hoodAngleBack =
         new LoggedTunableNumber("Tuning/hoodAngleBack", 0);
     public static final LoggedTunableNumber shooterAcceleration =
         new LoggedTunableNumber("Tuning/ShooterAcceleration", 5000);
+    public static final LoggedTunableNumber shooterPreSpinAcceleration =
+        new LoggedTunableNumber("Tuning/ShooterPreSpinAcceleration", 1500);
     public static final LoggedTunableNumber hoodCruiseVelocity =
         new LoggedTunableNumber("Tuning/hoodCruiseVelocity", 1000);
     public static final LoggedTunableNumber hoodAcceleration =

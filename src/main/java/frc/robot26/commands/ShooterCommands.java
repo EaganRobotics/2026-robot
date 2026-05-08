@@ -2,24 +2,32 @@ package frc.robot26.commands;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot26.subsystems.feeder.FeederConstants.Real.feederSpeed;
 import static frc.robot26.subsystems.shooter.ShooterConstants.Real.hoodAngle;
+import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterPreSpinAcceleration;
+import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterPreSpinSpeed;
 import static frc.robot26.subsystems.shooter.ShooterConstants.Real.shooterSpeed;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot26.subsystems.drive.Drive;
 import frc.robot26.subsystems.feeder.Feeder;
 import frc.robot26.subsystems.floor.Floor;
 import frc.robot26.subsystems.shooter.Shooter;
+import frc.robot26.subsystems.shooter.ShooterConstants;
 import frc.robot26.subsystems.shooter.setpoint.ShooterDistanceTable;
 import frc.robot26.subsystems.shooter.setpoint.ShooterSetpoint;
+import frc.robot26.subsystems.vision.VisionConstants;
 import java.util.Set;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public final class ShooterCommands {
   private static final double DEADBAND = 0.1;
@@ -91,6 +99,42 @@ public final class ShooterCommands {
                 .andThen(shooter.setHoodPosition(Degree.of(hoodAngle.get()))));
   }
 
+  public static Command shooterAllianceSideDefaultCommand(
+      Shooter shooter, Drive drive, DoubleSupplier manualSupplier) {
+    return shooter.runEnd(
+        () -> {
+          double manualInput = MathUtil.applyDeadband(manualSupplier.getAsDouble(), DEADBAND);
+          boolean canPreSpin = DriverStation.isTeleopEnabled() && isOnAllianceSide(drive);
+          boolean isManualOverride = Math.abs(manualInput) > 0.0;
+          boolean shouldPreSpin = canPreSpin && !isManualOverride;
+
+          Logger.recordOutput("Shooter/AllianceSidePreSpinEnabled", shouldPreSpin);
+          Logger.recordOutput("Shooter/AllianceSideRobotX", drive.getPose().getX());
+
+          if (isManualOverride) {
+            shooter.applyShooterOpenLoop(
+                Volts.of(manualInput * 12.0 * ShooterConstants.joystickSpeedMultiplier));
+            Logger.recordOutput("Shooter/AllianceSidePreSpinTargetRPM", 0.0);
+            return;
+          }
+
+          if (shouldPreSpin) {
+            shooter.applyShooterClosedLoop(
+                RPM.of(shooterPreSpinSpeed.get()), shooterPreSpinAcceleration.get());
+            Logger.recordOutput("Shooter/AllianceSidePreSpinTargetRPM", shooterPreSpinSpeed.get());
+            return;
+          }
+
+          shooter.stopShooter();
+          Logger.recordOutput("Shooter/AllianceSidePreSpinTargetRPM", 0.0);
+        },
+        () -> {
+          shooter.stopShooter();
+          Logger.recordOutput("Shooter/AllianceSidePreSpinEnabled", false);
+          Logger.recordOutput("Shooter/AllianceSidePreSpinTargetRPM", 0.0);
+        });
+  }
+
   public static Command shooterDefaultCommand(
       Shooter shooter,
       Supplier<Distance> distanceSupplier,
@@ -110,5 +154,12 @@ public final class ShooterCommands {
 
           return RPM.of(0);
         });
+  }
+
+  private static boolean isOnAllianceSide(Drive drive) {
+    double midlineX = VisionConstants.aprilTagLayout.getFieldLength() / 2.0;
+    Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
+    double robotX = drive.getPose().getX();
+    return alliance == Alliance.Red ? robotX >= midlineX : robotX <= midlineX;
   }
 }

@@ -35,6 +35,9 @@ import frc.robot26.subsystems.shooter.ShooterConstants.Real;
 
 public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFX leadLeft, followerLeft, leadRight, followerRight, hood;
+  private final TalonFXConfiguration leadConfigLeft = new TalonFXConfiguration();
+  private final TalonFXConfiguration leadConfigRight = new TalonFXConfiguration();
+  private final TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
   private final MotionMagicVoltage hoodPositionRequest = new MotionMagicVoltage(0);
   private final MotionMagicVelocityVoltage velocityVoltageRequest =
       new MotionMagicVelocityVoltage(0.0);
@@ -42,6 +45,9 @@ public class ShooterIOTalonFX implements ShooterIO {
   private final StatusSignal<AngularVelocity> leadVelocityLeft, leadVelocityRight, hoodVelocity;
   private final StatusSignal<Voltage> leadVoltageLeft, leadVoltageRight, hoodVoltage;
   private final StatusSignal<Current> leadCurrentLeft, leadCurrentRight, hoodCurrent;
+  private double defaultShooterAccelerationRpmPerSecond = Double.NaN;
+  private double appliedShooterAccelerationRpmPerSecond = Double.NaN;
+  private boolean useDefaultShooterAcceleration = true;
 
   public ShooterIOTalonFX() {
     leadLeft = new TalonFX(Real.leadLeftMotorID);
@@ -64,10 +70,6 @@ public class ShooterIOTalonFX implements ShooterIO {
     hoodPosition = hood.getPosition();
     hoodVoltage = hood.getMotorVoltage();
     hoodCurrent = hood.getStatorCurrent();
-
-    var leadConfigLeft = new TalonFXConfiguration();
-    var leadConfigRight = new TalonFXConfiguration();
-    var hoodConfig = new TalonFXConfiguration();
 
     leadConfigLeft.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leadConfigLeft.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
@@ -119,10 +121,10 @@ public class ShooterIOTalonFX implements ShooterIO {
     Real.hoodPIDs.applyToTalonFXConfig(hood, hoodConfig);
     Real.shooterAcceleration.addListener(
         (acceleration) -> {
-          leadConfigLeft.MotionMagic.MotionMagicAcceleration = acceleration / 60.0;
-          leadConfigRight.MotionMagic.MotionMagicAcceleration = acceleration / 60.0;
-          leadLeft.getConfigurator().apply(leadConfigLeft);
-          leadRight.getConfigurator().apply(leadConfigRight);
+          defaultShooterAccelerationRpmPerSecond = acceleration;
+          if (useDefaultShooterAcceleration) {
+            applyShooterAcceleration(defaultShooterAccelerationRpmPerSecond);
+          }
         });
     leadLeft.getConfigurator().apply(leadConfigLeft, 0.25);
     leadLeft.setPosition(0);
@@ -161,6 +163,16 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void setShooterClosedLoop(AngularVelocity velocity) {
+    useDefaultShooterAcceleration = true;
+    applyShooterAcceleration(defaultShooterAccelerationRpmPerSecond);
+    leadLeft.setControl(velocityVoltageRequest.withVelocity(velocity));
+    leadRight.setControl(velocityVoltageRequest.withVelocity(velocity));
+  }
+
+  @Override
+  public void setShooterClosedLoop(AngularVelocity velocity, double accelerationLimitRpmPerSecond) {
+    useDefaultShooterAcceleration = false;
+    applyShooterAcceleration(accelerationLimitRpmPerSecond);
     leadLeft.setControl(velocityVoltageRequest.withVelocity(velocity));
     leadRight.setControl(velocityVoltageRequest.withVelocity(velocity));
   }
@@ -200,5 +212,21 @@ public class ShooterIOTalonFX implements ShooterIO {
   @Override
   public void setHoodPosition(Angle angle) {
     hood.setControl(hoodPositionRequest.withPosition(angle));
+  }
+
+  private void applyShooterAcceleration(double accelerationRpmPerSecond) {
+    if (Double.isNaN(accelerationRpmPerSecond) || isUsingAcceleration(accelerationRpmPerSecond)) {
+      return;
+    }
+
+    leadConfigLeft.MotionMagic.MotionMagicAcceleration = accelerationRpmPerSecond / 60.0;
+    leadConfigRight.MotionMagic.MotionMagicAcceleration = accelerationRpmPerSecond / 60.0;
+    leadLeft.getConfigurator().apply(leadConfigLeft);
+    leadRight.getConfigurator().apply(leadConfigRight);
+    appliedShooterAccelerationRpmPerSecond = accelerationRpmPerSecond;
+  }
+
+  private boolean isUsingAcceleration(double accelerationRpmPerSecond) {
+    return Math.abs(appliedShooterAccelerationRpmPerSecond - accelerationRpmPerSecond) < 1e-9;
   }
 }

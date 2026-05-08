@@ -391,7 +391,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         feeder.setJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
     shooter.setDefaultCommand(
-        shooter.setShooterJoystickOpenLoop(() -> -operatorController.getRightY() * .85));
+        ShooterCommands.shooterAllianceSideDefaultCommand(
+            shooter, drive, () -> -operatorController.getRightY() * .85));
     leds.setDefaultCommand(LEDCommands.defaultCommand(leds, vision::hasSeenAprilTag));
 
     // =========================================

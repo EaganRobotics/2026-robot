@@ -36,4 +36,9 @@ public interface ShooterIO {
   public default void setHoodPosition(Angle angle) {}
 
   public default void setShooterClosedLoop(AngularVelocity velocity) {}
+
+  public default void setShooterClosedLoop(
+      AngularVelocity velocity, double accelerationLimitRpmPerSecond) {
+    setShooterClosedLoop(velocity);
+  }
 }

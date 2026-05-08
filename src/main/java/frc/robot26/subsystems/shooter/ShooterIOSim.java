@@ -81,6 +81,11 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
+  public void setShooterClosedLoop(AngularVelocity velocity, double accelerationLimitRpmPerSecond) {
+    setShooterClosedLoop(velocity);
+  }
+
+  @Override
   public void setHoodPosition(Angle angle) {
     hoodAppliedVoltage = Volts.of(angle.in(Degrees)); // this is wrong
     setHoodOpenLoop(hoodAppliedVoltage);
