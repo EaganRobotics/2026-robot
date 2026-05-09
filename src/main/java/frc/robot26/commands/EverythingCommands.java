@@ -61,6 +61,6 @@ public class EverythingCommands {
               return targetAngle;
             })
         .alongWith(ShooterCommands.shootAutoAimContinuous(shooter, floor, feeder, drive))
-        .alongWith(Commands.waitSeconds(1.75).andThen(RollerCommands.intakeJiggleOpenLoop(intake)));
+        .alongWith(Commands.waitSeconds(0.5).andThen(RollerCommands.intakeJiggleOpenLoop(intake)));
   }
 }

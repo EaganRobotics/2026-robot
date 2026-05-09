@@ -436,10 +436,10 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // =========== Operator Controls ===========
     // =========================================
 
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
-    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
+    driverController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
+    driverController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
 
-    operatorController
+    driverController
         .y()
         .whileTrue(
             EverythingCommands.getTheBallsIntoTheHub(
@@ -452,7 +452,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     () -> -driverController.getLeftX())
                 .alongWith(ControllerCommands.rumble(driverController)));
 
-    operatorController
+    driverController
         .rightBumper()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
@@ -473,7 +473,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     Commands.waitSeconds(1.75)
                         .andThen(RollerCommands.intakeJiggleOpenLoop(intake))));
 
-    operatorController
+    driverController
         .leftBumper()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(

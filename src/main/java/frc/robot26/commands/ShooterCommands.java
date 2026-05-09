@@ -31,6 +31,7 @@ import org.littletonrobotics.junction.Logger;
 
 public final class ShooterCommands {
   private static final double DEADBAND = 0.1;
+  private static final double ALLIANCE_SIDE_BUFFER_METERS = 3.6; // tune as needed
 
   public static Command shootAutoAim(Shooter shooter, Floor floor, Feeder feeder, Drive drive) {
     return Commands.defer(
@@ -149,7 +150,7 @@ public final class ShooterCommands {
           }
 
           if (distanceSupplier.get().lte(radius)) {
-            return RPM.of(shooterSpeed.get() * 0.75);
+            return RPM.of(shooterSpeed.get() * 1);
           }
 
           return RPM.of(0);
@@ -160,6 +161,8 @@ public final class ShooterCommands {
     double midlineX = VisionConstants.aprilTagLayout.getFieldLength() / 2.0;
     Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);
     double robotX = drive.getPose().getX();
-    return alliance == Alliance.Red ? robotX >= midlineX : robotX <= midlineX;
+    return alliance == Alliance.Red
+        ? robotX >= midlineX + ALLIANCE_SIDE_BUFFER_METERS
+        : robotX <= midlineX - ALLIANCE_SIDE_BUFFER_METERS;
   }
 }

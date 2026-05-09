@@ -44,7 +44,7 @@ public class ShooterConstants {
     public static final LoggedTunableNumber shooterAcceleration =
         new LoggedTunableNumber("Tuning/ShooterAcceleration", 5000);
     public static final LoggedTunableNumber shooterPreSpinAcceleration =
-        new LoggedTunableNumber("Tuning/ShooterPreSpinAcceleration", 1500);
+        new LoggedTunableNumber("Tuning/ShooterPreSpinAcceleration", 1000);
     public static final LoggedTunableNumber hoodCruiseVelocity =
         new LoggedTunableNumber("Tuning/hoodCruiseVelocity", 1000);
     public static final LoggedTunableNumber hoodAcceleration =
