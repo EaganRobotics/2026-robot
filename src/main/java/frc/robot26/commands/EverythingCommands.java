@@ -55,7 +55,7 @@ public class EverythingCommands {
               // 0.5 degree deadzone
               Rotation2d currentAngle = drive.getPose().getRotation();
               double errorDegrees = Math.abs(targetAngle.minus(currentAngle).getDegrees());
-              if (errorDegrees < 0.5) {
+              if (errorDegrees < 0.25) {
                 return currentAngle;
               }
               return targetAngle;

@@ -316,7 +316,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 })
             .withTimeout(1));
     NamedCommands.registerCommand(
-        "Deploy", intake.setDeployOpenLoopWithSpin(Volts.of(-4), RPM.of(7000)).withTimeout(1.75));
+        "Deploy", intake.setDeployOpenLoopWithSpin(Volts.of(-6), RPM.of(7000)).withTimeout(1.2));
 
     NamedCommands.registerCommand(
         "SnapToHub", SnapCommands.snapToRadius(drive, Feet.of(7.5)).withTimeout(2));
@@ -327,7 +327,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "getTheBallsIntoTheHub",
         EverythingCommands.getTheBallsIntoTheHub(
                 drive, shooter, floor, intake, feeder, () -> 0, () -> 0)
-            .withTimeout(6));
+            .withTimeout(4));
 
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder,
@@ -424,13 +424,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // driverController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-8)));
     // driverController.x().whileTrue(SnapCommands.tuneableSnapToRadius(drive));
 
-    driverController
-        .rightTrigger()
-        .whileTrue(
-            shooter
-                .setTunableShootWithHood()
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+    // driverController
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         shooter
+    //             .setTunableShootWithHood()
+    //
+    // .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
+    //             .alongWith(floor.setClosedLoop(RPM.of(4000))));
 
     // =========================================
     // =========== Operator Controls ===========
