@@ -17,6 +17,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "AngleToHub"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "getTheBallsIntoTheHub"
                 }
               }
@@ -36,9 +42,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AngleToHub"
+                }
+              },
               {
                 "type": "named",
                 "data": {

@@ -311,10 +311,11 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                 () -> {
                   Translation2d hubToRobot =
                       SnapCommands.getHubCenter().minus(drive.getPose().getTranslation());
-                  double angleToRobot = Math.atan2(hubToRobot.getY(), hubToRobot.getX());
+                  double angleToRobot = -Math.atan2(hubToRobot.getY(), -hubToRobot.getX());
                   return new Rotation2d(angleToRobot);
                 })
             .withTimeout(1));
+
     NamedCommands.registerCommand(
         "Deploy", intake.setDeployOpenLoopWithSpin(Volts.of(-6), RPM.of(7000)).withTimeout(1.2));
 

@@ -1,4 +1,4 @@
-# Mirror Kansas Left Fast overcross paths to Kansas Right Fast overcross
+# Mirror Kansas Right Fast overcross paths to Kansas Left Fast overcross
 
 $fieldYCenter = 4.035
 
@@ -57,11 +57,11 @@ function Mirror-Path {
     Write-Host "Created $outputPath"
 }
 
-# Source and destination paths
-$leftPath1 = "src/main/deploy/pathplanner/paths/KS.L.1.oc.path"
+# Mirror RIGHT paths INTO LEFT paths (overwriting left)
 $rightPath1 = "src/main/deploy/pathplanner/paths/KS.R.1.oc.path"
-Mirror-Path $leftPath1 $rightPath1
+$leftPath1 = "src/main/deploy/pathplanner/paths/KS.L.1.oc.path"
+Mirror-Path $rightPath1 $leftPath1
 
-$leftPath2 = "src/main/deploy/pathplanner/paths/KS.L.2.f.oc.path"
 $rightPath2 = "src/main/deploy/pathplanner/paths/KS.R.2.f.oc.path"
-Mirror-Path $leftPath2 $rightPath2
+$leftPath2 = "src/main/deploy/pathplanner/paths/KS.L.2.f.oc.path"
+Mirror-Path $rightPath2 $leftPath2
