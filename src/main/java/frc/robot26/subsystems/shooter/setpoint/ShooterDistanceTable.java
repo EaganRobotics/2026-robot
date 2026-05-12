@@ -11,12 +11,8 @@ public class ShooterDistanceTable {
 
   static {
     table.put(5.0, new ShooterSetpoint(RPM.of(2400), RPM.of(3000), Degree.of(0)));
-    // table.put(5.5, new ShooterSetpoint(RPM.of(2500), RPM.of(5000), Degree.of(2.5)));
     table.put(6.0, new ShooterSetpoint(RPM.of(2500), RPM.of(3000), Degree.of(9)));
-    // table.put(7.5, new ShooterSetpoint(RPM.of(510), RPM.of(5000), Degree.of(20)));
     table.put(8.0, new ShooterSetpoint(RPM.of(2600), RPM.of(3000), Degree.of(11)));
-    // table.put(5, new ShooterSetpoint(RPM.of(450 * 5), RPM.of(3000), Degree.of(0)));
-    // table.put(7.5, new ShooterSetpoint(RPM.of(510 * 5), RPM.of(3000), Degree.of(5)));
     table.put(9, new ShooterSetpoint(RPM.of(2650), RPM.of(3000), Degree.of(12.5)));
     table.put(10, new ShooterSetpoint(RPM.of(2700), RPM.of(3000), Degree.of(13)));
     table.put(11, new ShooterSetpoint(RPM.of(2700), RPM.of(3000), Degree.of(20)));
