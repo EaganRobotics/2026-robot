@@ -314,7 +314,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                   double angleToRobot = -Math.atan2(hubToRobot.getY(), -hubToRobot.getX());
                   return new Rotation2d(angleToRobot);
                 })
-            .withTimeout(1));
+            .withTimeout(0.75));
 
     NamedCommands.registerCommand(
         "Deploy", intake.setDeployOpenLoopWithSpin(Volts.of(-6), RPM.of(7000)).withTimeout(1.2));
@@ -328,7 +328,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
         "getTheBallsIntoTheHub",
         EverythingCommands.getTheBallsIntoTheHub(
                 drive, shooter, floor, intake, feeder, () -> 0, () -> 0)
-            .withTimeout(4));
+            .withTimeout(3));
 
     // NamedCommands.registerCommand(
     // "AutoShoot", RollerCommands.shootOpenLoop(shooter, floor, feeder,
