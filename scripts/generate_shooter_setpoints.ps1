@@ -17,3 +17,6 @@ if ($null -ne $python) {
 
 Write-Error "Python 3 was not found. Install Python or run the script on a machine with 'py' or 'python' available."
 exit 1
+
+
+#COMMAND TO RUN IS powershell -ExecutionPolicy Bypass -File .\scripts\generate_shooter_setpoints.ps1 --distance-start-ft 5 --distance-end-ft 18 --distance-count 10 --solutions-per-distance 3 --candidate-sort-mode balanced
