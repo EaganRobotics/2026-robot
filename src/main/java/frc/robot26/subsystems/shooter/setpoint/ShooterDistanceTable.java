@@ -54,18 +54,18 @@ public class ShooterDistanceTable {
     // option 3: table.put(13.67, new ShooterSetpoint(RPM.of(2936), RPM.of(3000),
     // Degree.of(25.75)));
     // 15.11 ft options
-    // option 1: table.put(15.11, new ShooterSetpoint(RPM.of(3000), RPM.of(3000), Degree.of(27)));
+    table.put(15.11, new ShooterSetpoint(RPM.of(3000), RPM.of(3000), Degree.of(27)));
     // option 2: table.put(15.11, new ShooterSetpoint(RPM.of(2989), RPM.of(3000),
     // Degree.of(26.75)));
     // option 3: table.put(15.11, new ShooterSetpoint(RPM.of(2979), RPM.of(3000), Degree.of(26.5)));
     // 16.56 ft options
-    // option 1: table.put(16.56, new ShooterSetpoint(RPM.of(3025), RPM.of(3000), Degree.of(27)));
+    table.put(16.56, new ShooterSetpoint(RPM.of(3025), RPM.of(3000), Degree.of(27)));
     // option 2: table.put(16.56, new ShooterSetpoint(RPM.of(3035), RPM.of(3000),
     // Degree.of(27.25)));
     // option 3: table.put(16.56, new ShooterSetpoint(RPM.of(3015), RPM.of(3000),
     // Degree.of(26.75)));
     // 18 ft options
-    // option 1: table.put(18, new ShooterSetpoint(RPM.of(3062), RPM.of(3000), Degree.of(27)));
+    table.put(18, new ShooterSetpoint(RPM.of(3062), RPM.of(3000), Degree.of(27)));
     // option 2: table.put(18, new ShooterSetpoint(RPM.of(3071), RPM.of(3000), Degree.of(27.25)));
     // option 3: table.put(18, new ShooterSetpoint(RPM.of(3053), RPM.of(3000), Degree.of(26.75)));
 
