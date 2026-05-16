@@ -22,7 +22,7 @@ public class Shooter extends SubsystemBase {
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
-  private AngularVelocity velocitySetpoint = RPM.of(0);
+  // private AngularVelocity velocitySetpoint = RPM.of(0);
 
   public Shooter(ShooterIO io) {
     this.io = io;
@@ -49,12 +49,12 @@ public class Shooter extends SubsystemBase {
     return this.startEnd(
             () -> {
               io.setShooterClosedLoop(velocity);
-              velocitySetpoint = velocity;
+              // velocitySetpoint = velocity;
             },
             () -> {
               io.setShooterOpenLoop(Volts.of(0));
               // io.setShooterClosedLoop(RPM.of(0));
-              velocitySetpoint = RPM.of(0);
+              // velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");
   }
@@ -63,13 +63,13 @@ public class Shooter extends SubsystemBase {
     return this.startEnd(
             () -> {
               io.setShooterClosedLoop(velocity);
-              velocitySetpoint = velocity;
+              // velocitySetpoint = velocity;
               io.setHoodPosition(angle);
             },
             () -> {
               io.setShooterOpenLoop(Volts.of(0));
               // io.setShooterClosedLoop(RPM.of(0));
-              velocitySetpoint = RPM.of(0);
+              // velocitySetpoint = RPM.of(0);
               io.setHoodPosition(Degrees.of(0));
             })
         .withName("Shooter.setShooterClosedLoop");
@@ -77,16 +77,50 @@ public class Shooter extends SubsystemBase {
     // DOSENT DO ANYTHING
   }
 
-  public Command setShooterClosedLoop(Supplier<AngularVelocity> velocity) {
+  /**
+   * Continuously update both shooter velocity and hood angle from suppliers. Use this when you want
+   * the setpoints to be re-read each scheduler cycle.
+   */
+  public Command setShooterClosedLoopAndAngle(
+      Supplier<AngularVelocity> velocity, Supplier<Angle> angle) {
     return this.runEnd(
             () -> {
               io.setShooterClosedLoop(velocity.get());
-              velocitySetpoint = velocity.get();
+              // velocitySetpoint = velocity.get();
+              io.setHoodPosition(angle.get());
             },
             () -> {
               io.setShooterOpenLoop(Volts.of(0));
               // io.setShooterClosedLoop(RPM.of(0));
-              velocitySetpoint = RPM.of(0);
+              // velocitySetpoint = RPM.of(0);
+              io.setHoodPosition(Degrees.of(0));
+            })
+        .withName("Shooter.setShooterClosedLoopAndAngle");
+  }
+
+  public Command setTunableShootWithHood() {
+    return this.startEnd(
+            () -> {
+              io.setShooterClosedLoop(RPM.of(ShooterConstants.Real.shooterSpeed.get()));
+              io.setHoodPosition(Degrees.of(ShooterConstants.Real.hoodAngle.get()));
+            },
+            () -> {
+              io.setShooterOpenLoop(Volts.of(0));
+              io.setHoodPosition(Degrees.of(0));
+            })
+        .withName("Shooter.setShooterClosedLoop2");
+  }
+
+  public Command setShooterClosedLoop(Supplier<AngularVelocity> velocity) {
+    return this.runEnd(
+            () -> {
+              io.setShooterClosedLoop(velocity.get());
+              // velocitySetpoint = velocity.get();
+            },
+            () -> {
+              io.setShooterOpenLoop(Volts.of(0));
+              // io.setShooterClosedLoop(RPM.of(0));
+              // velocitySetpoint = RPM.of(0);
             })
         .withName("Shooter.setShooterClosedLoop");
   }
@@ -97,11 +131,8 @@ public class Shooter extends SubsystemBase {
         Set.of(this));
   }
 
-  public Trigger isAtVelocitySetpoint(AngularVelocity tolerance) {
-    return new Trigger(
-        () -> {
-          return inputs.shooterVelocity.isNear(velocitySetpoint, tolerance);
-        });
+  public Trigger isAtVelocitySetpoint(AngularVelocity target, double percentage) {
+    return new Trigger(() -> inputs.shooterVelocity.isNear(target, 0.6 - percentage)).debounce(0.1);
   }
 
   public Command setHoodPosition(Angle angle) {

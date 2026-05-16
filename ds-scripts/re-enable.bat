@@ -15,5 +15,9 @@ netsh interface set interface "Wi-Fi 2" ENABLED 2>nul
 powershell -NoProfile -Command ^
   "Get-NetAdapter | Where-Object { $_.InterfaceDescription -like '*Wireless*' -or $_.Name -like '*Wi-Fi*' } | Enable-NetAdapter -Confirm:$false" 2>nul
 
+:: --- ADDED: Enable Bluetooth ---
+powershell -NoProfile -Command ^
+  "Get-NetAdapter | Where-Object { $_.InterfaceDescription -like '*Bluetooth*' -or $_.Name -like '*Bluetooth*' } | Enable-NetAdapter -Confirm:$false" 2>nul
+
 echo Enabling firewall...
 netsh advfirewall set allprofiles state on >nul 2>&1

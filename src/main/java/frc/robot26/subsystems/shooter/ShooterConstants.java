@@ -13,14 +13,15 @@ import frc.lib.tunables.*;
 
 public class ShooterConstants {
   public static final double joystickSpeedMultiplier = 0.85;
-  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(50);
+  public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(25); // 50
   public static final Current SUPPLY_CURRENT_LIMIT_HOOD = Amps.of(10);
-  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(30);
-  public static final double GEARING_SHOOTER = 5;
-  public static final double GEARING_HOOD = 18.75;
+  public static final Current STATOR_CURRENT_LIMIT_HOOD = Amps.of(17.5);
+  public static final double GEARING_SHOOTER = 30.0 / 18.0;
+  public static final double GEARING_HOOD = 34.375;
 
   public static final Angle hoodRotationStartLimit = Radians.of(0.0);
   public static final Angle hoodRotationEndLimit = Radians.of(9.68);
+  public static final double BALL_SPEED_MPS = 4.0; // TODO measure
 
   public static final class Real {
     public static final int followerLeftMotorID = 13;
@@ -30,20 +31,20 @@ public class ShooterConstants {
     public static final int hoodMotorID = 16;
 
     public static final LoggedTunablePIDs shooterPIDs =
-        new LoggedTunablePIDs("Shooter", 2.0, 0.0, 0.0);
+        new LoggedTunablePIDs("Shooter", 0.5, 0.0, 0.0);
     public static final LoggedTunablePIDs hoodPIDs = new LoggedTunablePIDs("Hood", 200, 0.0, 1);
     public static final LoggedTunableNumber shooterSpeed =
-        new LoggedTunableNumber("Tuning/ShooterSpeed", 500);
+        new LoggedTunableNumber("Tuning/ShooterSpeed", 1000);
     public static final LoggedTunableNumber hoodAngle =
         new LoggedTunableNumber("Tuning/HoodAngle", 15);
     public static final LoggedTunableNumber hoodAngleBack =
         new LoggedTunableNumber("Tuning/hoodAngleBack", 0);
     public static final LoggedTunableNumber shooterAcceleration =
-        new LoggedTunableNumber("Tuning/ShooterAcceleration", 500);
+        new LoggedTunableNumber("Tuning/ShooterAcceleration", 5000);
     public static final LoggedTunableNumber hoodCruiseVelocity =
         new LoggedTunableNumber("Tuning/hoodCruiseVelocity", 1000);
     public static final LoggedTunableNumber hoodAcceleration =
-        new LoggedTunableNumber("Tuning/hoodAcceleration", 1000);
+        new LoggedTunableNumber("Tuning/hoodAcceleration", 2000);
   }
 
   public static final class Sim {

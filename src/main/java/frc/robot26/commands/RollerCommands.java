@@ -67,6 +67,17 @@ public class RollerCommands {
         .withName("RollerCommands.shootClosedLoop");
   }
 
+  public static Command tuneableShootClosedLoopWithHood(
+      Shooter shooter, Floor floor, Feeder feeder) {
+    return shooter
+        .setTunableShootWithHood()
+        .alongWith(
+            Commands.waitSeconds(2)
+                .andThen(feeder.setTunableFeeder())
+                .alongWith(floor.setTunableFloor())
+                .withName("RollerCommands.shootClosedLoop2"));
+  }
+
   public static Command shootClosedLoopDangerous(
       Shooter shooter,
       Floor floor,
@@ -94,7 +105,7 @@ public class RollerCommands {
     return Commands.repeatingSequence(
         intake.setDeployOpenLoopWithSpin(Volts.of(4), RPM.of(7000)).withTimeout(0.5),
         // Commands.waitSeconds(0.05),
-        intake.setDeployOpenLoopWithSpin(Volts.of(-4), RPM.of(7000)).withTimeout(0.5)
+        intake.setDeployOpenLoopWithSpin(Volts.of(-4), RPM.of(7000)).withTimeout(1)
         // Commands.waitSeconds(0.001));
         );
     // i made volts 3 not 2 lol
