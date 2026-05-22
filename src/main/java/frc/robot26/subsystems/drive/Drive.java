@@ -214,6 +214,7 @@ public class Drive extends SubsystemBase {
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && SimConstants.CURRENT_MODE != Mode.SIM);
+    Logger.recordOutput("Drive/Geofence/Inside", DriveGeofence.isInside(getPose()));
   }
 
   /**
@@ -222,6 +223,8 @@ public class Drive extends SubsystemBase {
    * @param speeds Speeds in meters/sec
    */
   public void runVelocity(ChassisSpeeds speeds) {
+    speeds = DriveGeofence.constrain(getPose(), speeds);
+
     // Calculate module setpoints
     ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
