@@ -2,28 +2,19 @@ package frc.robot26.subsystems.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import frc.lib.tunables.LoggedTunableBoolean;
-import frc.lib.tunables.LoggedTunableNumber;
 import org.littletonrobotics.junction.Logger;
 
 final class DriveGeofence {
-  private static final double ROBOT_CENTER_MARGIN_METERS = 0.42;
-
-  private static final LoggedTunableBoolean enabled =
-      new LoggedTunableBoolean("Tuning/DriveGeofence/Enabled", true);
-  private static final LoggedTunableNumber minX =
-      new LoggedTunableNumber("Tuning/DriveGeofence/MinX", ROBOT_CENTER_MARGIN_METERS);
-  private static final LoggedTunableNumber maxX =
-      new LoggedTunableNumber("Tuning/DriveGeofence/MaxX", 16.54 - ROBOT_CENTER_MARGIN_METERS);
-  private static final LoggedTunableNumber minY =
-      new LoggedTunableNumber("Tuning/DriveGeofence/MinY", ROBOT_CENTER_MARGIN_METERS);
-  private static final LoggedTunableNumber maxY =
-      new LoggedTunableNumber("Tuning/DriveGeofence/MaxY", 8.07 - ROBOT_CENTER_MARGIN_METERS);
+  private static final boolean ENABLED = true;
+  private static final double MIN_X_METERS = 2;
+  private static final double MAX_X_METERS = 9;
+  private static final double MIN_Y_METERS = 2;
+  private static final double MAX_Y_METERS = 5;
 
   private DriveGeofence() {}
 
   static ChassisSpeeds constrain(Pose2d pose, ChassisSpeeds robotRelativeSpeeds) {
-    if (!enabled.get()) {
+    if (!ENABLED) {
       Logger.recordOutput("Drive/Geofence/Limited", false);
       return robotRelativeSpeeds;
     }
@@ -33,10 +24,10 @@ final class DriveGeofence {
     double vx = fieldRelativeSpeeds.vxMetersPerSecond;
     double vy = fieldRelativeSpeeds.vyMetersPerSecond;
 
-    double lowerX = Math.min(minX.get(), maxX.get());
-    double upperX = Math.max(minX.get(), maxX.get());
-    double lowerY = Math.min(minY.get(), maxY.get());
-    double upperY = Math.max(minY.get(), maxY.get());
+    double lowerX = Math.min(MIN_X_METERS, MAX_X_METERS);
+    double upperX = Math.max(MIN_X_METERS, MAX_X_METERS);
+    double lowerY = Math.min(MIN_Y_METERS, MAX_Y_METERS);
+    double upperY = Math.max(MIN_Y_METERS, MAX_Y_METERS);
 
     if (pose.getX() <= lowerX && vx < 0.0) {
       vx = 0.0;
@@ -52,6 +43,7 @@ final class DriveGeofence {
 
     boolean limited =
         vx != fieldRelativeSpeeds.vxMetersPerSecond || vy != fieldRelativeSpeeds.vyMetersPerSecond;
+    Logger.recordOutput("Drive/Geofence/Enabled", ENABLED);
     Logger.recordOutput("Drive/Geofence/Limited", limited);
     Logger.recordOutput("Drive/Geofence/Inside", isInside(pose));
     Logger.recordOutput("Drive/Geofence/MinX", lowerX);
@@ -68,12 +60,12 @@ final class DriveGeofence {
   }
 
   static boolean isInside(Pose2d pose) {
-    double lowerX = Math.min(minX.get(), maxX.get());
-    double upperX = Math.max(minX.get(), maxX.get());
-    double lowerY = Math.min(minY.get(), maxY.get());
-    double upperY = Math.max(minY.get(), maxY.get());
+    double lowerX = Math.min(MIN_X_METERS, MAX_X_METERS);
+    double upperX = Math.max(MIN_X_METERS, MAX_X_METERS);
+    double lowerY = Math.min(MIN_Y_METERS, MAX_Y_METERS);
+    double upperY = Math.max(MIN_Y_METERS, MAX_Y_METERS);
 
-    return !enabled.get()
+    return !ENABLED
         || (pose.getX() >= lowerX
             && pose.getX() <= upperX
             && pose.getY() >= lowerY
