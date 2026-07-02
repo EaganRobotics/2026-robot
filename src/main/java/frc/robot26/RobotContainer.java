@@ -373,12 +373,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
   }
 
   private void configureButtonBindings() {
-    drive.setDefaultCommand(
-        DriveCommands.joystickDrive(
-            drive,
-            () -> -driverController.getLeftY(),
-            () -> -driverController.getLeftX(),
-            () -> -driverController.getRightX()));
+    drive.setDefaultCommand(DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0));
     // shooter.setDefaultCommand(
     // ShooterCommands.shooterDefaultCommand(
     // shooter,
@@ -414,7 +409,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
-    driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     // // driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
     // // driverController.b().whileTrue(RollerCommands.intakeJiggleOpenLoop(intake));
     // // driverController.y().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(11.5)));
