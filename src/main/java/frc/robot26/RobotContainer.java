@@ -407,7 +407,15 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    driverController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
+    driverController
+        .leftTrigger()
+        .whileTrue(
+            shooter
+                .setShooterClosedLoopAndAngle(RPM.of(2500), Degrees.of(17))
+                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(1000))))
+                .alongWith(floor.setClosedLoop(RPM.of(1000)))
+                .alongWith(ControllerCommands.rumble(driverController))
+                .alongWith(RollerCommands.intakeJiggleOpenLoop(intake)));
 
     // driverController.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
     // // driverController.a().whileTrue(SnapCommands.snapToRadius(drive, Feet.of(7.5)));
