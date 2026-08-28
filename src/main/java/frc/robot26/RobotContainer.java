@@ -385,8 +385,8 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
     // () -> SnapCommands.distanceToHub(drive),
     // () -> -driverController.getRightY(),
     // Feet.of(5)));
-    intake.setDefaultCommand(
-        intake.setJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
+    // intake.setDefaultCommand(
+    //     intake.setJoystickOpenLoop(() -> -operatorController.getLeftX() * .85));
     feeder.setDefaultCommand(
         feeder.setJoystickOpenLoop(() -> -operatorController.getLeftY() * .85));
     floor.setDefaultCommand(floor.setJoystickOpenLoop(() -> -operatorController.getRightX() * .85));
@@ -425,18 +425,14 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
 
     driverController
         .rightTrigger()
-        .whileTrue(
-            shooter
-                .setTunableShootWithHood()
-                .alongWith(Commands.waitSeconds(1.25).andThen(feeder.setClosedLoop(RPM.of(4000))))
-                .alongWith(floor.setClosedLoop(RPM.of(4000))));
+        .whileTrue(ShooterCommands.shootAutoAim(shooter, floor, feeder, drive));
 
     // =========================================
     // =========== Operator Controls ===========
     // =========================================
 
-    operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
-    operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
+    // operatorController.b().whileTrue(intake.setDeployOpenLoop(Volts.of(-4)));
+    // operatorController.x().whileTrue(intake.setDeployOpenLoop(Volts.of(4)));
 
     operatorController
         .y()
@@ -493,7 +489,7 @@ public class RobotContainer extends frc.lib.infrastructure.RobotContainer {
                     Commands.waitSeconds(1.75)
                         .andThen(RollerCommands.intakeJiggleOpenLoop(intake))));
 
-    operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
+    // operatorController.leftTrigger().whileTrue(intake.setIntakeClosedLoop(RPM.of(7000)));
 
     // // operatorController
     // //     .y()
